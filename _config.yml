@@ -16,7 +16,7 @@ timezone:
 url: https://m09ic.github.io/  
 root: /
 #permalink: :year/:month/:day/:title/
-permalink: posts/:title
+permalink: posts/:title/
 permalink_defaults:
 
 # Directory
