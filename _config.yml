@@ -13,7 +13,7 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://m09ic.github.io/  
+url: https://m09ic.top/  
 root: /
 #permalink: :year/:month/:day/:title/
 permalink: posts/:title/
@@ -55,7 +55,7 @@ index_generator:
   order_by: -date
   
 # Category & Tag
-default_category: uncategorized
+default_category: 其他
 category_map:
 tag_map:
 
