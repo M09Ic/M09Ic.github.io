@@ -97,6 +97,7 @@ C:\Windows\tasks\
 ```
 
 命令: `schtasks`  
+(若报错运行`chcp 437`)
 GUI: `taskschd.msc`
 
 
