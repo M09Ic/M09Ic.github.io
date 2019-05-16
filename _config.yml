@@ -82,3 +82,9 @@ deploy:
   type: git
   repo: https://github.com/M09Ic/M09Ic.github.io.git
   branch: master
+
+
+sitemap: 
+  path: sitemap.xml
+baidusitemap: 
+  path: baidusitemap.xml

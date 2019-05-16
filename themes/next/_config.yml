@@ -143,7 +143,7 @@ exturl: false
 #baidu_site_verification:
 
 # Enable baidu push so that the blog will push the url to baidu automatically which is very helpful for SEO.
-baidu_push: false
+baidu_push: true
 
 
 # ---------------------------------------------------------------
@@ -745,16 +745,16 @@ needmoreshare2:
 # ---------------------------------------------------------------
 
 # Baidu Analytics ID
-#baidu_analytics:
+baidu_analytics: 04d80448a6c7bfee29f2e7379ff56865
 
 # Growingio Analytics ID
 # Copyright 2015-2018 GrowingIO, Inc. More info available at https://www.growingio.com
 #growingio_analytics: #your projectId
 
 # Google Analytics
-#google_analytics:
-#  tracking_id:
-#  localhost_ignored: true
+google_analytics:
+  tracking_id: UA-140303637-1
+  localhost_ignored: true
 
 # CNZZ count
 #cnzz_siteid:
