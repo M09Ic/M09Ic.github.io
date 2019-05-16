@@ -16,7 +16,7 @@ timezone:
 url: https://m09ic.top/  
 root: /
 #permalink: :year/:month/:day/:title/
-permalink: posts/:title/
+permalink: posts/:abbrlink/
 permalink_defaults:
 
 # Directory
