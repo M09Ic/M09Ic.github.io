@@ -4,9 +4,9 @@
 
 # Site
 title: M09ic's Blog
-subtitle:
-description: 
-keywords:
+subtitle: 独自行走于莽荒之地
+description: 网络安全,编程学习记录的破地方
+keywords: 安全,学习笔记,blog,博客
 author: M09ic
 language: zh-CN
 timezone: 
@@ -83,6 +83,10 @@ deploy:
   repo: https://github.com/M09Ic/M09Ic.github.io.git
   branch: master
 
+
+Plugins:
+- hexo-generator-baidu-sitemap
+- hexo-generator-sitemap
 
 sitemap: 
   path: sitemap.xml
