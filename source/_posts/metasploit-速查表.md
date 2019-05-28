@@ -8,7 +8,7 @@ abbrlink: 53382
 date: 2019-05-24 14:42:30
 ---
 
-## 0x00 介绍
+### 	介绍
 
 [metasploit官网](<https://www.metasploit.com/>)
 
@@ -19,8 +19,6 @@ GUI工具:`armitage`
 商业版有个web界面,但是不觉得命令行界面更cool吗?
 
 类似工具[Cobalt Strike](<https://www.cobaltstrike.com/>)
-
-## 0x01 基本使用
 
 msf主要有以下模块.
 

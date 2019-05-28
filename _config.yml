@@ -87,6 +87,7 @@ deploy:
 Plugins:
 - hexo-generator-baidu-sitemap
 - hexo-generator-sitemap
+- hexo-generate-feed
 
 sitemap: 
   path: sitemap.xml
