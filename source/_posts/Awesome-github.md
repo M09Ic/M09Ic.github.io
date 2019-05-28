@@ -11,6 +11,8 @@ date: 2019-05-28 16:57:47
 
 大约是从今年三月开始记录,将会持续更新.更早之前用到过的东西如果再次用到也会写上.
 
+主要用作回看自己的学习经历,顺便收集用.
+
 ### web相关工具 | web tools
 
 |                            github                            |                 description                 |      tags       | updatetime |
@@ -36,11 +38,12 @@ date: 2019-05-28 16:57:47
 
 ### 内网渗透相关工具 | Pentest Tools
 
-|                            github                            |   description    | tags | updatetime |
-| :----------------------------------------------------------: | :--------------: | :--: | :--------: |
-|     [bettercap](https://github.com/bettercap/bettercap)      | 中间人劫持工具集 | MITM |   2019.3   |
-| [ASWCrypter](https://github.com/AbedAlqaderSwedan1/ASWCrypter) |     免杀工具     | 免杀 |   2019.3   |
-|             [zmap](https://github.com/zmap/zmap)             |   无状态扫描器   | scan |   2019.3   |
+|                            github                            |          description           | tags | updatetime |
+| :----------------------------------------------------------: | :----------------------------: | :--: | :--------: |
+|     [bettercap](https://github.com/bettercap/bettercap)      |        中间人劫持工具集        | MITM |   2019.4   |
+| [ASWCrypter](https://github.com/AbedAlqaderSwedan1/ASWCrypter) |            免杀工具            | 免杀 |   2019.4   |
+|             [zmap](https://github.com/zmap/zmap)             |          无状态扫描器          | scan |   2019.4   |
+|         [Hwacha](<https://github.com/n00py/Hwacha>)          | 通过ssh批量安装meterpreter工具 | 渗透 |   2019.5   |
 
 ### 其他工具 | Other Tools
 
