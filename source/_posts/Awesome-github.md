@@ -58,13 +58,14 @@ date: 2019-05-28 16:57:47
 
 |                            github                            |      description       |     tags     | updatetime |
 | :----------------------------------------------------------: | :--------------------: | :----------: | :--------: |
-|          [vulhub](https://github.com/vulhub/vulhub)          |  cve漏洞的docker搭建   | web , docker |   2019.3   |
-|       [CTF WEB](https://github.com/wonderkun/CTF_web)        |     CTF web 题环境     |  CTF , web   |   2019.3   |
-|        [VulApps](https://github.com/Medicean/VulApps)        |   常见CMS docker搭建   | web , docker |   2019.3   |
-|        [vulstudy](https://github.com/c0ny1/vulstudy)         | 流行漏洞平台docker搭建 | web , docker |   2019.3   |
-| [hitcon ctf](https://github.com/orangetw/My-CTF-Web-Challenges) |    hitcon ctf 源码     |     CTF      |   2019.3   |
-| [PHP_Code_Challenge](https://github.com/yaofeifly/PHP_Code_Challenge) |   php 代码审计练习题   |     web      |   2019.3   |
-| [PHP-code-audit](https://github.com/jiangsir404/PHP-code-audit) |   php 代码审计练习题   |     web      |   2019.3   |
+|          [vulhub](https://github.com/vulhub/vulhub)          |  cve漏洞的docker搭建   | web , docker |   2019.4   |
+|       [CTF WEB](https://github.com/wonderkun/CTF_web)        |     CTF web 题环境     |  CTF , web   |   2019.4   |
+|        [VulApps](https://github.com/Medicean/VulApps)        |   常见CMS docker搭建   | web , docker |   2019.4   |
+|        [vulstudy](https://github.com/c0ny1/vulstudy)         | 流行漏洞平台docker搭建 | web , docker |   2019.4   |
+| [hitcon ctf](https://github.com/orangetw/My-CTF-Web-Challenges) |    hitcon ctf 源码     |     CTF      |   2019.4   |
+| [PHP_Code_Challenge](https://github.com/yaofeifly/PHP_Code_Challenge) |   php 代码审计练习题   |     web      |   2019.4   |
+| [PHP-code-audit](https://github.com/jiangsir404/PHP-code-audit) |   php 代码审计练习题   |     web      |   2019.4   |
+| [CTFTraining](<https://github.com/CTFTraining/CTFTraining>)  |       CTF 练习题       |     ctf      |   2019.6   |
 
 ### 知识库
 
