@@ -398,3 +398,29 @@ Baidu Analytics:
 baidu_analytics: *******************************
 ```
 
+## 0x05 多端同步
+
+之前就已经创建了一个Github repo ,现在需要新建一个branch, 比如叫`hexo`(默认的branch叫master),然后将默认branch修改为`hexo`.
+
+然后clone 一个,会选择默认分支clone.
+
+再将文件复制到刚刚clone的文件夹下.记得添加`.gitigore`,内容如下:
+
+```
+.DS_Store
+Thumbs.db
+db.json
+*.log
+node_modules/
+public/
+.deploy*/
+```
+
+再执行:
+
+```
+git add . 
+git commit -m "update"
+git push 
+```
+
