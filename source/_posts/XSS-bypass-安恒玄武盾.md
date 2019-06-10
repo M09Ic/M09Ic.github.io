@@ -1,11 +1,10 @@
 ---
 title: XSS bypass 安恒玄武盾
+abbrlink: 34838
+date: 2019-06-10 17:42:05
 categories: WEB
 tags:
-  - XSS
-  - bypass
-abbrlink: 44024
-date: 2019-06-10 16:28:05
+- XSS
 ---
 
 ## 起因
@@ -22,11 +21,11 @@ date: 2019-06-10 16:28:05
 
 ## 细节
 
-### 1
+### 测试
 
 最近手里没网站测试了,很多东西只能靠口诉了.
 
-先上最终payload吧,payload不唯一,可以有无限多种变形.
+先上最终payload,payload不唯一,可以有无限多种变形.
 
 ```
 6666666"> <video hidden="hidden" onloadedmetadata="\u006aava\u0073cript:[1].find(\u0061lert)" src="http://www.runoob.com/try/demo_source/movie.mp4 " ></video>
@@ -34,19 +33,17 @@ date: 2019-06-10 16:28:05
 
 大佬们应该一眼就看出来问题了.
 
-发现是在去年,用了一段时间完成实验室任务,最晚在今年4月份测试依旧有效..
+最晚在今年4月份测试依旧有效.
 
-这是玄武盾拦截的截图:
+玄武盾拦截的截图:
 
 ![1](1.png)
 
 如果payload中存在`onerror=,onload=`这些事件,`<img>,<script>`这些标签或者`alert,javascript`这些敏感词,就会弹出玄武盾.
 
-本想fuzz一下具体过滤了哪些关键字的,但是手头没有合适的网站测试,就作罢.关键字过滤的还是挺全的,除了html5的新标签和新事件.
+关键字过滤的还是挺全的.但是直接fuzz一下就可以发现,比如`<video>,<canvas`这些html5标签不会触发玄武盾.
 
-直接fuzz一下就可以发现,比如`<video>,<canvas`这些html5标签不会触发玄武盾.
-
-html5标签还挺多的,如果找不到可以用我收集的[字典](<https://github.com/M09Ic/mywordlist/blob/master/html_tags.txt>).
+html5标签还挺多,如果找不到可以用我收集的[字典](<https://github.com/M09Ic/mywordlist/blob/master/html_tags.txt>).
 
 最容易容易构造xss的标签有`video`,html5标签实现xss网上相关文章有不少.
 
@@ -68,13 +65,13 @@ html5标签还挺多的,如果找不到可以用我收集的[字典](<https://gi
 
 `find()`的参数是一个回调函数.验证漏洞用`alert`即可.
 
-当然`alert`关键字已经被过滤了,但是这里输入点是在js代码里面,浏览器遇到js代码会调用js解释器,所以将`alert` js编码为`\u0061lert`.稍微降低下payload长度,所以只编码一个字符就可以了.
+当然`alert`关键字已经被过滤,但是这里输入点是在js代码里面,浏览器遇到js代码会调用js解释器,所以将`alert` js编码为`\u0061lert`.稍微降低下payload长度,所以只编码一个字符就可以了.
 
 最终事件内payload为:
 
 `find(\u0061lert)`
 
-### 3
+### 执行
 
 发送payload:
 
@@ -91,12 +88,3 @@ html5标签还挺多的,如果找不到可以用我收集的[字典](<https://gi
 在最开头的两篇文章中偷来的,手动滑稽.
 
 中间如果有被过滤的关键字,js编码下即可.
-
-
-
-
-
-
-
-
-
