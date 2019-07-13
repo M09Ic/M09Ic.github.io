@@ -44,6 +44,7 @@ date: 2019-05-28 16:57:47
 | [ASWCrypter](https://github.com/AbedAlqaderSwedan1/ASWCrypter) |            免杀工具            | 免杀 |   2019.4   |
 |             [zmap](https://github.com/zmap/zmap)             |          无状态扫描器          | scan |   2019.4   |
 |         [Hwacha](<https://github.com/n00py/Hwacha>)          | 通过ssh批量安装meterpreter工具 | 渗透 |   2019.5   |
+| [PowerSploit](<https://github.com/PowerShellMafia/PowerSploit>) |      powershell 渗透框架       | 渗透 |   2019.6   |
 
 ### 其他工具 | Other Tools
 
@@ -66,6 +67,7 @@ date: 2019-05-28 16:57:47
 | [PHP_Code_Challenge](https://github.com/yaofeifly/PHP_Code_Challenge) |   php 代码审计练习题   |     web      |   2019.4   |
 | [PHP-code-audit](https://github.com/jiangsir404/PHP-code-audit) |   php 代码审计练习题   |     web      |   2019.4   |
 | [CTFTraining](<https://github.com/CTFTraining/CTFTraining>)  |       CTF 练习题       |     ctf      |   2019.6   |
+|        [CTFHUB](<https://github.com/ByPupil/ctfhub>)         |         CTFHUB         |     ctf      |   2019.7   |
 
 ### 知识库
 
@@ -82,3 +84,6 @@ date: 2019-05-28 16:57:47
 | [data-analysis](https://github.com/secure-data-analysis-data-sharing/data-analysis) |    安全行业相关资料     |     综合     |   2019.3   |
 | [应急响应实战笔记](<https://bypass007.github.io/Emergency-Response-Notes/>) |      应急响应相关       |   应急响应   |   2019.5   |
 |        [网安图书馆](https://github.com/xrkk/cbr-doc)         |    网络安全相关文章     |     综合     |   2019.5   |
+|    [SecurityRSS](<https://github.com/Kejane/SecurityRSS>)    |       网安相关rss       |     综合     |   2019.7   |
+| [Powershell Attack Guide](<https://github.com/rootclay/Powershell-Attack-Guide>) |   powershell 渗透教程   |   渗透测试   |   2019.7   |
+|    [SecToolSet](<https://github.com/bollwarm/SecToolSet>)    |        渗透教程         |   渗透测试   |   2019.7   |
