@@ -222,6 +222,7 @@ links_layout: block
 links:
   #Title: http://example.com
   夜莫离: https://yml-sec.top
+  麦香鱼: http://www.maixiangyu.xyz/
 
 # Sidebar Avatar
 avatar:
@@ -1171,7 +1172,7 @@ vendors:
   # See: https://www.npmjs.com/package/leancloud-storage
   # Example:
   # leancloud: //cdn.jsdelivr.net/npm/leancloud-storage@3/dist/av-min.js
-  leancloud:
+  leancloud: //cdn.jsdelivr.net/npm/leancloud-storage@3/dist/av-min.js
 
   # valine
   # See: https://github.com/xCss/Valine
