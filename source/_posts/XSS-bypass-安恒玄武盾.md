@@ -7,6 +7,8 @@ tags:
 - XSS
 ---
 
+*本文原发于 https://mp.weixin.qq.com/s/3Qz-ccL2Ynf1YnBlBxjgCQ , 仅在自己博客做个备份*
+
 ## 起因 
 
 最初发现来自实验室的小伙伴,但是仅限于弹窗,后来发现这种类型的payload构造思路来自[XSS挑战第一期Writeup](<http://www.anquan.us/static/drops/papers-894.html>)和[XSS挑战第二期Writeup](<http://www.anquan.us/static/drops/papers-938.html>)以及使用了fuzz的一些小技巧,可以实现任意js代码执行.

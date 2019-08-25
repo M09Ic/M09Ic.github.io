@@ -1,5 +1,6 @@
 ---
 title: QQ空间流氓转发分析
+abbrlink: 6862
 tags:
 ---
 
