@@ -1,5 +1,5 @@
 ---
-title: nmap速查表
+title: NMAP CheatSheet
 categories: 工具
 tags:
   - 速查表

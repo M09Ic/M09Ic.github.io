@@ -1,5 +1,5 @@
 ---
-title: sqlmap 速查表
+title: SQLMap Cheatsheet
 categories: 工具
 tags:
   - 速查表
