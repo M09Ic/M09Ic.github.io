@@ -6,7 +6,7 @@ categories:
 tags:
 ---
 
-*本文原发于 <https://xz.aliyun.com/t/6238> , 仅在自己博客做个备份*
+*本文原发于先知社区 <https://xz.aliyun.com/t/6238> , 博客仅备份*
 
 ## 写在之前
 
