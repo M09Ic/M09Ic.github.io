@@ -1,9 +1,8 @@
 ---
 title: 三次AWD训练赛小结
-categories: 学习笔记
+categories: AWD
 tags:
-  - AWD
-  - 随笔
+  - 学习笔记
 abbrlink: 7646
 date: 2019-09-01 00:46:01
 ---

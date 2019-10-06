@@ -7,7 +7,7 @@ tags:
 - XSS
 ---
 
-*本文原发于星盟微信公众号 <https://mp.weixin.qq.com/s/3Qz-ccL2Ynf1YnBlBxjgCQ> , 博客仅备份*
+*本文原发于星盟微信公众号 <https://mp.weixin.qq.com/s/3Qz-ccL2Ynf1YnBlBxjgCQ> , 博客转自本人仅做备份用途*
 
 ## 起因 
 

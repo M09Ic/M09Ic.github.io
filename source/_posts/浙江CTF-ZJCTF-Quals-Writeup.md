@@ -7,7 +7,7 @@ abbrlink: 50801
 date: 2019-09-12 17:08:51
 ---
 
-*本文原发于sec圈 : <https://www.secquan.org/Discuss/1070283> , 博客仅备份*
+*本文原发于sec圈 : <https://www.secquan.org/Discuss/1070283> ,博客转自本人仅做备份用途*
 
 ## WEB
 

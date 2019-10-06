@@ -6,7 +6,7 @@ abbrlink: 14990
 date: 2019-08-04 20:06:12
 ---
 
-*本文原发于<https://www.secquan.org/Notes/1070004>,仅在自己博客做个备份*
+*本文原发于<https://www.secquan.org/Notes/1070004>,博客转自本人仅做备份用途*
 
 ## 写在之前
 
