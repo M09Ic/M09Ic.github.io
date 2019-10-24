@@ -48,11 +48,9 @@ chattr -R +i /var/www/html # 锁定文件
     
 tcpdump -s 0 -w ctf.pcap port 9999 # 高权限tcpdump抓包
 
-alias curl="echo flag{1a5d51c54515649463521}" # 别名
+alias curl="echo flag{1a5d51c54515649463521}" # 别名,需要写到.bashrc
 
-unalias
-
-
+unalias # 取消别名
 ```
 
 ### 杀进程
@@ -61,7 +59,7 @@ unalias
 kill [pid]
 killall [进程名]
 pkill [进程名]
-pkill -u [用户名]
+pkill -u [用户名] # 一次不行多几次,再猛的不死马都得死
 ```
 
 
