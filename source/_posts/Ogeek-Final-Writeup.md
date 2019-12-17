@@ -4,7 +4,7 @@ tags:
   - Writeup
 abbrlink: 56679
 date: 2019-10-24 13:59:41
-categories:
+categories: CTF&AWD
 ---
 
 

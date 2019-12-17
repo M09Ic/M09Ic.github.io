@@ -1,6 +1,6 @@
 ---
 title: 三次AWD训练赛小结
-categories: AWD
+categories: CTF&AWD
 tags:
   - 学习笔记
 abbrlink: 7646

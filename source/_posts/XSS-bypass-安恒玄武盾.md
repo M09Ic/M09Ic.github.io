@@ -2,7 +2,7 @@
 title: XSS bypass 安恒玄武盾
 abbrlink: 34838
 date: 2019-06-10 17:42:05
-categories: WEB
+categories: 网络安全
 tags:
 - XSS
 ---

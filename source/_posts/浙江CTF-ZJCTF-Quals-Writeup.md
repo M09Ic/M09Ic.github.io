@@ -1,6 +1,6 @@
 ---
 title: 浙江CTF(ZJCTF) Quals Writeup
-categories: CTF
+categories: CTF&AWD
 tags:
   - writeup
 abbrlink: 50801

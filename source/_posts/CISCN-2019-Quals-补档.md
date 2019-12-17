@@ -1,6 +1,6 @@
 ---
 title: CISCN 2019 Quals Writeup(补档)
-categories: CTF
+categories: CTF&AWD
 tags:
   - writeup
 abbrlink: 41838

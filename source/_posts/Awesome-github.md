@@ -1,6 +1,6 @@
 ---
 title: Awesome github
-categories: 工具
+categories: 网络安全
 tags:
   - 学习笔记
 abbrlink: 48529

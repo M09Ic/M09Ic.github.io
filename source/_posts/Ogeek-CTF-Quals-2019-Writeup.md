@@ -1,6 +1,6 @@
 ---
 title: Ogeek CTF Quals 2019 Writeup
-categories: CTF
+categories: CTF&AWD
 tags:
   - writeup
 abbrlink: 45148

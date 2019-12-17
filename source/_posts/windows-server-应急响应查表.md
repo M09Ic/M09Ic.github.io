@@ -2,7 +2,7 @@
 title: windows server 应急响应查表
 abbrlink: 31524
 date: 2019-05-09 10:19:14
-categories: 其他
+categories: 网络安全
 tags: 
 - 速查表
 - 应急响应

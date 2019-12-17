@@ -1,6 +1,6 @@
 ---
 title: 北极星杯AWD Writeup
-categories: AWD
+categories: 网络安全
 tags:
   - Writeup
 abbrlink: 16997

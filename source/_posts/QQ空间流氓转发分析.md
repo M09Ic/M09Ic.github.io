@@ -2,8 +2,9 @@
 title: QQ空间流氓转发分析
 abbrlink: 6862
 date: 2019-09-03 16:53:47
-categories:
+categories: 网络安全
 tags:
+- 漏洞分析
 ---
 
 *本文原发于先知社区 <https://xz.aliyun.com/t/6238> , 博客转自本人仅做备份用途*
