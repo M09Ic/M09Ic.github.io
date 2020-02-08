@@ -1,10 +1,15 @@
 ---
-title: AWD CheatSheet
+title: AWD MyCheatSheet
 tags: 学习笔记
 abbrlink: 7923
+date: 2020-01-23 19:00:05
+categories:
 ---
 
 
+## 前言
+
+之前一次比赛中临时整理的,写给自己看.
 
 ## 攻击
 

@@ -188,7 +188,7 @@ scheme: Gemini
 ```
 social:
   GitHub: https://github.com/M09Ic || github
-  E-Mail: mailto:n8c4899812@gmail || envelope
+  E-Mail: mailto:M09ic@foxmail.com || envelope
 ```
 
 ### 图标字体
