@@ -2,8 +2,9 @@
 title: 'Python 爬虫,数据分析与黑魔法'
 abbrlink: 56383
 date: 2020-03-06 01:24:49
-categories:
+categories: 编程
 tags:
+- python
 ---
 
 
