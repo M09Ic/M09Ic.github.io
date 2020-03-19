@@ -1,9 +1,10 @@
 ---
 title: MetaSploit CheatSheet
-categories: 网络安全
+categories: 渗透测试
 tags:
   - 速查表
   - 学习笔记
+  - 工具
 abbrlink: 53382
 date: 2019-05-24 14:42:30
 ---

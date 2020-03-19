@@ -1,9 +1,10 @@
 ---
 title: SQLMap Cheatsheet
-categories: 网络安全
+categories: 渗透测试
 tags:
   - 速查表
   - 学习笔记
+  - 工具
 abbrlink: 26976
 date: 2019-05-24 15:30:54
 ---
@@ -18,7 +19,7 @@ date: 2019-05-24 15:30:54
 
 ## 0x01 功能介绍
 
-基本上支持所有常见的数据,列表如下:
+基本上支持所有常见的数据,如下:
 
 - MySQL
 - Oracle
