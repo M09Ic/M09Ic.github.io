@@ -8,6 +8,7 @@ tags:
 - 漏洞分析
 ---
 
+*(本文首发于先知社区,链接:https://xz.aliyun.com/t/7453)
 
 原文链接: [All is XSS that comes to the .NET](https://blog.isec.pl/all-is-xss-that-comes-to-the-net/)
 
