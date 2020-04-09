@@ -7,7 +7,7 @@ abbrlink: 16997
 date: 2019-10-04 15:50:57
 ---
 
-
+(本文首发于星盟安全公众号,链接:[北极星杯AWD-Web-Writeup](https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgSzeo9_evQk7_5VddawZp5ST5oaiKpHxlmlqXa8Fplpd9X-AYT8efJLqd3HjPvm5Ogi--XpCmp3p1FHUhJwkRV7i9aeBi2KpxK2c3LarU8cDZSknbf5kXQUJ8A8_jCv3vvByWQLSekv36n-__jjNOQ5XtP7ax8jUAmApx0QokVAEdNH4IggvvmKFftm6lykiDTsEdHSGWGQZgpm-K3rnUF_U89kyxDwoXvg..&type=2&query=%E5%8C%97%E6%9E%81%E6%98%9F%E6%9D%AF%20awd&token=80E801B32D15389AEAEC483650AA175EEA3E0B325E8F35FE&k=29&h=V))
 
 # 前言
 
