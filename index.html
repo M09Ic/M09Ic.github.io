@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="网络安全,编程学习记录的破地方">
+<meta property="og:type" content="website">
+<meta property="og:title" content="M09ic&#39;s Blog">
+<meta property="og:url" content="https://m09ic.top/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="网络安全,编程学习记录的破地方">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="安全,学习笔记,blog,博客">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://m09ic.top/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/62195/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/62195/" class="post-title-link" itemprop="url">有关百度的溯源与反溯源</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-08 16:20:40" itemprop="dateCreated datePublished" datetime="2020-12-08T16:20:40+08:00">2020-12-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:50:27" itemprop="dateModified" datetime="2021-01-04T22:50:27+08:00">2021-01-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/62195/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/62195/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="溯源"><a href="#溯源" class="headerlink" title="溯源"></a>溯源</h2><p>众所周知,百度有多个臭名昭著的jsonp漏洞长时间不修复,已经被蜜罐利用多年.</p>
+<p>通过百度id溯源攻击者成为了某几个蜜罐厂商防守拿分大头.我也在这上面栽过一次.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/62195/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/36360/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/36360/" class="post-title-link" itemprop="url">实用的命令行技巧与花里胡哨的命令行界面</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-24 03:53:05" itemprop="dateCreated datePublished" datetime="2020-03-24T03:53:05+08:00">2020-03-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:36" itemprop="dateModified" datetime="2021-01-04T22:51:36+08:00">2021-01-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/36360/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/36360/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从学计算机开始,每天都在和命令行打交道.从一开始啥都不懂,到处复制别人命令,到现在老是喜欢整写花里胡哨的或者提高效率的东西.</p>
+<p>加上前两天看到了<a target="_blank" rel="noopener" href="https://github.com/jlevy/the-art-of-command-line/blob/master/README-zh.md">命令行的艺术</a>这篇文章,正好整理一下这两年折腾过的命令行.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/36360/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/35797/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/35797/" class="post-title-link" itemprop="url">通杀.NET的XSS!(原文翻译以及复现)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-23 03:21:26" itemprop="dateCreated datePublished" datetime="2020-03-23T03:21:26+08:00">2020-03-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:09" itemprop="dateModified" datetime="2021-01-04T22:51:09+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/35797/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/35797/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>*(本文首发于先知社区,链接:<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7453">https://xz.aliyun.com/t/7453</a>)</p>
+<p>原文链接: <a target="_blank" rel="noopener" href="https://blog.isec.pl/all-is-xss-that-comes-to-the-net/">All is XSS that comes to the .NET</a></p>
+<p>原作者: Paweł Hałdrzyński</p>
+<p>在<a target="_blank" rel="noopener" href="https://portswigger.net/research/top-10-web-hacking-techniques-of-2019">portswigger发布的2019年十大web攻击技术</a>中发现了这篇文章，仔细研究了一番，觉得挺有意思，故尝试翻译。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/35797/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/22311/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/22311/" class="post-title-link" itemprop="url">小技巧---给工具用上代理池</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-20 03:16:20" itemprop="dateCreated datePublished" datetime="2020-03-20T03:16:20+08:00">2020-03-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:33" itemprop="dateModified" datetime="2021-01-04T22:51:33+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/22311/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/22311/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><em>(本文首发于T00ls论坛,链接:<a target="_blank" rel="noopener" href="https://www.t00ls.net/articles-55479.html">https://www.t00ls.net/articles-55479.html</a> , 这么简单的小技巧竟然有13000阅读了,惊了!!)</em></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>代理池是渗透测试中常用的工具,用来躲避各种各样的封IP的防火墙,也帮助自身隐藏踪迹.</p>
+<p>大部分工具也支持代理选项,但少有支持代理池的.实际上,不需要修改工具去支持代理池,只需要弄一个中间层,在中间层搭建代理池,然后支持代理的工具就可以变相支持代理池了.</p>
+<p>当然,解决方案多种多样,我只提一个最简单的.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/22311/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/29936/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/29936/" class="post-title-link" itemprop="url">如何在LOL中正确的抓出内鬼</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-19 22:45:39" itemprop="dateCreated datePublished" datetime="2020-03-19T22:45:39+08:00">2020-03-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:24" itemprop="dateModified" datetime="2021-01-04T22:51:24+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/29936/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/29936/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><em>(本文首发于星盟安全团队微信公众号,链接:<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/85gX5ci1ih9Mb9tPIx45tg">https://mp.weixin.qq.com/s/85gX5ci1ih9Mb9tPIx45tg</a>  ,并由团队发表至secpulse,链接:<a target="_blank" rel="noopener" href="https://www.secpulse.com/archives/126641.html">https://www.secpulse.com/archives/126641.html</a>)</em></p>
+<p>update:2020.4.2:文章竟然被云舒大神转发了.开心!!</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/29936/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/56383/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/56383/" class="post-title-link" itemprop="url">Python 爬虫,数据分析与黑魔法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-06 01:24:49" itemprop="dateCreated datePublished" datetime="2020-03-06T01:24:49+08:00">2020-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:45" itemprop="dateModified" datetime="2021-01-04T22:52:45+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">编程</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/56383/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/56383/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <a id="more"></a>
+
+<p>我并不太喜欢照抄官方文档式的文章,所以下面的内容都只是抛砖引玉,善于使用搜索引擎与官方文档.</p>
+<h1 id="爬虫"><a href="#爬虫" class="headerlink" title="爬虫"></a>爬虫</h1><h2 id="requests"><a href="#requests" class="headerlink" title="requests"></a>requests</h2><p>python自带了一个urllib,但是并不好用,requests就是urllib的二次封装,更加人性化与方便.</p>
+<p>缺点就是requests是阻塞式的库,如果有高并发的需求,需要</p>
+<p>requests库比较常用,各位应该都会用.</p>
+<p>最常用的用法就是:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 发送GET请求</span></span><br><span class="line">requests.get(url)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送POST请求</span></span><br><span class="line">requests.post(url,data=)</span><br></pre></td></tr></table></figure>
+<p>当然还可以定制各种参数</p>
+<p>比较常用的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">data&#x3D;		设置post body</span><br><span class="line">params&#x3D;		设置get 参数</span><br><span class="line">cookies&#x3D;  	设置cookies</span><br><span class="line">headers&#x3D;  	设置请求头,包括cookies</span><br><span class="line">files&#x3D;		设置上传文件</span><br><span class="line">allow_redirects&#x3D;False 拒绝重定向,默认为True</span><br><span class="line">timeout&#x3D;	设置超时时间</span><br></pre></td></tr></table></figure>
+<p>总得来说,requests能满足大多数情况下的基本需求,但是性能需要开发者去折腾.</p>
+<p>因此,如果是写扫描器或爬虫之类的工具,requests并不是很好的选择.</p>
+<h2 id="scrapy"><a href="#scrapy" class="headerlink" title="scrapy"></a>scrapy</h2><p>如果是开发扫描器或者爬虫,推荐使用python的scrapy.</p>
+<p>scrapy最初设计是爬虫开发框架,但扫描器和爬虫原理其实一模一样,开发扫描器也未尝不可.</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>我使用的是anaconda来管理python.</p>
+<p><code>conda install scrapy</code></p>
+<p>就完事了,如果是python官方则需要安装win32api之类的库,所以推荐使用anaconda.</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>安装完了运行<code>scrapy bench</code>验证是否安装成功,顺便测试下速度.</p>
+<p><img src="image-20200222145343574.png" alt="image-20200222145343574"></p>
+<p>我这台电脑与网络环境最快可以达到3360个页面每分钟,当然还取决于页面返回内容的大小.这比自己搞高并发简单多了.</p>
+<p>各种详细参数与使用还请看<a target="_blank" rel="noopener" href="https://docs.scrapy.org/en/latest/">官方文档</a>,这里只简述最基本的概念.</p>
+<p>以爬取英雄联盟的对战数据为例,这并不是个很好的例子,因为lol的数据是通过api返回的json数据,而不是标准的html,这里是为了和后面的数据分析统一.</p>
+<p>如果要从html中筛选数据,可以看看官方教程.我个人认为xpath的方式比beautifulsoup之类的方式方便很多.chrome浏览器上有个xpath helper插件,可以帮你快速测试xpath是否正确.</p>
+<p>运行<code>scrapy startproject loldata</code>新建项目,会生成以下文件</p>
+<ul>
+<li><p><code>scrapy.cfg</code>: 项目的配置文件</p>
+</li>
+<li><p><code>loldata/items.py</code>: 项目中的item文件,定义需要爬取的内容.</p>
+</li>
+<li><p><code>loldata/spiders/</code>: 放置spider代码的目录.</p>
+</li>
+<li><p><code>loldata/settings.py</code>: scrapy的设置文件.</p>
+</li>
+<li><p><code>loldata/middlewares.py</code>:spider的下载中间件,用来处理爬虫的请求和响应,假如需要定制代理池,随机UA头,cookies池,验证码处理之类的功能,可以在这里添加.</p>
+</li>
+<li><p><code>loldata/pipelines.py</code>: spider获取的指定数据在返回时,会先经过pipelines,如果有入库之类的操作,可以在这里进行.</p>
+</li>
+</ul>
+<p>接下来创建一个spider,运行<code>scrapy genspider spidername &quot;https://lol.qq.com/&quot;</code></p>
+<p>(这个url可以随便填,用来防止爬虫爬到其他网站的,可以在代码中修改或删除.)</p>
+<p>会创建一个spider文件,内容如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import scrapy</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class GamejsonspiderSpider(scrapy.Spider):</span><br><span class="line">    name &#x3D; &#39;gamejsonspider&#39;</span><br><span class="line">    allowed_domains &#x3D; [&#39;https:&#x2F;&#x2F;lol.qq.com&#x2F;&#39;]</span><br><span class="line">    start_urls &#x3D; [&#39;http:&#x2F;&#x2F;https:&#x2F;&#x2F;lol.qq.com&#x2F;&#x2F;&#39;]</span><br><span class="line"></span><br><span class="line">    def parse(self, response):</span><br><span class="line">        pass</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在这里,可以定制一个spider去实现爬虫或扫描器的功能.以lol对战数据为例.</p>
+<p>lol的对战数据需要登录后才能访问,也就是需要设置Cookies.</p>
+<p>而且该数据是以api的形式获取的json数据,就用不到scrapy自带的强大的xpath解析html的功能了,只需要把json数据全部拿到然后入库保存即可.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> scrapy</span><br><span class="line"><span class="keyword">from</span> scrapy <span class="keyword">import</span> Request</span><br><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> reduce</span><br><span class="line"><span class="keyword">from</span> operator <span class="keyword">import</span> add</span><br><span class="line"><span class="keyword">import</span> json,os</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">transform</span>(<span class="params">cookies</span>):</span></span><br><span class="line">    cookie_dict = &#123;&#125;</span><br><span class="line">    cookies = cookies.replace(<span class="string">&#x27; &#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    <span class="built_in">list</span> = cookies.split(<span class="string">&#x27;;&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">list</span>:</span><br><span class="line">        keys = i.split(<span class="string">&#x27;=&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">        values = i.split(<span class="string">&#x27;=&#x27;</span>)[<span class="number">1</span>]</span><br><span class="line">        cookie_dict[keys] = values</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> cookie_dict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GamejsonspiderSpider</span>(<span class="params">scrapy.Spider</span>):</span></span><br><span class="line">    name = <span class="string">&#x27;gamejsonspider&#x27;</span></span><br><span class="line">    start_urls = <span class="string">&#x27;http://lol.sw.game.qq.com/lol/api/?c=Battle&amp;a=matchList&amp;areaId=1&amp;accountId=2944742458&amp;queueId=70,72,73,75,76,78,96,98,100,300,310,313,317,318,325,400,420,430,450,460,600,610,940,950,960,980,990,420,440,470,83,800,810,820,830,840,850&amp;r1=matchList&#x27;</span></span><br><span class="line">    Cookie = <span class="string">&quot;从浏览器直接复制的Cookie&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">start_requests</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">yield</span> Request(url=self.start_urls,cookies=transform(self.Cookie),callback=self.parse)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parse</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        data = <span class="built_in">str</span>(response.body,encoding=<span class="string">&#x27;utf-8&#x27;</span>).strip(<span class="string">&quot;var matchList =&quot;</span>)</span><br><span class="line">        jsondata = json.loads(data)</span><br><span class="line">        gameids = jsondata[<span class="string">&quot;msg&quot;</span>][<span class="string">&quot;games&quot;</span>]</span><br><span class="line">        gameids = reduce(add,<span class="built_in">map</span>(<span class="keyword">lambda</span> x: [x[<span class="string">&quot;gameId&quot;</span>]],gameids))</span><br><span class="line">        <span class="keyword">for</span> gameid <span class="keyword">in</span> gameids:</span><br><span class="line">            url = <span class="string">&quot;https://lol.sw.game.qq.com/lol/api/?c=Battle&amp;a=combatGains&amp;areaId=1&amp;gameId=%s&amp;r1=combatGains&quot;</span>%gameid</span><br><span class="line">            <span class="keyword">yield</span> Request(url=url,cookies=transform(self.Cookie),callback=self.parsedetail,meta=&#123;<span class="string">&#x27;gameid&#x27;</span>:gameid&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">parsedetail</span>(<span class="params">self,response</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(<span class="string">&quot;./battledetaildata&quot;</span>):</span><br><span class="line">            os.mkdir(<span class="string">&quot;./battledetaildata&quot;</span>)</span><br><span class="line">        data = <span class="built_in">str</span>(response.body).strip(<span class="string">&quot;var combatGains = &quot;</span>)</span><br><span class="line">        datafile = <span class="built_in">open</span>(<span class="string">&quot;./battledetaildata/%s.json&quot;</span> % response.meta[<span class="string">&#x27;gameid&#x27;</span>], <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">        print( response.meta[<span class="string">&#x27;gameid&#x27;</span>])</span><br><span class="line">        datafile.write(data)</span><br><span class="line">        datafile.close()</span><br></pre></td></tr></table></figure>
+
+
+<p>scrapy引擎会先从<code>start_urls</code>开始,如果<code>start_urls</code>是一个list,那么会一个一个爬.</p>
+<p>如果重写<code>start_requests</code>方法,那么所有<code>start_urls</code>会先经过<code>start_requests</code>处理.为的就是带上cookie请求.当然,如果在setting.py中设置cookie,就不需要在每个Request设置了.Request中的callback参数会把response送入响应的方法中进一步处理.一直到拿到你需要的数据为止.</p>
+<p>稍微一提,如果需要在Request中传递参数,可以添加meta参数.</p>
+<p>写好代码后,在命令行运行<code>scrapy crawl gamejsonspider</code>,爬虫就开始了,完全不需要我们去考虑高并发是如何实现的,速度比纯requests库快了不知道多少倍.</p>
+<p><img src="image-20200222172705937.png" alt="image-20200222172705937"></p>
+<p>本文提到的scrapy只是抛砖引玉,更多详细用法可以去搜索引擎找找.</p>
+<h1 id="数据分析"><a href="#数据分析" class="headerlink" title="数据分析"></a>数据分析</h1><p>将数据保存到sqlite数据库后,就可以使用分析了.</p>
+<p>数据分析主要使用以下三个库.</p>
+<ul>
+<li>numpy : 负责数据处理</li>
+<li>pandas : 负责数据分析</li>
+<li>matplotlib 生成图表</li>
+</ul>
+<h3 id="numpy"><a href="#numpy" class="headerlink" title="numpy"></a>numpy</h3><p>从数据库中取出的数据是一个大的list,这个list的每个元素就是数据库查询结果的一行,而元素则是tuple,由每个字段的值构成.</p>
+<p>就像这样:<code>[(&#39;召唤师1&#39;,&#39;12345&#39;),(&#39;召唤师2&#39;,&#39;32412&#39;)]</code></p>
+<p>这样的数据并不方便处理,只能通过层层循环嵌套去判断,代码写起来可读性差,也很容易把自己绕晕.</p>
+<p>可以把从数据库中取出的数据转化成numpy中带的数据结构array(矩阵),再使用numpy中的函数处理,代码可读性会高很多,逻辑也清晰明了.</p>
+<p>numpy的具体使用网上一搜文章一堆.多找几篇参考对比下尝试一下,很快就能学会基本的用法.</p>
+<h3 id="pandas"><a href="#pandas" class="headerlink" title="pandas"></a>pandas</h3><p>使用numpy处理完的数据,再使用pandas生成数据表.就像这样:</p>
+<p><img src="image-20200222175341940.png" alt="image-20200222175341940"></p>
+<p>pandas有两个基本对象,Series和DataFrame,上面的图就是DataFrame,而Series类似带索引的list.</p>
+<p>pandas的画图功能是基于matplotlib,只是pycharm只支持matplotlib的预览.</p>
+<p>pandas支持柱状图,散点图,直方图等等等等,稍微浏览下官方文档,很容易上手.</p>
+<p>推荐阅读<a target="_blank" rel="noopener" href="https://www.pypandas.cn/docs/getting_started/10min.html">十分钟上手pandas</a></p>
+<p><img src="image-20200222182907310.png" alt="image-20200222182907310"></p>
+<h3 id="pandas爬虫"><a href="#pandas爬虫" class="headerlink" title="pandas爬虫"></a>pandas爬虫</h3><p>(补充)</p>
+<p>我原本以为pandas是数据分析的工具,突然发现pandas也可以用来写爬虫,在特定用途是,甚至用的比scrapy更加舒服.</p>
+<p>pandas中有从各种数据源取数据的函数.例如<code>read_excel()</code>,<code>read_csv()</code>,<code>read_html()</code>等等.</p>
+<p>这个<code>read_html()</code>非常神奇,把我惊到了.</p>
+<p><code>read_html()</code>会将html页面中table标签中的数据转化为DataFrame类型</p>
+<p>用法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line">pd.read_html(url)</span><br></pre></td></tr></table></figure>
+<p>就这么简单,数据就拿到了.所以当在爬一些数据在table中的网页时,简直是神器.远比任何其他爬虫都方便百倍.</p>
+<h1 id="python黑魔法"><a href="#python黑魔法" class="headerlink" title="python黑魔法"></a>python黑魔法</h1><p>当开始尝试使用python进行数据分析,发现有些需求如果使用分支循环语句会导致三四层甚至更多层的嵌套.虽然嵌套可以封装成函数,但是这样调用链又会变得复杂,牵一发而动全身.</p>
+<p>这时候,想起来之前学过的一些python的高级特性.使用这些高级特性可以让代码变得简洁易读.</p>
+<p>建议阅读<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017269809315232">python 高级特性 —- 廖雪峰</a>,下面我只做简单介绍.</p>
+<p>熟练的使用这些特性可以帮助你写出更加pythonic的代码(虽然我自己写的代码也丑).</p>
+<h3 id="迭代器与生成器"><a href="#迭代器与生成器" class="headerlink" title="迭代器与生成器"></a>迭代器与生成器</h3><p>可用for循环的对象都是可迭代对象,但是需要注意<strong>可迭代对象不一定是迭代器</strong>.</p>
+<p>list,string,dict之类的都是可迭代对象,但不是迭代器.</p>
+<p>因为迭代器设计之初是用来<strong>惰性</strong>保存可迭代对象的,比如全体自然数.任何计算机都不可能保存下全体自然数,而迭代器就是一个不断生成下一个自然数的工具.因此list这种直接将值保存在内存中的对象不是迭代器.</p>
+<p>迭代器本质上是一个数据流,可以不断调用<code>next()</code>函数返回下一个值.</p>
+<p>生成器本质是用来返回迭代器的函数.</p>
+<p>看一个生成器的例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">def gen(n):</span><br><span class="line">    while n&gt;0:</span><br><span class="line">        n -&#x3D; 1</span><br><span class="line">        yield n</span><br><span class="line">    return 0</span><br><span class="line"></span><br><span class="line">print(gen)</span><br><span class="line">g &#x3D; gen(5)</span><br><span class="line">print(gen(5))</span><br><span class="line">for i in gen(5):</span><br><span class="line">    print(i)</span><br><span class="line">#等价于</span><br><span class="line">for i in range(5):</span><br><span class="line">    print(next(g))</span><br><span class="line">#&lt;function gen at 0x000002627D18E708&gt;</span><br><span class="line">#&lt;generator object gen at 0x000002627E274EC8&gt;</span><br><span class="line">#4</span><br><span class="line">#3</span><br><span class="line">#2</span><br><span class="line">#1</span><br><span class="line">#0</span><br></pre></td></tr></table></figure>
+<h3 id="map-和reduce"><a href="#map-和reduce" class="headerlink" title="map 和reduce"></a>map 和reduce</h3><p>google的一位大佬是map和reduce的传教士,使用者两个特性确实可以写出更简洁的代码.论文:<a target="_blank" rel="noopener" href="http://research.google.com/archive/mapreduce.html">MapReduce: Simplified Data Processing on Large Clusters</a></p>
+<p>引用廖雪峰对map的描述:</p>
+<blockquote>
+<p> <code>map()</code>函数接收两个参数，一个是函数，一个是<code>Iterable</code>，<code>map</code>将传入的函数依次作用到序列的每个元素，并把结果作为新的<code>Iterator</code>返回</p>
+</blockquote>
+<p>直接看例子:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def add1(x):</span><br><span class="line">    return x+1</span><br><span class="line"></span><br><span class="line">l &#x3D; [1,2,3,4,5]</span><br><span class="line">print(list(map(add1,l)))</span><br><span class="line"></span><br><span class="line">#[2, 3, 4, 5, 6]</span><br></pre></td></tr></table></figure>
+<p>list里的每个元素都加了1,这就免去了写一个for循环.</p>
+<p>reduce也差不多,但是它会将第一次的返回值传入到下一次函数的输入中,类似:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reduce(f, [x1, x2, x3, x4]) &#x3D; f(f(f(x1, x2), x3), x4)</span><br></pre></td></tr></table></figure>
+<p>类似的高阶函数还有<code>filter</code>和<code>sorted</code>分别用来生成过滤与排序的函数.用法也类似,详情可看官方文档.</p>
+<h3 id="lambda-匿名函数"><a href="#lambda-匿名函数" class="headerlink" title="lambda(匿名函数)"></a>lambda(匿名函数)</h3><p>假如我需要使用刚才的给数组中所有元素加一,这样需要重新定义一个函数,但是为了这么简单的功能重新定义函数牺牲了代码的简洁.</p>
+<p>onelinerpython.</p>
+<p>所以这时候就需要用到了lambda.</p>
+<p>把刚才的那个功能改写成lambda形式的:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">l &#x3D; [1,2,3,4,5]</span><br><span class="line">print(list(map(lambda x,y:x+1,l)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#[2, 3, 4, 5, 6]</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="工厂函数"><a href="#工厂函数" class="headerlink" title="工厂函数"></a>工厂函数</h3><p>python支持在函数中定义函数.</p>
+<p>比如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">def addx(x):</span><br><span class="line">    def ax(n):</span><br><span class="line">        n +&#x3D; x</span><br><span class="line">        return n</span><br><span class="line">    return ax</span><br><span class="line"></span><br><span class="line">add2 &#x3D; addx(2)</span><br><span class="line">print(add2)</span><br><span class="line">print(add2(1))</span><br><span class="line"></span><br><span class="line">#&lt;function addx.&lt;locals&gt;.ax at 0x0000023D5D76CEE8&gt;</span><br><span class="line">#3</span><br></pre></td></tr></table></figure>
+<p>我在这之前特意不提”闭包”二字,是不希望让这两个没有明确中文语义的混淆了概念.实际上,工厂函数返回的时候还会将上层函数中的变量一同返回.</p>
+<p>例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def addx(x):</span><br><span class="line">	example &#x3D; &quot;闭包&quot;</span><br><span class="line">    def ax(n):</span><br><span class="line">        n +&#x3D; x</span><br><span class="line">        print(example)</span><br><span class="line">        return n</span><br><span class="line">    return ax</span><br><span class="line"></span><br><span class="line">add2 &#x3D; addx(2)</span><br><span class="line">print(add2)</span><br><span class="line">print(add2(1))</span><br><span class="line"></span><br><span class="line">#&lt;function addx.&lt;locals&gt;.ax at 0x0000023D5D76CEE8&gt;</span><br><span class="line">#闭包</span><br><span class="line">#3</span><br></pre></td></tr></table></figure>
+<p>当工厂函数生成了一个函数对象,这个函数对象中依旧能访问有上层函数中的变量.这个特性就叫做闭包.<br>例子中的变量是<code>example</code>.</p>
+<h3 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h3><p>当一个工厂函数传入值是函数,返回值也是函数时,那么这个工厂函数就可以叫做装饰器.</p>
+<p>而python的开发者将这种用法包装成了语法糖,让代码更加优雅与易读.</p>
+<p>python用了<code>@</code>来表示装饰器语法,用廖雪峰老师的例子.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def log(func):</span><br><span class="line">    def wrapper(*args, **kw):</span><br><span class="line">        print(&#39;call %s():&#39; % func.__name__)</span><br><span class="line">        return func(*args, **kw)</span><br><span class="line">    return wrapper</span><br><span class="line">   </span><br><span class="line">@log</span><br><span class="line">def test():</span><br><span class="line">	print(&quot;test&quot;)</span><br><span class="line">	</span><br><span class="line">test()</span><br><span class="line">#call test():</span><br><span class="line">#test</span><br><span class="line">#等于不加@标记的log(test)()</span><br><span class="line">#甚至觉得有点php內味了</span><br></pre></td></tr></table></figure>
+<p>可以看到,<code>@</code>语法只是将工厂函数简写了而已,这种简化我们将其叫做”装饰器”.</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>python的这些黑魔法并不是python独有的,这些概念大多属于函数式编程,在php,java这些现代的语言中,同样可以找到类似的语法.</p>
+<p>我一圈用下来,认为python是最舒服的.在python中掌握了这些概念,换一种语言也就是熟悉下语法的事情.</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/7923/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/7923/" class="post-title-link" itemprop="url">AWD MyCheatSheet</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-23 19:00:05" itemprop="dateCreated datePublished" datetime="2020-01-23T19:00:05+08:00">2020-01-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:57" itemprop="dateModified" datetime="2021-01-04T22:51:57+08:00">2021-01-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/7923/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/7923/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前一次比赛中临时整理的,写给自己看.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/7923/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/10013/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/10013/" class="post-title-link" itemprop="url">D3CTF FINAL Writeup(WEB)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-23 18:43:25" itemprop="dateCreated datePublished" datetime="2020-01-23T18:43:25+08:00">2020-01-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:14" itemprop="dateModified" datetime="2021-01-04T22:52:14+08:00">2021-01-04</time>
+              </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/10013/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/10013/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>抱歉来晚了,赛后写完就丢在草稿箱里忘了发.</p>
+<p>技术部分实际上比较常见,稍微写下水篇博客.</p>
+<p>源码链接:可能有部分代码已被修改,可以参考文章看原本的漏洞位置.</p>
+<p><a target="_blank" rel="noopener" href="https://share.weiyun.com/57BvkJk">https://share.weiyun.com/57BvkJk</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/10013/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/5871/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/5871/" class="post-title-link" itemprop="url">从一个代码审计例子看ssrf的防护与绕过</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-17 13:09:47" itemprop="dateCreated datePublished" datetime="2019-12-17T13:09:47+08:00">2019-12-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:03" itemprop="dateModified" datetime="2021-01-04T22:51:03+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/5871/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/5871/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>(本文首发于先知社区,链接:<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7256">https://xz.aliyun.com/t/7256</a>)</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近开始实战代码审计,去github上找了几个100+ stars 的项目练手.</p>
+<p>看到有个cms中有个SSRF漏洞点多次被绕过,修复再被绕过.打开commit记录浏览,测试了一番,发现还能再次绕过.</p>
+<p>绕过技巧并不新颖,2017年blackhat上orange师傅演讲的:<a target="_blank" rel="noopener" href="https://www.blackhat.com/docs/us-17/thursday/us-17-Tsai-A-New-Era-Of-SSRF-Exploiting-URL-Parser-In-Trending-Programming-Languages.pdf"> A New Era of SSRF </a>中提出的.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/5871/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/56679/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/56679/" class="post-title-link" itemprop="url">Ogeek Final Writeup</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-24 13:59:41" itemprop="dateCreated datePublished" datetime="2019-10-24T13:59:41+08:00">2019-10-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:36" itemprop="dateModified" datetime="2021-01-04T22:52:36+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-AWD/" itemprop="url" rel="index"><span itemprop="name">CTF&AWD</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/56679/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/56679/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>(本文首发于先知社区,链接:<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6530">https://xz.aliyun.com/t/6530</a>)</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>靠着大腿混进决赛.膜ex师傅,膜impakho师傅.</p>
+<p>主办方的权限控制,题目难度之类的都做得非常好.只可惜我太菜了,根本找不到洞,只会划水摸鱼.</p>
+<p>赛制也对我这样的菜鸡非常友好.攻击和防守都可以得分,按结果来看,防守也是大多数队伍的主要得分方式.</p>
+<p>也就是说,只要写一个可以过check的通防waf,就可以拿分.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/56679/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

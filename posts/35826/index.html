@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="0x00 前言一个小伙伴的朋友说自己家里的windows server 2008 R2 服务中了挖矿木马让我看看.我也是第一次接触这东西,也就边学边弄了. 服务上只装了个mssql 2008 和 管家婆ERP3 ,通过花生壳88端口映射到公网. 服务器刚装好,只在公网开了三天,5月8日发现mssql 2008 上不去了,才发现中了挖矿木马,我去处理的时候已经是5月11日. 总共花了五六个小时,只能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次失败的挖矿病毒应急响应">
+<meta property="og:url" content="https://m09ic.top/posts/35826/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="0x00 前言一个小伙伴的朋友说自己家里的windows server 2008 R2 服务中了挖矿木马让我看看.我也是第一次接触这东西,也就边学边弄了. 服务上只装了个mssql 2008 和 管家婆ERP3 ,通过花生壳88端口映射到公网. 服务器刚装好,只在公网开了三天,5月8日发现mssql 2008 上不去了,才发现中了挖矿木马,我去处理的时候已经是5月11日. 总共花了五六个小时,只能">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m09ic.top/posts/35826/1.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/2.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/3.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/4.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/5.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/6.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/7.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/8.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/9.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/10.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/11.jpg">
+<meta property="og:image" content="https://m09ic.top/posts/35826/12.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/13.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/16.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/14.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/15.png">
+<meta property="og:image" content="https://m09ic.top/posts/35826/17.png">
+<meta property="article:published_time" content="2019-05-12T11:15:10.000Z">
+<meta property="article:modified_time" content="2021-01-04T14:51:12.873Z">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="应急响应">
+<meta property="article:tag" content="windows">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m09ic.top/posts/35826/1.png">
+
+<link rel="canonical" href="https://m09ic.top/posts/35826/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>记一次失败的挖矿病毒应急响应 | M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/35826/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          记一次失败的挖矿病毒应急响应
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-12 19:15:10" itemprop="dateCreated datePublished" datetime="2019-05-12T19:15:10+08:00">2019-05-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:12" itemprop="dateModified" datetime="2021-01-04T22:51:12+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/35826/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/35826/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>一个小伙伴的朋友说自己家里的windows server 2008 R2 服务中了挖矿木马让我看看.我也是第一次接触这东西,也就边学边弄了.</p>
+<p>服务上只装了个mssql 2008 和 管家婆ERP3 ,通过花生壳88端口映射到公网.</p>
+<p>服务器刚装好,只在公网开了三天,5月8日发现mssql 2008 上不去了,才发现中了挖矿木马,我去处理的时候已经是5月11日.</p>
+<p>总共花了五六个小时,只能勉强分析出攻击情况,无法彻底清理干净.但是挺好玩的,大概是在两个甚至更多木马在掐架.</p>
+<a id="more"></a>
+
+<h2 id="0x01-粗略分析"><a href="#0x01-粗略分析" class="headerlink" title="0x01 粗略分析"></a>0x01 粗略分析</h2><p>我接手的时候,他说已经删了两个木马文件.但是重启后这两个木马文件没再次生成,服务还是有一个高cpu占用的进程<code>lsmm.exe</code>.</p>
+<p>他还说装过360,但是启动不起来,只有个断网急救箱可以用,扫到两个木马,就是他之前删掉的.</p>
+<p><img src="1.png" alt="1"></p>
+<p>所以没截图,这图是在下面链接里的文章偷的,只能文字描述一下两个木马创建时间是在5月5日12点左右,也是在这个文件夹下面.</p>
+<p>lacas.exe是矿机,lsass.exe是矿机的释放程序,也是本地安全认证子系统服务（Local Security Authority Subsystem Servic),和系统重要进程同名混淆一下,但是cpu占用高,一眼就能看穿了.</p>
+<p>通过lacas.exe这个文件名在网上搜索到了腾讯安全的这篇文章:</p>
+<p><a target="_blank" rel="noopener" href="https://s.tencent.com/research/report/684.html">挖矿木马针对SQL服务器爆破攻击 中招可致服务器被远程控制</a></p>
+<p>浏览了下文章,大致知道是mssql弱密码爆破进来的.</p>
+<p>那就先看一下安全日志.</p>
+<p><img src="2.png" alt="2"></p>
+<p>确实找到了很多爆破记录,这里说一下mssql登录失败的事件id是<code>18456</code>[^1].</p>
+<p>这样基本可以确定挖矿木马就是这样了,腾讯的文章分析很全面,照着步骤一步一步删除服务,启动项,计划任务,文件之类的就好了.</p>
+<p><strong>等等!没这么快.</strong></p>
+<p>矿机肯定注册的服务,那就在日志里筛选事件id为<code>7045</code>(创建服务)的日志,果然发现了一条.</p>
+<p><img src="3.png" alt="3"></p>
+<p>嗯,很简单,打开<code>services.msc,</code>找到<code>DiagHnostion Windows Host</code>删除即可.</p>
+<p>用<code>SysinternalsSuite</code>工具包中的<code>Autoruns.exe</code>搜索一下</p>
+<p><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite">SysinternalsSuite下载</a></p>
+<p><img src="4.png" alt="4"></p>
+<p>空的,没有这个服务.</p>
+<p>网上没找到删除服务的事件id.自己测试了下删除启动项和服务也没有日志记录,如果有求告知.</p>
+<p>但是挖矿木马确确实实还是存在的,只是换了个名字.</p>
+<p><img src="5.png" alt="5"></p>
+<p>开始意识到,这可能不是同一个木马.</p>
+<h2 id="0x02-相爱相杀"><a href="#0x02-相爱相杀" class="headerlink" title="0x02 相爱相杀"></a>0x02 相爱相杀</h2><p>突然没有了头绪.只能继续审计日志.</p>
+<p>找到了一些比较奇怪的操作记录,没有一一截图.</p>
+<p><img src="6.png" alt="6"></p>
+<p><img src="7.png" alt="7"></p>
+<p>创建了一个隐藏账号,很快又删除了.还有一些服务创建失败的记录(事件id:7030),创建的服务名也是<code>DiagHnostion Windows Host</code></p>
+<p>又继续看了一下进程.</p>
+<p>直接通过进程反查到文件<code>lsmm.exe</code></p>
+<p>再通过文件搜索服务,搜到了一个服务(又忘了截图).把文件和服务删掉.</p>
+<p>重启,矿机还在,问题没解决.</p>
+<p>又继续找到了几个可疑的服务和启动项.</p>
+<p><img src="8.png" alt="8"></p>
+<p><img src="9.png" alt="9"></p>
+<p><img src="10.png" alt="10"></p>
+<p>还有两个个文件<code>C:/windows/system/inf/</code>目录下<code>msinfo.exe</code>和<code>down.exe</code></p>
+<p>创建日期在5月8日,大概这是第二个挖矿木马了,进来的时候把前一个木马杀了,还把mssql服务器给关了,这才发现中了木马.</p>
+<h2 id="0x03-尝试清理"><a href="#0x03-尝试清理" class="headerlink" title="0x03 尝试清理"></a>0x03 尝试清理</h2><p>暂时没办法了,干脆装个火绒,火绒里面有几个小工具挺好用的,用<code>Autoruns.exe</code>看的眼花.</p>
+<p>然后火绒起来的一瞬间,主进程就被关掉了.之前那文章里说过有监控安全软件.</p>
+<p>那就关机重启F8进安全模式打开火绒,火绒的几个工具都没扫出问题来,还是只能肉眼分析.</p>
+<p>火绒剑的UI比<code>autoruns.exe</code>舒服了,790个启动项+200多个服务看得还是晕.</p>
+<p>那就一个一个尝试,将之前那些可疑的服务,文件删掉,期间好几次删错系统进程电脑重启,也可能误杀了不少正常服务.</p>
+<p>不进安全模式正常启动,火绒闪了一下又被关了,但是火绒的安全日志功能还活着.之前删掉的几个服务又出来了.</p>
+<p><img src="11.jpg" alt="11"></p>
+<p><img src="12.png" alt="12"></p>
+<p>看一眼服务,果然又活了,但是也有了新收获,有计划任务到远程ftp服务器上下载东西了.</p>
+<p><img src="13.png" alt="13"></p>
+<p>顺便搜索了一下<code>msinfo.exe</code>,果然搜到几篇文章.</p>
+<p><a target="_blank" rel="noopener" href="http://ronpa.top/2019/02/25/%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90-msinfo-exe/">msinfo.exe木马分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/network/189501.html">KoiMiner挖矿木马分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sangfor.com/source/blog-network-security/1101.html">MiraiXMiner物联网僵尸网络</a></p>
+<p>这东西好像在IoT僵尸网络里面比较常见,现在改到挖矿木马.算是</p>
+<p>但是都没有讲具体创建了哪些服务,启动项.还是只能自己手动分析.</p>
+<p>文件倒是找到了几个.</p>
+<p><img src="16.png" alt="16"></p>
+<p>顺便看了下矿机指向的ip.</p>
+<p><img src="14.png" alt="14"></p>
+<p>搜索一下相关信息,是个门罗币的矿池,没什么重要信息.</p>
+<p><a target="_blank" rel="noopener" href="https://x.threatbook.cn/nodev4/ip/78.46.91.134">微步威胁情报</a></p>
+<p>又翻了下管家婆ERP3的配置文件.</p>
+<p><img src="15.png" alt="15"></p>
+<p><code>sa:5201314</code></p>
+<p>这密码难怪一天就被日穿了.</p>
+<p>顺便分享个这个挖矿木马的字典,在搜索相关情报的时候搜到的.</p>
+<p><a target="_blank" rel="noopener" href="http://211.112.25.235/ezon/sw/SWFT/Image/user/web/password.txt">弱密码字典</a></p>
+<p><img src="17.png" alt="17"></p>
+<p>这密码不出意外就在里面.</p>
+<p>还找到了一些内网爆破windows账号;创建<code>admin&amp;</code>用户,但是随后又删除…还有一些其他线索,但对解决问题并没有帮助.</p>
+<p>基本上把我能找的找了一遍,把刚才提到的文件,启动项,计划任务,服务都删除.重启.</p>
+<p>矿机没有运行,服务也没有再次出现,但是火绒还是打不开.有点烦躁一直点火绒的图标,然后就蓝屏了.</p>
+<p>应该是注入或者替换了某些系统进程,可以的启动项和服务我都一个一个看过去了.,</p>
+<p>再次重启,这下好了,矿机又运行了,服务,启动项,计划任务,文件也都回来了.</p>
+<p>晕了!</p>
+<p>实在没招了,干脆重装系统.</p>
+<h2 id="0x04-后记"><a href="#0x04-后记" class="headerlink" title="0x04 后记"></a>0x04 后记</h2><p>第一次做挖矿木马处理比较乱,一开始不知道从哪里上手.现在总结一下.</p>
+<ol>
+<li><code>详细询问攻击情况,特别是时间</code></li>
+<li><code>根据时间翻看相关系统日志</code></li>
+<li><code>检查进程,反查网络连接,文件,服务</code></li>
+<li><code>根据以上信息查找服务,启动项,计划任务</code></li>
+<li><code>清理文件,服务,启动项,计划任务</code></li>
+</ol>
+<p>这次入侵的时间线应该是.</p>
+<ol>
+<li><code>5月4日搭建好服务开到公网</code></li>
+<li><code>5月5日上午mssql弱密码爆破黑入</code></li>
+<li><code>5月8日第二个挖矿木马入场,清理掉第一个木马的服务以及破坏mssql服务</code></li>
+</ol>
+<p>猜测是替换了系统文件,但是火绒和360又没扫出来,自己也没办法一个一个检查;也有可能是还有服务没有删除,因为杀毒软件一直起不来说明木马进程还在.只好作罢.</p>
+<p>确实没能清理干净,和木马玩捉迷藏还是有点恶心的.</p>
+<p>后续就是重装电脑,然后只放在内外,不用花生壳端口映射到公网了.</p>
+<p>[^1]: 本文用到的一些工具和操作均可以在另外一篇文章:<a href="/posts/31524/" title="windows server 应急响应查表">windows server 应急响应查表</a>中找到.</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>M09ic
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://m09ic.top/posts/35826/" title="记一次失败的挖矿病毒应急响应">https://m09ic.top/posts/35826/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/" rel="tag"># 应急响应</a>
+              <a href="/tags/windows/" rel="tag"># windows</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/31524/" rel="prev" title="windows server 应急响应查表">
+      <i class="fa fa-chevron-left"></i> windows server 应急响应查表
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/64867/" rel="next" title="hexo博客搭建手记">
+      hexo博客搭建手记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">0x00 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E7%B2%97%E7%95%A5%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">0x01 粗略分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E7%9B%B8%E7%88%B1%E7%9B%B8%E6%9D%80"><span class="nav-number">3.</span> <span class="nav-text">0x02 相爱相杀</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E5%B0%9D%E8%AF%95%E6%B8%85%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">0x03 尝试清理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-%E5%90%8E%E8%AE%B0"><span class="nav-number">5.</span> <span class="nav-text">0x04 后记</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

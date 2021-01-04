@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言从学计算机开始,每天都在和命令行打交道.从一开始啥都不懂,到处复制别人命令,到现在老是喜欢整写花里胡哨的或者提高效率的东西. 加上前两天看到了命令行的艺术这篇文章,正好整理一下这两年折腾过的命令行.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实用的命令行技巧与花里胡哨的命令行界面">
+<meta property="og:url" content="https://m09ic.top/posts/36360/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="前言从学计算机开始,每天都在和命令行打交道.从一开始啥都不懂,到处复制别人命令,到现在老是喜欢整写花里胡哨的或者提高效率的东西. 加上前两天看到了命令行的艺术这篇文章,正好整理一下这两年折腾过的命令行.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m09ic.top/posts/36360/image-20200324020612679.png">
+<meta property="og:image" content="https://m09ic.top/posts/36360/image-20200324032853927.png">
+<meta property="og:image" content="https://m09ic.top/posts/36360/image-20200324033055790.png">
+<meta property="og:image" content="https://m09ic.top/posts/36360/image-20200324032448736.png">
+<meta property="og:image" content="https://m09ic.top/posts/36360/image-20200324032559909.png">
+<meta property="article:published_time" content="2020-03-23T19:53:05.000Z">
+<meta property="article:modified_time" content="2021-01-04T14:51:36.693Z">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="安全,学习笔记,blog,博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m09ic.top/posts/36360/image-20200324020612679.png">
+
+<link rel="canonical" href="https://m09ic.top/posts/36360/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>实用的命令行技巧与花里胡哨的命令行界面 | M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/36360/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          实用的命令行技巧与花里胡哨的命令行界面
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-24 03:53:05" itemprop="dateCreated datePublished" datetime="2020-03-24T03:53:05+08:00">2020-03-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:36" itemprop="dateModified" datetime="2021-01-04T22:51:36+08:00">2021-01-04</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/36360/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/36360/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从学计算机开始,每天都在和命令行打交道.从一开始啥都不懂,到处复制别人命令,到现在老是喜欢整写花里胡哨的或者提高效率的东西.</p>
+<p>加上前两天看到了<a target="_blank" rel="noopener" href="https://github.com/jlevy/the-art-of-command-line/blob/master/README-zh.md">命令行的艺术</a>这篇文章,正好整理一下这两年折腾过的命令行.</p>
+<a id="more"></a>
+
+<h2 id="实用的命令行技巧"><a href="#实用的命令行技巧" class="headerlink" title="实用的命令行技巧"></a>实用的命令行技巧</h2><p>因为我自己实在是没有探索出什么实用的技巧,就总结一下命令行的艺术这篇文章中一些最常用的技巧.</p>
+<ol>
+<li><code>sudo !! </code> # 可以给上条命令加上sudo,!!就是代表上一条命令.</li>
+<li>ctrl + r 可以搜索历史记录,并自动键入.当然使用historty|grep something 然后!1150,这样也是同样的效果,不然显然前者更好用.在zsh中更更好用的插件zsh-autosuggestions.</li>
+<li>为了便于编辑长命令，在设置你的默认编辑器后（例如 <code>export EDITOR=vim</code>），<strong>ctrl-x</strong> <strong>ctrl-e</strong> 会打开一个编辑器来编辑当前输入的命令。</li>
+<li>回到前一个工作路径：<code>cd -</code>,在zsh中,cd -然后按tab还可以选择历史工作路径.</li>
+<li>使用 <code>netstat -lntp</code> 或 <code>ss -plat</code> 检查哪些进程在监听端口.</li>
+<li><code>lsof</code> 来查看开启的套接字和文件</li>
+<li>使用tmux来分屏以及挂起.</li>
+<li>用好awd,sed,grep可以免去你写python脚本的时间.</li>
+<li>用好vim,可以免去你从服务器中复制来复制去的时间.</li>
+</ol>
+<p>好了,我在这篇文章中学到的常用的实用技巧就这么些.但是我整花里胡哨的可强了.</p>
+<h2 id="花里胡哨的命令行"><a href="#花里胡哨的命令行" class="headerlink" title="花里胡哨的命令行"></a>花里胡哨的命令行</h2><h3 id="通用配置"><a href="#通用配置" class="headerlink" title="通用配置"></a>通用配置</h3><p>字体: <a target="_blank" rel="noopener" href="https://www.jetbrains.com/lp/mono/">https://www.jetbrains.com/lp/mono/</a></p>
+<p>jetbrains家前段时间出品的字体,看着确实挺舒服的.</p>
+<h3 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h3><p>先放张成品图</p>
+<p><img src="image-20200324020612679.png" alt="image-20200324020612679"></p>
+<p>去年微软更新了他那个年龄比我还大,丑不拉几的终端.开源了一个新的终端工具—-windows terminal.</p>
+<p>可以把CMD,POWERSHELL,WSL等等各种命令行都聚合起来,用一个配置文件把他们都变得花里胡哨的.</p>
+<p>当然,这个工具现在还在早期测试版本,难免有缺陷与bug.</p>
+<p>来讲讲它的优点吧.</p>
+<ol>
+<li>支持毛玻璃特效以及背景图片.</li>
+<li>它将各种命令行聚合起来,快速打开与切换</li>
+<li>完美支持oh-my-posh(一个类似linux下的oh-my-zsh的工具).</li>
+</ol>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>windows terminal 在windows stores下搜索安装即可.当然也可以从github自己编译安装.</p>
+<p>因为它不会把自己添加到右键菜单,而这个功能还是挺常用的,所以手动改下注册表,把它放进去.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir <span class="string">&quot;%USERPROFILE%\AppData\Local\terminal&quot;</span></span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/M09Ic/My_Command_Config/blob/master/wt_32.ico">下载图标</a>,当然可以不要图标,就是丑了点.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[HKEY_CLASSES_ROOT\Directory\Background\shell\wt]</span><br><span class="line">@&#x3D;&quot;Windows terminal here&quot;</span><br><span class="line">&quot;Icon&quot;&#x3D;&quot;%USERPROFILE%\\AppData\\Local\\terminal\\wt_32.ico&quot;</span><br><span class="line"></span><br><span class="line">[HKEY_CLASSES_ROOT\Directory\Background\shell\wt\command]</span><br><span class="line">@&#x3D;&quot;C:\\Users\\[your_user_name]\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe&quot;</span><br></pre></td></tr></table></figure>
+<p>这个方法是在<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/325948326">知乎的老哥</a>那学来的.</p>
+<h4 id="安装oh-my-posh"><a href="#安装oh-my-posh" class="headerlink" title="安装oh-my-posh"></a>安装oh-my-posh</h4><p><code>Install-Module posh-git -Scope CurrentUser</code></p>
+<p>安装oh-my-posh:</p>
+<p><code>Install-Module oh-my-posh -Scope CurrentUser</code></p>
+<p>导入:</p>
+<p><code>Import-Module oh-my-posh</code></p>
+<p>设置主题,我用的是<code>agnoster</code>:</p>
+<p><code>Set-Theme agnoster</code></p>
+<p>为了让powershell每次启动都能自动加载ohmyposh,得写入配置文件.</p>
+<p><code>$profile</code>查看配置文件</p>
+<p>然后在配置文件中添加:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> $profile</span><br><span class="line">C:\Users\M09ic-xin\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1</span><br></pre></td></tr></table></figure>
+<p>上面配置好了,在vscode与pycharm之类的地方同样可以使用.</p>
+<p>这是vscode中的</p>
+<p><img src="image-20200324032853927.png" alt="image-20200324032853927"></p>
+<p>pycharm中的:</p>
+<p><img src="image-20200324033055790.png" alt="image-20200324033055790"></p>
+<p>顺带一提,jetbrains家的ide与vscode都推荐安装<code>Material Theme UI</code>这个主题.</p>
+<p>pycharm下似乎有些bug,不过酷炫就好了,管这么多干什么?</p>
+<h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h3><p>先上效果图.</p>
+<p><img src="image-20200324032448736.png" alt="image-20200324032448736"></p>
+<p><img src="image-20200324032559909.png" alt="image-20200324032559909"></p>
+<p>分别是kali中的与wt下的wsl中的.</p>
+<p>wsl与linux下安装oh-my-zsh大致相同,只是字体需要额外设置,见下文.</p>
+<h4 id="安装zsh"><a href="#安装zsh" class="headerlink" title="安装zsh"></a>安装zsh</h4><p><code>apt-get install zsh</code></p>
+<h4 id="安装oh-my-zsh"><a href="#安装oh-my-zsh" class="headerlink" title="安装oh-my-zsh"></a>安装oh-my-zsh</h4><p>如果没有安装git,需要先安装git.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;ohmyzsh&#x2F;ohmyzsh&#x2F;master&#x2F;tools&#x2F;install.sh)&quot;</span><br></pre></td></tr></table></figure>
+<p>如果有多个用户,建议在<code>/etc/passwd</code>下面把每个用户的shell都改成<code>/usr/bin/zsh</code></p>
+<h4 id="修改主题"><a href="#修改主题" class="headerlink" title="修改主题"></a>修改主题</h4><p>在<code>~/.zshrc</code>中找到<code>ZSH_THEME</code>,引号中的内容改成指定主题.</p>
+<p>推荐使用<code>ys</code>或<code>agnoster</code></p>
+<h4 id="安装字体"><a href="#安装字体" class="headerlink" title="安装字体"></a>安装字体</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;powerline&#x2F;fonts.git</span><br><span class="line">cd fonts</span><br><span class="line">.&#x2F;install.sh</span><br></pre></td></tr></table></figure>
+<p>这样安装字体在wsl不适用,wsl依旧需要在windoes terminal里设置字体.</p>
+<h4 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;zsh-users&#x2F;zsh-syntax-highlighting.git</span><br><span class="line">git clone git:&#x2F;&#x2F;github.com&#x2F;zsh-users&#x2F;zsh-autosuggestions $ZSH_CUSTOM&#x2F;plugins&#x2F;zsh-autosuggestions</span><br></pre></td></tr></table></figure>
+<p>修改<code>~/.zshrc</code>,找到plugins那行，修改成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plugins&#x3D;(git z zsh-autosuggestions zsh-syntax-highlighting)</span><br></pre></td></tr></table></figure>
+<p>配合wt的毛玻璃特效,真的太好看了.当然也可以换换口味,加上壁纸之类的.</p>
+<p>因为配色方案并不是zsh控制,而是由终端控制,因此,在vscode,pycharm,wsl,虚拟机中配色各不相同,而且都很好看,新鲜感十足!!!</p>
+<h3 id="其他终端工具"><a href="#其他终端工具" class="headerlink" title="其他终端工具"></a>其他终端工具</h3><h4 id="xshell"><a href="#xshell" class="headerlink" title="xshell"></a>xshell</h4><p>太丑了,又老是更新,被我淘汰了!</p>
+<h4 id="mobaxterm"><a href="#mobaxterm" class="headerlink" title="mobaxterm"></a>mobaxterm</h4><p>在windows下用这个才是正解.</p>
+<p>初始的效果就比黑乎乎的CMD好一万倍.</p>
+<p>![image-20200324033654460.png)</p>
+<p>而且同样可以折腾各种主题,配色.</p>
+<p>比起Xshell来说,功能也更加强大.</p>
+<h4 id="终端配色"><a href="#终端配色" class="headerlink" title="终端配色"></a>终端配色</h4><p><a target="_blank" rel="noopener" href="https://github.com/mbadolato/iTerm2-Color-Schemes">https://github.com/mbadolato/iTerm2-Color-Schemes</a></p>
+<h3 id="oh-my-vim"><a href="#oh-my-vim" class="headerlink" title="oh-my-vim"></a>oh-my-vim</h3><p>我就提一下,试用过一次,感觉还不错.但是要这么花的vim为什么不去用ide呢?</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>M09ic
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://m09ic.top/posts/36360/" title="实用的命令行技巧与花里胡哨的命令行界面">https://m09ic.top/posts/36360/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/35797/" rel="prev" title="通杀.NET的XSS!(原文翻译以及复现)">
+      <i class="fa fa-chevron-left"></i> 通杀.NET的XSS!(原文翻译以及复现)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/62195/" rel="next" title="有关百度的溯源与反溯源">
+      有关百度的溯源与反溯源 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%8A%80%E5%B7%A7"><span class="nav-number">2.</span> <span class="nav-text">实用的命令行技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8A%B1%E9%87%8C%E8%83%A1%E5%93%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">3.</span> <span class="nav-text">花里胡哨的命令行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">3.1.</span> <span class="nav-text">通用配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windows"><span class="nav-number">3.2.</span> <span class="nav-text">windows</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85oh-my-posh"><span class="nav-number">3.2.2.</span> <span class="nav-text">安装oh-my-posh</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux"><span class="nav-number">3.3.</span> <span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85zsh"><span class="nav-number">3.3.1.</span> <span class="nav-text">安装zsh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85oh-my-zsh"><span class="nav-number">3.3.2.</span> <span class="nav-text">安装oh-my-zsh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A2%98"><span class="nav-number">3.3.3.</span> <span class="nav-text">修改主题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%AD%97%E4%BD%93"><span class="nav-number">3.3.4.</span> <span class="nav-text">安装字体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="nav-number">3.3.5.</span> <span class="nav-text">安装插件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%BB%88%E7%AB%AF%E5%B7%A5%E5%85%B7"><span class="nav-number">3.4.</span> <span class="nav-text">其他终端工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#xshell"><span class="nav-number">3.4.1.</span> <span class="nav-text">xshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mobaxterm"><span class="nav-number">3.4.2.</span> <span class="nav-text">mobaxterm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E9%85%8D%E8%89%B2"><span class="nav-number">3.4.3.</span> <span class="nav-text">终端配色</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#oh-my-vim"><span class="nav-number">3.5.</span> <span class="nav-text">oh-my-vim</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

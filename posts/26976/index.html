@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="0x00 介绍sqlmap源码 整理自多篇文章,参考链接在文章最后.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQLMap Cheatsheet">
+<meta property="og:url" content="https://m09ic.top/posts/26976/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="0x00 介绍sqlmap源码 整理自多篇文章,参考链接在文章最后.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-24T07:30:54.000Z">
+<meta property="article:modified_time" content="2021-01-04T14:53:01.482Z">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="学习笔记">
+<meta property="article:tag" content="速查表">
+<meta property="article:tag" content="工具">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://m09ic.top/posts/26976/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SQLMap Cheatsheet | M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/26976/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SQLMap Cheatsheet
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-24 15:30:54" itemprop="dateCreated datePublished" datetime="2019-05-24T15:30:54+08:00">2019-05-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:53:01" itemprop="dateModified" datetime="2021-01-04T22:53:01+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/26976/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/26976/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="0x00-介绍"><a href="#0x00-介绍" class="headerlink" title="0x00 介绍"></a>0x00 介绍</h2><p><a target="_blank" rel="noopener" href="https://github.com/sqlmapproject/sqlmap">sqlmap源码</a></p>
+<p>整理自多篇文章,参考链接在文章最后.</p>
+<a id="more"></a>
+
+<h2 id="0x01-功能介绍"><a href="#0x01-功能介绍" class="headerlink" title="0x01 功能介绍"></a>0x01 功能介绍</h2><p>基本上支持所有常见的数据,如下:</p>
+<ul>
+<li>MySQL</li>
+<li>Oracle</li>
+<li>PostgreSQL</li>
+<li>Microsoft SQL Server</li>
+<li>Microsoft Access</li>
+<li>IBM DB2</li>
+<li>SQLite, Firebird</li>
+<li>Sybase</li>
+<li>SAP MaxDB</li>
+</ul>
+<p>主要分为5中不同的注入模式:</p>
+<ul>
+<li>基于布尔的盲注(B)，即可以根据返回页面判断条件真假的注入。</li>
+<li>基于时间的盲注(T)，即不能根据页面返回内容判断任何信息，用条件语句查看时间延迟语句是否执行（即页面返回时间是否增加）来判断。</li>
+<li>基于报错注入(E)，即页面会返回错误信息，或者把注入的语句的结果直接返回在页面中。</li>
+<li>联合查询注入(U)，可以使用union的情况下的注入。</li>
+<li>堆查询注入(S)，可以同时执行多条语句的执行时的注入。</li>
+</ul>
+<h2 id="0x02-基本使用"><a href="#0x02-基本使用" class="headerlink" title="0x02 基本使用"></a>0x02 基本使用</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 常用选项</span></span><br><span class="line">-h					# 显示帮助信息</span><br><span class="line"></span><br><span class="line">-hh					# 显示详细帮助信息</span><br><span class="line"></span><br><span class="line">-u [url]			# 指定url</span><br><span class="line"></span><br><span class="line">-l [filename]		# 使用burpsutie log 文件</span><br><span class="line"></span><br><span class="line">-r [filename]		# 从文件中加载HTTP请求</span><br><span class="line"></span><br><span class="line">-m [filename]		# 从文件中批量选取url</span><br><span class="line"></span><br><span class="line">-x	[sitemap url]	# 从目标网址选择sitemap.xml</span><br><span class="line"></span><br><span class="line">-g	[google]		# 使用Google选取目标,国内使用需翻墙</span><br><span class="line"></span><br><span class="line">-v [0-6]			# 输出详细程度</span><br><span class="line"></span><br><span class="line">--wizard			# 向导模式</span><br><span class="line"><span class="meta">#</span><span class="bash"> 0:只显示python错误以及严重的信息。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1:同时显示基本信息和警告信息。（默认）</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2:同时显示debug信息。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3:同时显示注入的payload。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4:同时显示HTTP请求。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 5:同时显示HTTP响应头。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 6:同时显示HTTP响应页面。</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="0x03-高级使用"><a href="#0x03-高级使用" class="headerlink" title="0x03 高级使用"></a>0x03 高级使用</h2><h4 id="基础选项"><a href="#基础选项" class="headerlink" title="基础选项"></a>基础选项</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">-p				# 指定参数</span><br><span class="line"></span><br><span class="line">--skip=			# 跳过指定参数</span><br><span class="line"></span><br><span class="line">--batch			# 不询问用户输入，使用所有默认配置</span><br><span class="line"></span><br><span class="line">--level [1-5]	# 设置探测等级,默认为1,越高检测越详细,耗时也越久</span><br><span class="line"></span><br><span class="line">--risk [1-3]	# 设置风险等级,默认为1,越高越容易对目标造成影响</span><br><span class="line"></span><br><span class="line">-f				# 检测DBMS指纹</span><br><span class="line"></span><br><span class="line">--eta			# 预估完成时间</span><br><span class="line"></span><br><span class="line">--flush-session	# 刷新sqlmap session文件</span><br><span class="line"></span><br><span class="line">--forms			# 自动获取form表单测试</span><br><span class="line"></span><br><span class="line">--dbms=[DBMS]	# 指定数据库类型</span><br><span class="line"></span><br><span class="line">--dbms-cred		# 使用dbms身份验证</span><br><span class="line"></span><br><span class="line">-os=[OS]		# 指定操作系统</span><br><span class="line"></span><br><span class="line">--technique		# 指定SQL注入技术,默认BEUST</span><br><span class="line"></span><br><span class="line">--smart			# 启发式判断注入,目标较多时使用这个参数节省时间</span><br><span class="line"></span><br><span class="line">--proxy=[PROXY]	# 指定代理</span><br><span class="line"></span><br><span class="line">--tor			# 使用tor</span><br><span class="line"></span><br><span class="line">--force-ssl		# 强制使用ssl/https</span><br><span class="line"></span><br><span class="line">-identify-waf	# 检测WAF|IPS|IDS</span><br><span class="line"></span><br><span class="line">--crawl			# 爬行网址url</span><br><span class="line"></span><br><span class="line">--output-dir=	# 指定输出路径,默认在 ~/.sqlmap/output 下</span><br></pre></td></tr></table></figure>
+<h4 id="注入"><a href="#注入" class="headerlink" title="注入"></a>注入</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 数据库信息</span></span><br><span class="line">-a				# 获取所有信息</span><br><span class="line"></span><br><span class="line">-b				# 获取banner信息</span><br><span class="line"></span><br><span class="line">--hostname		# 获取数据库主机名称</span><br><span class="line"></span><br><span class="line">--search [-C|-T|-D name]	# 搜索字段,表,数据库</span><br><span class="line"></span><br><span class="line">--sql-query=[QUERY]	# 执行sql语句</span><br><span class="line"></span><br><span class="line">--sql-file=[FILENAME] # 执行sql文件</span><br><span class="line"></span><br><span class="line">--sql-shell		# 获取交互式的sql-shell</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取数据</span></span><br><span class="line">--current-db	# 获取当前数据库名</span><br><span class="line"></span><br><span class="line">-dbs			# 枚举所有数据库</span><br><span class="line"></span><br><span class="line">-D				# 指定数据库名</span><br><span class="line"></span><br><span class="line">--tables		# 枚举所有表</span><br><span class="line"></span><br><span class="line">-T				# 指定表名</span><br><span class="line"></span><br><span class="line">--columns		# 枚举所有字段</span><br><span class="line"></span><br><span class="line">-C				# 指定字段名</span><br><span class="line"></span><br><span class="line">--schema		# 枚举数据库架构</span><br><span class="line"></span><br><span class="line">--count			# 查看数据条数</span><br><span class="line"></span><br><span class="line">--dump			# dump数据库</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取权限</span></span><br><span class="line">--current-user	# 获取当前数据库账户</span><br><span class="line"></span><br><span class="line">--users			# 枚举数据库账户</span><br><span class="line"></span><br><span class="line">-U				# 指定使用的数据库账户</span><br><span class="line"></span><br><span class="line">--is-dba		# 检查当前账户是否是DBA权限</span><br><span class="line"></span><br><span class="line">--roles			# 枚举数据库角色</span><br><span class="line"></span><br><span class="line">--privileges	# 枚举数据库账户权限</span><br><span class="line"></span><br><span class="line">--passwords		# 枚举数据库账户密码hash</span><br></pre></td></tr></table></figure>
+<h4 id="http包定制"><a href="#http包定制" class="headerlink" title="http包定制"></a>http包定制</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">--user-agent=[data]		# 指定user-agent</span><br><span class="line"></span><br><span class="line">--random-agent			# 随机user-agent</span><br><span class="line"></span><br><span class="line">--data=[postdata] 		# POST提交数据</span><br><span class="line"></span><br><span class="line">--cookie=[cookiedata] 	# 指定cookie</span><br><span class="line"></span><br><span class="line">--host=[hostdata]		# 指定host</span><br><span class="line"></span><br><span class="line">--referer=[refererdata]	# 指定referer</span><br><span class="line"></span><br><span class="line">-H|headers	[HEADER:headerdata]	# 指定额外http头</span><br></pre></td></tr></table></figure>
+<h4 id="getshell"><a href="#getshell" class="headerlink" title="getshell"></a>getshell</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">--os-cmd=[command]		# 指定执行的命令</span><br><span class="line"></span><br><span class="line">--os-shell				# 获取一个交互式的shell</span><br><span class="line"></span><br><span class="line">--os-pwn				# 反弹msf下的shell或者vnc</span><br><span class="line"></span><br><span class="line">--os-smbrelay			#  一键获取一个OOB shell，meterpreter或VNC</span><br><span class="line"></span><br><span class="line">--os-bof 				# 存储过程缓冲区溢出利用</span><br><span class="line"></span><br><span class="line">--priv-esc 				# 数据库进程用户权限提升</span><br><span class="line"></span><br><span class="line">--msf-path=[MSFPATH]  	# MetasploitFramework本地的安装路径</span><br><span class="line"></span><br><span class="line">--tmp-path=[TMPPATH]  	# 远程临时文件目录的绝对路径</span><br><span class="line"></span><br><span class="line">--udf-inject    		# 注入用户自定义函数</span><br><span class="line"></span><br><span class="line">--shared-lib=[SHLIB]   	# 共享库的本地路径</span><br></pre></td></tr></table></figure>
+<h4 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">--file-read=[filename]		# 读文件</span><br><span class="line"></span><br><span class="line">--file-write=[filename]		# 写文件</span><br><span class="line"></span><br><span class="line">--file-dest=[AbsolutePath]	# 绝对路径</span><br></pre></td></tr></table></figure>
+<h4 id="Windows-注册表操作"><a href="#Windows-注册表操作" class="headerlink" title="Windows 注册表操作"></a>Windows 注册表操作</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">--reg-read          	# 读一个Windows注册表项值</span><br><span class="line"></span><br><span class="line">--reg-add           	# 写一个Windows注册表项值数据</span><br><span class="line"></span><br><span class="line">--reg-del				# 删除Windows注册表键值</span><br><span class="line"></span><br><span class="line">--reg-key=[REGKEY]    	# Windows注册表键</span><br><span class="line"></span><br><span class="line">--reg-value=[REGVAL]  	# Windows注册表项值</span><br><span class="line"></span><br><span class="line">--reg-data=[REGDATA]  	# Windows注册表键值数据</span><br><span class="line"></span><br><span class="line">--reg-type=[REGTYPE]  	# Windows注册表项值类型</span><br></pre></td></tr></table></figure>
+<h4 id="优化性能"><a href="#优化性能" class="headerlink" title="优化性能"></a>优化性能</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-o              	# 打开所有的优化开关</span><br><span class="line"></span><br><span class="line">-predict-output    	# 预测普通查询输出</span><br><span class="line"></span><br><span class="line">--keep-alive        # 使用持久HTTP（S）连接</span><br><span class="line"></span><br><span class="line">--null-connection   # 获取页面长度</span><br><span class="line"></span><br><span class="line">--threads=[THREAD number]  # 当前http(s)最大请求数 (默认 1)</span><br><span class="line"></span><br><span class="line">--timeout			# 设置超时时间,默认30s</span><br><span class="line"></span><br><span class="line">--retries			# 设置重连次数,默认为3次</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="绕过"><a href="#绕过" class="headerlink" title="绕过"></a>绕过</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">--hex				# 使用hex函数</span><br><span class="line"></span><br><span class="line">--hpp				# 使用http参数污染   </span><br><span class="line"></span><br><span class="line">--moble				# 模拟智能手机</span><br><span class="line"></span><br><span class="line">--second-order		# 二阶注入</span><br><span class="line"></span><br><span class="line">--safe-url=[SAFEURL]  # 提供一个安全的连接，每隔一段时间都会去访问一下</span><br><span class="line"></span><br><span class="line">--skip-urlencode  	# 跳过URL编码</span><br><span class="line"></span><br><span class="line">--no-cast          	# 关闭有效载荷铸造机制</span><br><span class="line"></span><br><span class="line">--no-escape         # 关闭字符串逃逸机制</span><br><span class="line"></span><br><span class="line">--prefix=PREFIX     # 注入payload字符串前缀</span><br><span class="line"></span><br><span class="line">--suffix=SUFFIX     # 注入payload字符串后缀</span><br><span class="line"></span><br><span class="line">--invalid-bignum    # 使用大数字使值无效</span><br><span class="line"></span><br><span class="line">--invalid-logical   # 使用逻辑操作使值无效</span><br><span class="line"></span><br><span class="line">--invalid-string    # 使用随机字符串使值无效</span><br><span class="line"></span><br><span class="line">--string=[STRING]   	# 查询时有效时在页面匹配字符串</span><br><span class="line"></span><br><span class="line">--not-string=[NOTSTRING]# 当查询求值为无效时匹配的字符串</span><br><span class="line"></span><br><span class="line">--regexp=[REGEXP]     	# 查询时有效时在页面匹配正则表达式</span><br><span class="line"></span><br><span class="line">--code=[CODE]       	# 当查询求值为True时匹配的HTTP代码</span><br><span class="line"></span><br><span class="line">--text-only        		# 仅基于在文本内容比较网页</span><br><span class="line"></span><br><span class="line">--titles           		# 仅根据他们的标题进行比较</span><br></pre></td></tr></table></figure>
+<h2 id="0x04-进阶使用"><a href="#0x04-进阶使用" class="headerlink" title="0x04  进阶使用"></a>0x04  进阶使用</h2><h4 id="tamper列表"><a href="#tamper列表" class="headerlink" title="tamper列表"></a>tamper列表</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">--tamper [tampername]	 	# 使用脚本绕过waf,逗号分隔多个</span><br><span class="line"></span><br><span class="line">space2comment				# 用/**/代替空格</span><br><span class="line"></span><br><span class="line">apostrophemask				# 用utf8代替引号</span><br><span class="line"></span><br><span class="line">equaltolike					# like代替等号</span><br><span class="line"></span><br><span class="line">space2dash					# 绕过过滤‘=’ 替换空格字符（”），（’–‘）后跟一个破折号注释，一个随机字符串和一个新行（’n’）</span><br><span class="line"></span><br><span class="line">greatest					# 绕过过滤’&gt;’ ,用GREATEST替换大于号。</span><br><span class="line"></span><br><span class="line">space2hash					# 空格替换为#号,随机字符串以及换行符</span><br><span class="line"></span><br><span class="line">apostrophenull				# encode绕过过滤双引号，替换字符和双引号。</span><br><span class="line"></span><br><span class="line">halfversionedmorekeywords	# 当数据库为mysql时绕过防火墙，每个关键字之前添加mysql版本评论</span><br><span class="line"></span><br><span class="line">space2morehash				# 空格替换为 #号 以及更多随机字符串 换行符</span><br><span class="line"></span><br><span class="line">appendnullbyte				# 在有效负荷结束位置加载零字节字符编码</span><br><span class="line"></span><br><span class="line">ifnull2ifisnull				# 绕过对IFNULL过滤,替换类似’IFNULL(A,B)’为’IF(ISNULL(A), B, A)’</span><br><span class="line"></span><br><span class="line">space2mssqlblank			# (mssql)空格替换为其它空符号</span><br><span class="line"></span><br><span class="line">base64encode				# 用base64编码替换</span><br><span class="line"></span><br><span class="line">space2mssqlhash				# 替换空格</span><br><span class="line"></span><br><span class="line">modsecurityversioned		# 过滤空格，包含完整的查询版本注释</span><br><span class="line"></span><br><span class="line">space2mysqlblank			# 空格替换其它空白符号(mysql)</span><br><span class="line"></span><br><span class="line">between						# 用between替换大于号（&gt;）</span><br><span class="line"></span><br><span class="line">space2mysqldash				# 替换空格字符（”）（’ – ‘）后跟一个破折号注释一个新行（’ n’）</span><br><span class="line"></span><br><span class="line">multiplespaces				# 围绕SQL关键字添加多个空格</span><br><span class="line"></span><br><span class="line">space2plus					# 用+替换空格</span><br><span class="line"></span><br><span class="line">bluecoat					# 代替空格字符后与一个有效的随机空白字符的SQL语句,然后替换=为like</span><br><span class="line"></span><br><span class="line">nonrecursivereplacement		# 双重查询语句,取代SQL关键字</span><br><span class="line"></span><br><span class="line">space2randomblank			# 代替空格字符（“”）从一个随机的空白字符可选字符的有效集</span><br><span class="line"></span><br><span class="line">sp_password					# 追加sp_password’从DBMS日志的自动模糊处理的有效载荷的末尾</span><br><span class="line"></span><br><span class="line">chardoubleencode			# 双url编码(不处理以编码的)</span><br><span class="line"></span><br><span class="line">unionalltounion				# 替换UNION ALLSELECT UNION SELECT</span><br><span class="line"></span><br><span class="line">charencode					# url编码</span><br><span class="line"></span><br><span class="line">randomcase					# 随机大小写</span><br><span class="line"></span><br><span class="line">unmagicquotes				# 宽字符绕过 GPCaddslashes</span><br><span class="line"></span><br><span class="line">randomcomments				# 用/**/分割sql关键字</span><br><span class="line"></span><br><span class="line">charunicodeencode			# 字符串 unicode 编码</span><br><span class="line"></span><br><span class="line">securesphere				# 追加特制的字符串</span><br><span class="line"></span><br><span class="line">versionedmorekeywords		# 注释绕过</span><br><span class="line"></span><br><span class="line">space2comment				# 替换空格字符串(‘‘) 使用注释‘/**/’</span><br><span class="line"></span><br><span class="line">halfversionedmorekeywords	# 关键字前加注释</span><br></pre></td></tr></table></figure>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="http://www.anquan.us/static/drops/tips-143.html">sqlmap用户手册</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.anquan.us/static/drops/tips-401.html">sqlmap用户手册续</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/sectool/164608.html">超详细SQLMap使用攻略及技巧分享</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2746">sqlmap的使用 —- 自带绕过脚本tamper</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>M09ic
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://m09ic.top/posts/26976/" title="SQLMap Cheatsheet">https://m09ic.top/posts/26976/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag"># 学习笔记</a>
+              <a href="/tags/%E9%80%9F%E6%9F%A5%E8%A1%A8/" rel="tag"># 速查表</a>
+              <a href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag"># 工具</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/53382/" rel="prev" title="MetaSploit CheatSheet">
+      <i class="fa fa-chevron-left"></i> MetaSploit CheatSheet
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/48529/" rel="next" title="Awesome github">
+      Awesome github <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">0x00 介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">0x01 功能介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">0x02 基本使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E9%AB%98%E7%BA%A7%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">0x03 高级使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%80%89%E9%A1%B9"><span class="nav-number">4.0.1.</span> <span class="nav-text">基础选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5"><span class="nav-number">4.0.2.</span> <span class="nav-text">注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#http%E5%8C%85%E5%AE%9A%E5%88%B6"><span class="nav-number">4.0.3.</span> <span class="nav-text">http包定制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getshell"><span class="nav-number">4.0.4.</span> <span class="nav-text">getshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-number">4.0.5.</span> <span class="nav-text">文件操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Windows-%E6%B3%A8%E5%86%8C%E8%A1%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">4.0.6.</span> <span class="nav-text">Windows 注册表操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E6%80%A7%E8%83%BD"><span class="nav-number">4.0.7.</span> <span class="nav-text">优化性能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%95%E8%BF%87"><span class="nav-number">4.0.8.</span> <span class="nav-text">绕过</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">0x04  进阶使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#tamper%E5%88%97%E8%A1%A8"><span class="nav-number">5.0.1.</span> <span class="nav-text">tamper列表</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

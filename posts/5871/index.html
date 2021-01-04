@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="(本文首发于先知社区,链接:https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;7256) 前言最近开始实战代码审计,去github上找了几个100+ stars 的项目练手. 看到有个cms中有个SSRF漏洞点多次被绕过,修复再被绕过.打开commit记录浏览,测试了一番,发现还能再次绕过. 绕过技巧并不新颖,2017年blackhat上orange师傅演讲的: A New Era of SSRF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从一个代码审计例子看ssrf的防护与绕过">
+<meta property="og:url" content="https://m09ic.top/posts/5871/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="(本文首发于先知社区,链接:https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;7256) 前言最近开始实战代码审计,去github上找了几个100+ stars 的项目练手. 看到有个cms中有个SSRF漏洞点多次被绕过,修复再被绕过.打开commit记录浏览,测试了一番,发现还能再次绕过. 绕过技巧并不新颖,2017年blackhat上orange师傅演讲的: A New Era of SSRF">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m09ic.top/posts/5871/image-20191115200723191.png">
+<meta property="og:image" content="https://m09ic.top/posts/5871/image-20191115200653356.png">
+<meta property="og:image" content="https://m09ic.top/posts/5871/image-20191115210301369.png">
+<meta property="og:image" content="https://m09ic.top/posts/5871/image-20191115205544907.png">
+<meta property="og:image" content="https://m09ic.top/posts/5871/image-20191116004557748.png">
+<meta property="og:image" content="https://m09ic.top/posts/5871/image-20191116003035777.png">
+<meta property="og:image" content="https://m09ic.top/posts/5871/image-20191116005331010.png">
+<meta property="article:published_time" content="2019-12-17T05:09:47.000Z">
+<meta property="article:modified_time" content="2021-01-04T14:51:03.144Z">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="代码审计">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m09ic.top/posts/5871/image-20191115200723191.png">
+
+<link rel="canonical" href="https://m09ic.top/posts/5871/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>从一个代码审计例子看ssrf的防护与绕过 | M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/5871/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从一个代码审计例子看ssrf的防护与绕过
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-17 13:09:47" itemprop="dateCreated datePublished" datetime="2019-12-17T13:09:47+08:00">2019-12-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:51:03" itemprop="dateModified" datetime="2021-01-04T22:51:03+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/5871/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/5871/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>(本文首发于先知社区,链接:<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/7256">https://xz.aliyun.com/t/7256</a>)</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近开始实战代码审计,去github上找了几个100+ stars 的项目练手.</p>
+<p>看到有个cms中有个SSRF漏洞点多次被绕过,修复再被绕过.打开commit记录浏览,测试了一番,发现还能再次绕过.</p>
+<p>绕过技巧并不新颖,2017年blackhat上orange师傅演讲的:<a target="_blank" rel="noopener" href="https://www.blackhat.com/docs/us-17/thursday/us-17-Tsai-A-New-Era-Of-SSRF-Exploiting-URL-Parser-In-Trending-Programming-Languages.pdf"> A New Era of SSRF </a>中提出的.</p>
+<a id="more"></a>
+
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="0x01-代码审计中的信息收集"><a href="#0x01-代码审计中的信息收集" class="headerlink" title="0x01  代码审计中的信息收集"></a>0x01  代码审计中的信息收集</h3><p>一个cms代码量确实不少,通读代码耗时长,效果也不一定好.而一个功能点如果之前出过漏洞,开发者对安全的理解又不充分,很容易绕过修复.这就类似一道ctf题目,对于经常参加ctf的各位大佬来说,这样的代码审计更加简单休闲.</p>
+<p>我以icms为例.</p>
+<p>icms github链接: <a target="_blank" rel="noopener" href="https://github.com/idreamsoft/iCMS">https://github.com/idreamsoft/iCMS</a> </p>
+<p>在issue中搜索SSRF <a target="_blank" rel="noopener" href="https://github.com/idreamsoft/iCMS/issues?utf8=%E2%9C%93&q=is:issue+ssrf">https://github.com/idreamsoft/iCMS/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+ssrf</a> </p>
+<p><img src="image-20191115200723191.png" alt="image-20191115200723191"></p>
+<p>在cve列表中查找,应该对应的就是这三个cve了</p>
+<p><img src="image-20191115200653356.png" alt="image-20191115200653356"></p>
+<p>可以看到这个功能点已经出现了三次的绕过与过滤.</p>
+<p>大致了解下这个功能点,是一个自动更新文章的爬虫,多处都可以控制url参数.</p>
+<p>点开issue查看具体信息,我们从最早出现漏洞的版本看起.</p>
+<p>通过查看具体的commits,可以找到开发者修复漏洞的思路.这给我们代码审计带来很大的便利.</p>
+<h3 id="CVE-2018-14514-漏洞分析"><a href="#CVE-2018-14514-漏洞分析" class="headerlink" title="CVE-2018-14514 漏洞分析"></a>CVE-2018-14514 漏洞分析</h3><p> commit: <a target="_blank" rel="noopener" href="https://github.com/idreamsoft/iCMS/issues/29">https://github.com/idreamsoft/iCMS/issues/29</a> </p>
+<p>提交者详细描述了漏洞信息,只提交了一个点,但根据作者修复的commit,应该有两处都存在ssrf漏洞.</p>
+<p>``icms7.0.9\app\spider\spider.class.php` 361行 ,关键代码:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">postUrl</span>(<span class="params"><span class="variable">$url</span>, <span class="variable">$data</span></span>) </span>&#123;</span><br><span class="line">     is_array(<span class="variable">$data</span>) &amp;&amp; <span class="variable">$data</span> = http_build_query(<span class="variable">$data</span>);</span><br><span class="line">     <span class="variable">$options</span> = <span class="keyword">array</span>(</span><br><span class="line">         CURLOPT_URL    =&gt; <span class="variable">$url</span>,</span><br><span class="line">...</span><br><span class="line">     );</span><br><span class="line"></span><br><span class="line">     <span class="variable">$ch</span> = curl_init();</span><br><span class="line">     curl_setopt_array(<span class="variable">$ch</span>,<span class="variable">$options</span>);</span><br><span class="line">     <span class="variable">$responses</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">     curl_close (<span class="variable">$ch</span>);</span><br><span class="line">     <span class="keyword">return</span> <span class="variable">$responses</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>与<code>icms7.0.9\app\spider\spider_tools.class.php</code>  604行,关键代码:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">remote</span>(<span class="params"><span class="variable">$url</span>, <span class="variable">$_count</span> = <span class="number">0</span></span>) </span>&#123;</span><br><span class="line">    <span class="variable">$url</span> = str_replace(<span class="string">&#x27;&amp;amp;&#x27;</span>, <span class="string">&#x27;&amp;&#x27;</span>, <span class="variable">$url</span>);</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">empty</span>(spider::<span class="variable">$referer</span>))&#123;</span><br><span class="line">        <span class="variable">$uri</span> = parse_url(<span class="variable">$url</span>);</span><br><span class="line">        spider::<span class="variable">$referer</span> = <span class="variable">$uri</span>[<span class="string">&#x27;scheme&#x27;</span>] . <span class="string">&#x27;://&#x27;</span> . <span class="variable">$uri</span>[<span class="string">&#x27;host&#x27;</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">self</span>::<span class="variable">$curl_info</span> = <span class="keyword">array</span>();</span><br><span class="line">    <span class="variable">$options</span> = <span class="keyword">array</span>(</span><br><span class="line">        CURLOPT_URL                  =&gt; <span class="variable">$url</span>,</span><br><span class="line">		...</span><br><span class="line">    );</span><br><span class="line">    spider::<span class="variable">$cookie</span> &amp;&amp; <span class="variable">$options</span>[CURLOPT_COOKIE] = spider::<span class="variable">$cookie</span>;</span><br><span class="line">    <span class="keyword">if</span>(spider::<span class="variable">$curl_proxy</span>)&#123;</span><br><span class="line">        <span class="variable">$proxy</span>   = <span class="built_in">self</span>::proxy_test();</span><br><span class="line">        <span class="variable">$proxy</span> &amp;&amp; <span class="variable">$options</span> = iHttp::proxy(<span class="variable">$options</span>,<span class="variable">$proxy</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(spider::<span class="variable">$PROXY_URL</span>)&#123;</span><br><span class="line">        <span class="variable">$options</span>[CURLOPT_URL] = spider::<span class="variable">$PROXY_URL</span>.urlencode(<span class="variable">$url</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$ch</span> = curl_init();</span><br><span class="line">    curl_setopt_array(<span class="variable">$ch</span>,<span class="variable">$options</span>);</span><br><span class="line">    <span class="variable">$responses</span> = curl_exec(<span class="variable">$ch</span>);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到icms7.0.9版本没有做任何的验证.可以直接使用所有协议访问所有ip与端口.因此如果有redis或无密码的mysql或者一些其他容易被攻击的服务,可以getshell.因为这里重点不是ssrf getshell ,因此不做验证.</p>
+<p>很多处都调用了remote函数,全局搜索即可,我们找一个能即时回显的点测试.</p>
+<p>payload:<code>http://ip/admincp.php?app=spider&amp;do=testdata&amp;url=dict://127.0.0.1:8000&amp;rid=2&amp;pid=0&amp;title=m09ic</code></p>
+<p><img src="image-20191115210301369.png" alt="image-20191115210301369"></p>
+<p>监听本地端口是否有数据过来.</p>
+<p><img src="image-20191115205544907.png" alt="image-20191115205544907"></p>
+<p>很明显收到了.</p>
+<h3 id="CVE-2018-14514-漏洞修复"><a href="#CVE-2018-14514-漏洞修复" class="headerlink" title="CVE-2018-14514 漏洞修复"></a>CVE-2018-14514 漏洞修复</h3><p>我们再来看看作者是如何修复的,commit: <a target="_blank" rel="noopener" href="https://github.com/idreamsoft/iCMS/commit/64bb0bdf77febbd6ac0ccb6658ee1ddc71530bb1">https://github.com/idreamsoft/iCMS/commit/64bb0bdf77febbd6ac0ccb6658ee1ddc71530bb1</a></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">remote</span>(<span class="params"><span class="variable">$url</span>, <span class="variable">$_count</span> = <span class="number">0</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!iHttp::is_url(<span class="variable">$url</span>,<span class="literal">true</span>))&#123;</span><br><span class="line">        <span class="keyword">if</span> (spider::<span class="variable">$dataTest</span> || spider::<span class="variable">$ruleTest</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;b&gt;<span class="subst">&#123;$url&#125;</span> 请求错误:非正常URL格式,因安全问题只允许抓取 http:// 或 https:// 开头的链接&lt;/b&gt;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>作者添加了一个判断函数</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">is_url</span>(<span class="params"><span class="variable">$url</span>,<span class="variable">$strict</span>=<span class="literal">false</span></span>) </span>&#123;</span><br><span class="line">    <span class="variable">$url</span> = trim(<span class="variable">$url</span>);</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$strict</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> (stripos(<span class="variable">$url</span>, <span class="string">&#x27;http://&#x27;</span>) === <span class="number">0</span> || stripos(<span class="variable">$url</span>, <span class="string">&#x27;https://&#x27;</span>) === <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (stripos(<span class="variable">$url</span>, <span class="string">&#x27;http://&#x27;</span>) === <span class="literal">false</span> &amp;&amp; stripos(<span class="variable">$url</span>, <span class="string">&#x27;https://&#x27;</span>) === <span class="literal">false</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先判断url是否以<code>http://</code>开头,才开始解析,这样就限制了乱七八糟协议,减轻了危害程度,大部分情况很难getshell.但是ssrf漏洞依然存在.</p>
+<p>可以看到,作者对ssrf漏洞的认识并不到位,认为不能getshell就可以了.但是实际上,用http协议也并非完全不可能getshell,内网有可能存在一些可以被get请求getshell的服务,比如thinkphp最近的那几个RCE.</p>
+<h3 id="CVE-2018-14858-漏洞修复"><a href="#CVE-2018-14858-漏洞修复" class="headerlink" title="CVE-2018-14858 漏洞修复"></a>CVE-2018-14858 漏洞修复</h3><p>显然只允许http与https开头的url访问,ssrf依然存在,于是在icms7.0.11版本,又有人提交了ssrf漏洞,并获得了一个cve编号.漏洞分析与上一个漏洞一直,因此省略.</p>
+<p>提交者除了提交漏洞,还简单说明了几种常见的ssrf绕过手法,比如不同格式的ip地址.</p>
+<p>这是作者在<a target="_blank" rel="noopener" href="https://github.com/idreamsoft/iCMS/issues/33">issue33</a>下的回复.</p>
+<blockquote>
+<p> I know this question, but if the IP format is banned, the website using the IP format will not be collected. Although it is not used a lot, it will still be encountered. There is no better way to think about it now. </p>
+</blockquote>
+<p>可以看到作者对ssrf的理解有些偏差,导致修复完全没有起到作用.</p>
+<p>过了几天,作者似乎认识到了这样并不算修复了ssrf漏洞,commit了一下过滤代码.</p>
+<p>具体更新内容在commit中: <a target="_blank" rel="noopener" href="https://github.com/idreamsoft/iCMS/commit/62de04e57a67f2690dbf88b7d381af61a0969ef3">https://github.com/idreamsoft/iCMS/commit/62de04e57a67f2690dbf88b7d381af61a0969ef3</a> </p>
+<p>添加了过滤代码,关键代码如下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">remote</span>(<span class="params"><span class="variable">$url</span>, <span class="variable">$_count</span> = <span class="number">0</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!iHttp::is_url(<span class="variable">$url</span>,<span class="literal">true</span>))&#123;</span><br><span class="line">        <span class="variable">$parsed</span> = parse_url(<span class="variable">$url</span>);<span class="comment">//解析url</span></span><br><span class="line">        <span class="variable">$validate_ip</span> = <span class="literal">true</span>;</span><br><span class="line">        preg_match(<span class="string">&#x27;/\d+/&#x27;</span>, <span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>]) &amp;&amp; <span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>] = long2ip(<span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>]);<span class="comment">//获取host部分,如果是十进制或其他进制的ip地址,转化成标准的ip地址</span></span><br><span class="line">        <span class="keyword">if</span>(preg_match(<span class="string">&#x27;/\d+\.\d+\.\d+\.\d+/&#x27;</span>, <span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>]))&#123;</span><br><span class="line">            <span class="variable">$validate_ip</span> = filter_var(<span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);<span class="comment">//匹配正确的ip格式,过滤非法ip地址字符与内外地址</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!in_array(<span class="variable">$parsed</span>[<span class="string">&#x27;scheme&#x27;</span>],<span class="keyword">array</span>(<span class="string">&#x27;http&#x27;</span>,<span class="string">&#x27;https&#x27;</span>)) || !<span class="variable">$validate_ip</span>|| strtolower(<span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>])==<span class="string">&#x27;localhost&#x27;</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span> (spider::<span class="variable">$dataTest</span> || spider::<span class="variable">$ruleTest</span>) &#123;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;&lt;b&gt;<span class="subst">&#123;$url&#125;</span> 请求错误:非正常URL格式,因安全问题只允许抓取 http:// 或 https:// 开头的链接&lt;/b&gt;&quot;</span>;</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">&quot;&lt;b&gt;<span class="subst">&#123;$url&#125;</span> 请求错误:非正常URL格式,因安全问题只允许抓取 http:// 或 https:// 开头的链接或私有IP地址&lt;/b&gt;&quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">        ...</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到,这次添加了检查ip地址的格式,以及是否是内网ip.</p>
+<p>以普通开发者的角度思考,很多情况都是哪里出了问题就修哪里,什么东西能绕过就过滤什么.也很难要求他们完全了解安全漏洞,因此也导致了修复再次被绕过.</p>
+<h3 id="CVE-2018-15895"><a href="#CVE-2018-15895" class="headerlink" title="CVE-2018-15895"></a>CVE-2018-15895</h3><p>与上个漏洞提交者是同一个人. <a target="_blank" rel="noopener" href="https://github.com/idreamsoft/iCMS/issues/40">https://github.com/idreamsoft/iCMS/issues/40</a> </p>
+<p>看似万无一失,更强的黑名单过滤,也确实不能通过绕过正则与<code>filter_var</code> 再次进行ssrf攻击.</p>
+<p>但ssrf的常用绕过手法还有302重定向与dns重绑定.漏洞提交者也演示了这两种方式.具体poc可以看issue内容.</p>
+<p>我们来看看作者的修复, <a target="_blank" rel="noopener" href="https://github.com/idreamsoft/iCMS/commit/59ad0f303bf900f552f737b63c6fa8d92c1403d7">https://github.com/idreamsoft/iCMS/commit/59ad0f303bf900f552f737b63c6fa8d92c1403d7</a> ,关键代码如下:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">safe_url</span>(<span class="params"><span class="variable">$url</span></span>) </span>&#123;</span><br><span class="line">    <span class="variable">$parsed</span> = parse_url(<span class="variable">$url</span>);</span><br><span class="line">    <span class="variable">$validate_ip</span> = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$parsed</span>[<span class="string">&#x27;port&#x27;</span>] &amp;&amp; is_array(<span class="built_in">self</span>::<span class="variable">$safe_port</span>) &amp;&amp; !in_array(<span class="variable">$parsed</span>[<span class="string">&#x27;port&#x27;</span>],<span class="built_in">self</span>::<span class="variable">$safe_port</span>))&#123;</span><br><span class="line">        <span class="keyword">if</span> (spider::<span class="variable">$dataTest</span> || spider::<span class="variable">$ruleTest</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;b&gt;请求错误:非正常端口,因安全问题只允许抓取80,443端口的链接,如有特殊需求请自行修改程序&lt;/b&gt;&quot;</span>.PHP_EOL;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        preg_match(<span class="string">&#x27;/^\d+$/&#x27;</span>, <span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>]) &amp;&amp; <span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>] = long2ip(<span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>]);</span><br><span class="line">        <span class="variable">$long</span> = ip2long(<span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>]);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$long</span>===<span class="literal">false</span>)&#123;</span><br><span class="line">            <span class="variable">$ip</span> = <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">if</span>(<span class="built_in">self</span>::<span class="variable">$safe_url</span>)&#123;</span><br><span class="line">                @putenv(<span class="string">&#x27;RES_OPTIONS=retrans:1 retry:1 timeout:1 attempts:1&#x27;</span>);</span><br><span class="line">                <span class="variable">$ip</span>   = gethostbyname(<span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>]);</span><br><span class="line">                <span class="variable">$long</span> = ip2long(<span class="variable">$ip</span>);</span><br><span class="line">                <span class="variable">$long</span>===<span class="literal">false</span> &amp;&amp; <span class="variable">$ip</span> = <span class="literal">null</span>;</span><br><span class="line">                @putenv(<span class="string">&#x27;RES_OPTIONS&#x27;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="variable">$ip</span> = <span class="variable">$parsed</span>[<span class="string">&#x27;host&#x27;</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable">$ip</span> &amp;&amp; <span class="variable">$validate_ip</span> = filter_var(<span class="variable">$ip</span>, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(!in_array(<span class="variable">$parsed</span>[<span class="string">&#x27;scheme&#x27;</span>],<span class="keyword">array</span>(<span class="string">&#x27;http&#x27;</span>,<span class="string">&#x27;https&#x27;</span>)) || !<span class="variable">$validate_ip</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span> (spider::<span class="variable">$dataTest</span> || spider::<span class="variable">$ruleTest</span>) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;&lt;b&gt;<span class="subst">&#123;$url&#125;</span> 请求错误:非正常URL格式,因安全问题只允许抓取 http:// 或 https:// 开头的链接或公有IP地址&lt;/b&gt;&quot;</span>.PHP_EOL;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$url</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到,使用了第17行使用了<code>gethostbyname</code> 确定parse_url解析后的host部分,来防护dns rebinding 攻击.</p>
+<p>并且在curl的options中,注释了<code>// CURLOPT_FOLLOWLOCATION =&gt; 1,// 使用自动跳转</code>,来防护302重定向绕过.</p>
+<p>那么如果想再次绕过,经常打ctf的小伙伴可能就会注意到了,攻击的思路可以针对parse_url的解析问题上.历代parse_url有不少方式可以绕过scheme,host,port,path等.而这些细节,是开发者很难注意到的.</p>
+<h3 id="新的绕过"><a href="#新的绕过" class="headerlink" title="新的绕过"></a>新的绕过</h3><p>光黑名单和检查host真实ip来说,基本上是万无一失.但是作者万万没想到,来自php自身的背后一刀.在开头提到的<a target="_blank" rel="noopener" href="https://www.blackhat.com/docs/us-17/thursday/us-17-Tsai-A-New-Era-Of-SSRF-Exploiting-URL-Parser-In-Trending-Programming-Languages.pdf"> A New Era of SSRF </a>中,有一个新的攻击方式,利用php中的parse_url函数和libcurl对url的解析差异,导致了对host的过滤失效,进行ssrf.</p>
+<p>从orange师傅的pdf中偷一张图来解释.</p>
+<p><img src="image-20191116004557748.png" alt="image-20191116004557748"></p>
+<p>php-curl拓展解析的url host在第二个@之后,而parse_url则是最后一个@之后.</p>
+<p>因此我们可以使用如下payload绕过:</p>
+<p><code>http://ip/admincp.php?app=spider_project&amp;do=test&amp;url=http://root:root@127.0.0.1:81@baidu.com/info.php&amp;rid=2&amp;pid=1&amp;title=</code></p>
+<p><img src="image-20191116003035777.png" alt="image-20191116003035777"></p>
+<p>可以看到,同时绕过了端口和host的限制,访问到了只对本地开放的81端口的phpinfo内容.成功绕过过滤实现ssrf,<del>并且水个cve编号</del></p>
+<p>这里有一个小坑,在较新版本的curl中,已经修复了多个@的解析问题,使用多个@会报错.</p>
+<p><img src="image-20191116005331010.png" alt="image-20191116005331010"></p>
+<p>但是大多数linux发行版并没有使用最新版本的curl.可以在 <a target="_blank" rel="noopener" href="https://curl.haxx.se/download.html">https://curl.haxx.se/download.html</a>  这里查询linux发行版与curl版本的对应关系.</p>
+<p>我只测试了ubuntu,在ubuntu16.04以下均可以使用该方式绕过.而在ubuntu18.04中,已经不再可以.<code>exec_curl</code>函数执行会直接返回false.</p>
+<p>ubuntu16.04的curl版本是:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># curl -V</span><br><span class="line">curl 7.47.0 (x86_64-pc-linux-gnu) libcurl&#x2F;7.47.0 GnuTLS&#x2F;3.4.10 zlib&#x2F;1.2.8 libidn&#x2F;1.32 librtmp&#x2F;2.3</span><br><span class="line">Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 pop3s rtmp rtsp smb smbs smtp smtps telnet tftp </span><br><span class="line">Features: AsynchDNS IDN IPv6 Largefile GSS-API Kerberos SPNEGO NTLM NTLM_WB SSL libz TLS-SRP UnixSockets </span><br></pre></td></tr></table></figure>
+<p>已经提交了<a target="_blank" rel="noopener" href="https://github.com/idreamsoft/iCMS/issues/88">issue</a>,坐等作者的修复,期待是否还有被绕过的可能:D</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>一个开发人员很难有精力去了解一个攻击方式的方方面面,也很难让开发者紧跟攻击手法的趋势.在刚才的例子看到,虽然开发者积极的解决漏洞,但是并不能有效缓解漏洞,总有普通开发者不知道的方式再次绕过.我个人认为,解决这个问题的方法只有让专业的安全专业人员去协助修复.</p>
+<p>另外,这个漏洞在利用要进入后台,又过滤了各种敏感协议,实际上危害并不大,仅仅用来学习ssrf的绕过与防护.</p>
+<p><em>第一次写代码审计相关文章,难免有疏漏,如有错误,还望指正</em></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>M09ic
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://m09ic.top/posts/5871/" title="从一个代码审计例子看ssrf的防护与绕过">https://m09ic.top/posts/5871/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" rel="tag"># 代码审计</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/56679/" rel="prev" title="Ogeek Final Writeup">
+      <i class="fa fa-chevron-left"></i> Ogeek Final Writeup
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/10013/" rel="next" title="D3CTF FINAL Writeup(WEB)">
+      D3CTF FINAL Writeup(WEB) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">2.1.</span> <span class="nav-text">0x01  代码审计中的信息收集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CVE-2018-14514-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-number">2.2.</span> <span class="nav-text">CVE-2018-14514 漏洞分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CVE-2018-14514-%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D"><span class="nav-number">2.3.</span> <span class="nav-text">CVE-2018-14514 漏洞修复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CVE-2018-14858-%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D"><span class="nav-number">2.4.</span> <span class="nav-text">CVE-2018-14858 漏洞修复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CVE-2018-15895"><span class="nav-number">2.5.</span> <span class="nav-text">CVE-2018-15895</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E7%9A%84%E7%BB%95%E8%BF%87"><span class="nav-number">2.6.</span> <span class="nav-text">新的绕过</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

